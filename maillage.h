@@ -6,17 +6,15 @@ class Maillage2DCarre
     // nom du maillage
     std::string _name;
     // taille du maillage et raffinement
-    int _N, _nbPtsX, _nbPtsY;
-    // pas d'espace
-    double deltaX, deltaY;
-    // matrice des concentrations
-    Eigen::MatrixXd _Concentrations;
+    int _deltaX, _deltaZ, _Lz, _Lx;
+    // vecteurs coordonnées
+    Eigen::MatrixXd _coordonnees;
 
   public:
     // constructeur par défaut
-    Maillage2DCarre();
+    void Maillage2DCarre();
     // constructeur 1
-    Maillage2DCarre(std::string name, int nbPtsX, int nbPtsY, int N);
+    void Maillage2DCarre(std::string name, double deltaX, double deltaZ, double _Lx, double _Lz);
     // destructeur
-    ~Maillage2DCarre();
+    void ~Maillage2DCarre();
 }
