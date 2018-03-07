@@ -4,7 +4,7 @@ using namespace std;
 
 int main() {
   /* code */
-
+cout << "coucou j'ai modifié le main" << endl;
   /*
   Lire paramètres .dat
   */
