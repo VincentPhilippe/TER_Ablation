@@ -4,7 +4,7 @@ using namespace std;
 
 int main() {
   /* code */
-cout << "coucou j'ai modifié le main" << endl;
+  
   /*
   Lire paramètres .dat
   */
@@ -41,7 +41,6 @@ cout << "coucou j'ai modifié le main" << endl;
   */
 
 // Fin de la boucle
-    cout << "ceci est un test" << endl;
 
   return 0;
 }
