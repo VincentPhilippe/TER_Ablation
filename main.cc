@@ -41,6 +41,7 @@ int main() {
   */
 
 // Fin de la boucle
+    cout << "ceci est un test" << endl;
 
   return 0;
 }
