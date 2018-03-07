@@ -8,7 +8,7 @@ class Maillage2DCarre
     // taille du maillage et raffinement
     int _deltaX, _deltaZ, _Lz, _Lx;
     // vecteurs coordonnées
-    Eigen::MatrixXd _coordonnees;
+    Eigen::VectorXd _coordX, _coordZ;
 
   public:
     // constructeur par défaut
@@ -17,4 +17,8 @@ class Maillage2DCarre
     void Maillage2DCarre(std::string name, double deltaX, double deltaZ, double _Lx, double _Lz);
     // destructeur
     void ~Maillage2DCarre();
+
+    //fonctions d'accès aux variables de l'objet
+    VectorXd GetCoordX(){return _coordX};
+    VectorXd GetCoordZ(){return _coordZ};
 }
