@@ -10,11 +10,13 @@ class Maillage2DCarre
     // vecteurs coordonnées
     Eigen::MatrixXd _coordonnees;
 
-  public:
+    // C'est Thomas tu peux rajouter Nx et Nz dans les attributs et mettre une méthode GetNx / GetNz
+
+  public: // UN CONSTRUCTEUR N'A PAS DE VOID DEVANT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // constructeur par défaut
-    void Maillage2DCarre();
+    Maillage2DCarre();
     // constructeur 1
-    void Maillage2DCarre(std::string name, double deltaX, double deltaZ, double _Lx, double _Lz);
+    Maillage2DCarre(std::string name, double deltaX, double deltaZ, double _Lx, double _Lz);
     // destructeur
-    void ~Maillage2DCarre();
+    ~Maillage2DCarre();
 }

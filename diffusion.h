@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "dense"
+#include "Dense"
 #include "maillage.h"
 #include "read_data.h"
 #include "rebuild_surface.h"
@@ -10,9 +10,7 @@ class diffusion{
 private:
   Maillage2DCarre& _maillage;
   ReadData& _data;
-  Eigen::MatrixXd _ninterf;
-  Eigen::MatrixXd _interface;
-
+  Plic _surface;
 
   Eigen::MatrixXd _concentration;
   Eigen::VectorXd _vitesse;
@@ -20,10 +18,10 @@ private:
 
 public:
 
-  diffusion(Maillage2DCarre& maillage, ReadData& data); // Construteur à l'état initial
-  diffusion(Maillage2DCarre& maillage, ReadData& data, Plic& _surface); // Constructeur à l'étape 2
+  diffusion(Maillage2DCarre& maillage, ReadData& data, Plic& _surface);
   void resolution();
   void vitesse();
+  ~diffusion(){};
 
   Eigen::MatrixXd GetConcentration() {return _concentration};
   Eigen::MatrixXd GetVitesse() {return _vitesse};
