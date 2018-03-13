@@ -33,6 +33,8 @@ private:
   double _dt;
   double _dx;
   double _dz;
+  int _nx;
+  int _nz;
   readdata& _data;
   diffusion& _diff;
   plic& _plic;

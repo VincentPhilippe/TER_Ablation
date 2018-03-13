@@ -8,7 +8,7 @@
 using namespace std;
 using namespace Eigen;
 
-diffusion::diffusion(Maillage2DCarre& maillage, ReadData& data)
+diffusion::diffusion(Maillage2DCarre& maillage, ReadData& data, Plic& _surface)
 {
   _maillage = maillage;
   _data = data;
@@ -27,6 +27,6 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
 
   while(erreur > 1e-5, n < 100000)
   {
-    
+
   }
 }

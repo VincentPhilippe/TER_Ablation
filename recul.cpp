@@ -26,6 +26,7 @@ recul::~recul()
 void recul::recul_surface()
 {
   //récuperer _ninterf _interface _vitesse avec des get
+  
   //N_surface, Nx, Ny
   _nx = _ninterf.cols();
   _nz = _ninterf.rows();
@@ -41,88 +42,96 @@ void recul::recul_surface()
       if (k>0) {
 
         //calcul de l'angle alpha
-        double xa, ya, xb, yb, t_alpha, alpha;
+        double xa, za, xb, zb, t_alpha, alpha;
 
         xa = _interface(1,k-1);
-        ya = _interface(2,k-1);
+        za = _interface(2,k-1);
         xb = _interface(3,k-1);
-        yb = _interface(4,k-1);
-        t_alpha = (yb-ya)/(xb-xa);
+        zb = _interface(4,k-1);
+        t_alpha = (zb-za)/(xb-xa);
         alpha = atan(t_alpha);
 
         //calcul des coordonnées des points C et D
-        double xc, yc, xd, yd, vr, vrdt;
+        double xc, zc, xd, zd, vr, vrdt;
 
         vr = _vitesse(k);
-        vrdt = vr*dt;
+        vrdt = vr*_dt;
         xc = xa + vrdt*sin(alpha);
-        yc = ya - vrdt*cos(alpha);
+        zc = za - vrdt*cos(alpha);
         xd = xb + vrdt*sin(alpha);
-        yd = yb - vrdt*cos(alpha);
+        zd = zb - vrdt*cos(alpha);
 
         MatrixXd coord;
         coord.resize(4,2);
         coord(1,1)=xa;
-        coord(1,2)=ya;
+        coord(1,2)=za;
         coord(2,1)=xb;
-        coord(2,2)=yb;
+        coord(2,2)=zb;
         coord(3,1)=xc;
-        coord(3,2)=yc;
+        coord(3,2)=zc;
         coord(4,1)=xd;
-        coord(4,2)=yd;
+        coord(4,2)=zd;
 
         //identification du cas et modification du tableau des concentrations en solide
         if (xc<0) {
           if (xd<0) {
-            if (yc<0) {//yd forcément négatif
+            if (zc<0) {//yd forcément négatif
               recul3(i, j, alpha, vrdt, coord);
             } else {//yc>0
-              if (yd<0) {
+              if (zd<0) {
                 recul2(i, j, alpha, vrdt, coord);
               } else {//yd>0
                 recul1(i, j, alpha, vrdt, coord);
               }
             }
           } else {//0<xd<dx
-            if (yc<0) {//yd forcémentnégatif
+            if (zc<0) {//yd forcémentnégatif
               recul9(i, j, alpha, vrdt, coord);
             } else {//yc>0
-              if (yd<0) {
-                /* code */ //////////////////////////////////////////////////////attention 2 cas possibles cas 7 et 8
+              if (zd<0) {
+                if (za-xa*(zb-za)/(xb-xa)>0) {
+                  recul7(i, j, alpha, vrdt, coord);
+                } else {
+                  recul8(i, j, alpha, vrdt, coord);
+                }
               } else {//yd>0
                 recul4(i, j, alpha, vrdt, coord);
               }
             }
           }
-        } else if (xc<dx) {
-          if (xd<dx) {
-            if (yc<0) {
-              if (yd<0) {
+        } else if (xc<_dx) {
+          if (xd<_dx) {
+            if (zc<0) {
+              if (zd<0) {
                 recul11(i, j, alpha, vrdt, coord);
               } else {
                 recul6(i, j, alpha, vrdt, coord);
               }
             } else {
-              if (yd<0) {
+              if (zd<0) {
                 recul10(i, j, alpha, vrdt, coord);
               } else {
                 recul5(i, j, alpha, vrdt, coord);
               }
             }
           } else {
-            if (yc<0) {
-              if (yd<0) {
+            if (zc<0) {
+              if (zd<0) {
                 recul17(i, j, alpha, vrdt, coord);
               } else {
-                /* code *///////////////////////////////////////////////////////////////////////cas 13 et 14
+                if (za+(_dx-xa)*(zb-za)/(xb-xa)>0) {
+                  recul13(i, j, alpha, vrdt, coord);
+                } else {
+                  recul14(i, j, alpha, vrdt, coord);
+                }
               }
             } else {
               recul12(i, j, alpha, vrdt, coord);
             }
           }
         } else {
-          if (yc<0) {
-            if (yd<0) {
+          if (zc<0) {
+            if (zd<0) {
               recul18(i, j, alpha, vrdt, coord);
             } else {
               recul16(i, j, alpha, vrdt, coord);
@@ -140,18 +149,18 @@ void recul::recul_surface()
 
 void recul::recul1(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
-  double xa,ya,xb,yb,xc,yc,xd,yd,l;
+  double xa,za,xb,zb,xc,zc,xd,zd,l;
 
   xa=coord(1,1);
-  ya=coord(1,2);
+  za=coord(1,2);
   xb=coord(2,1);
-  yb=coord(2,2);
+  zb=coord(2,2);
   xc=coord(3,1);
-  yc=coord(3,2);
+  zc=coord(3,2);
   xd=coord(4,1);
-  yd=coord(4,2);
+  zd=coord(4,2);
 
-  l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
+  l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
   double Stot, S1, S2, l1, l2;
   Stot=vrdt*l;
@@ -159,421 +168,403 @@ void recul::recul1(int i, int j, double alpha, double vrdt, MatrixXd coord)
   l2 = -xd*sin(alpha);
   S1 = l*(l1+l2)/2;
   S2 = Stot-S1;
-  C_solide(i,(j-1+nx)%nx)=C_solide(i,(j-1+nx%nx))-S1/(dx*dy);
-  C_solide(i,j)=C_solide(i,j)-(S2)/(dx*dy);
+  _C_solide(i,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx%_nx))-S1/(_dx*_dz);
+  _C_solide(i,j)=_C_solide(i,j)-(S2)/(_dx*_dz);
 
-  return C_solide;
 }
 
 
 void recul::recul2(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
-  double xa,ya,xb,yb,xc,yc,xd,yd,l;
+  double xa,za,xb,zb,xc,zc,xd,zd,l;
 
   xa=coord(1,1);
-  ya=coord(1,2);
+  za=coord(1,2);
   xb=coord(2,1);
-  yb=coord(2,2);
+  zb=coord(2,2);
   xc=coord(3,1);
-  yc=coord(3,2);
+  zc=coord(3,2);
   xd=coord(4,1);
-  yd=coord(4,2);
+  zd=coord(4,2);
 
-  l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
+  l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
   double Stot, S1, S2, S3, S4;
   Stot=vrdt*l;
   S3 = xb*xb/(2*tan(alpha));
-  S1 = -xc*yc-yc*yc/(2*tan(alpha))+xc*xc/(2*tan(alpha));
-  S2 = xd*yd-xd*xd/(2*tan(alpha))+yd*yd/(2*tan(alpha));
+  S1 = -xc*zc-zc*zc/(2*tan(alpha))+xc*xc/(2*tan(alpha));
+  S2 = xd*zd-xd*xd/(2*tan(alpha))+zd*zd/(2*tan(alpha));
   S4 = Stot-(S1+S2+S3);
-  C_solide(i,(j-1+nx)%nx)=C_solide(i,(j-1+nx%nx))-S1/(dx*dy);
-  C_solide(i,j)=C_solide(i,j)-(S4)/(dx*dy);
+  _C_solide(i,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx%_nx))-S1/(_dx*_dz);
+  _C_solide(i,j)=_C_solide(i,j)-(S4)/(_dx*_dz);
   if (i-1>=0) {
-    C_solide(i-1,(j-1+nx)%nx)=C_solide(i,(j-1+nx)%nx)-S2/(dx*dy);
-    C_solide(i-1,j)=C_solide(i-1,j)-S3/(dx*dy);
+    _C_solide(i-1,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx)%_nx)-S2/(_dx*_dz);
+    _C_solide(i-1,j)=_C_solide(i-1,j)-S3/(_dx*_dz);
   }
 
-  return C_solide;
 }
 
 
 void recul::recul3(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
-  double xa,ya,xb,yb,xc,yc,xd,yd,l;
+  double xa,za,xb,zb,xc,zc,xd,zd,l;
 
   xa=coord(1,1);
-  ya=coord(1,2);
+  za=coord(1,2);
   xb=coord(2,1);
-  yb=coord(2,2);
+  zb=coord(2,2);
   xc=coord(3,1);
-  yc=coord(3,2);
+  zc=coord(3,2);
   xd=coord(4,1);
-  yd=coord(4,2);
+  zd=coord(4,2);
 
-  l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
+  l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
   double Stot, S1, S2, S3, S4;
   Stot=vrdt*l;
-  S1 = ya*ya*tan(alpha)/2;
-  S4 = ya*xb/2;
+  S1 = za*za*tan(alpha)/2;
+  S4 = za*xb/2;
   S3 = xb*xb/(2*tan(alpha));
   S2 = Stot-(S1+S3+S4);
-  C_solide(i,(j-1+nx)%nx)=C_solide(i,(j-1+nx%nx))-S1/(dx*dy);
-  C_solide(i,j)=C_solide(i,j)-(S4)/(dx*dy);
+  _C_solide(i,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx%_nx))-S1/(_dx*_dz);
+  _C_solide(i,j)=_C_solide(i,j)-(S4)/(_dx*_dz);
   if (i-1>=0) {
-    C_solide(i-1,(j-1+nx)%nx)=C_solide(i,(j-1+nx)%nx)-S2/(dx*dy);
-    C_solide(i-1,j)=C_solide(i-1,j)-S3/(dx*dy);
+    _C_solide(i-1,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx)%_nx)-S2/(_dx*_dz);
+    _C_solide(i-1,j)=_C_solide(i-1,j)-S3/(_dx*_dz);
   }
 
-  return C_solide;
 }
 
 //C à gauche cas 4
 void recul::recul4(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
-  double xa,ya,xb,yb,xc,yc,xd,yd,l;
+  double xa,za,xb,zb,xc,zc,xd,zd,l;
 
   xa=coord(1,1);
-  ya=coord(1,2);
+  za=coord(1,2);
   xb=coord(2,1);
-  yb=coord(2,2);
+  zb=coord(2,2);
   xc=coord(3,1);
-  yc=coord(3,2);
+  zc=coord(3,2);
   xd=coord(4,1);
-  yd=coord(4,2);
+  zd=coord(4,2);
 
-  l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
+  l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
   double S1;
 
   S1=xc*xc*(1/tan(alpha)+tan(alpha))/2;
-  C_solide(i,(j-1+nx)%nx)=C_solide(i,(j-1+nx%nx))-S1/(dx*dy);
-  C_solide(i,j)=C_solide(i,j)-(l*vrdt-S1)/(dx*dy);
+  _C_solide(i,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx%_nx))-S1/(_dx*_dz);
+  _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S1)/(_dx*_dz);
 
-  return C_solide;
 }
 
 //C et D dans Cij cas 5
 void recul::recul5(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
-  double xa,ya,xb,yb,xc,yc,xd,yd,l;
+  double xa,za,xb,zb,xc,zc,xd,zd,l;
 
   xa=coord(1,1);
-  ya=coord(1,2);
+  za=coord(1,2);
   xb=coord(2,1);
-  yb=coord(2,2);
+  zb=coord(2,2);
   xc=coord(3,1);
-  yc=coord(3,2);
+  zc=coord(3,2);
   xd=coord(4,1);
-  yd=coord(4,2);
+  zd=coord(4,2);
 
-  l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
+  l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
-  C_solide(i,j)=C_solide(i,j)-l*vrdt/(dx*dy);
+  _C_solide(i,j)=_C_solide(i,j)-l*vrdt/(_dx*_dz);
 
-  return C_solide;
 }
 
-////////////////////////////////////////////////////////////////à remplir
+
 void recul::recul6(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
-  double xa,ya,xb,yb,xc,yc,xd,yd,l;
+  double xa,za,xb,zb,xc,zc,xd,zd,l;
 
   xa=coord(1,1);
-  ya=coord(1,2);
+  za=coord(1,2);
   xb=coord(2,1);
-  yb=coord(2,2);
+  zb=coord(2,2);
   xc=coord(3,1);
-  yc=coord(3,2);
+  zc=coord(3,2);
   xd=coord(4,1);
-  yd=coord(4,2);
+  zd=coord(4,2);
 
-  l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
+  l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
   double S2;
 
-  S2=yd*yd*(1/tan(alpha)+tan(alpha))/2;
+  S2=zd*zd*(1/tan(alpha)+tan(alpha))/2;
   if (i-1>=0) {
-    C_solide(i-1,j)=C_solide(i-1,j)-S2/(dx*dy);
+    _C_solide(i-1,j)=_C_solide(i-1,j)-S2/(_dx*_dz);
   }
-  C_solide(i,j)=C_solide(i,j)-(l*vrdt-S2)/(dx*dy);
+  _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S2)/(_dx*_dz);
 
-  return C_solide;
 }
 
 //C à gauche et D en dessous cas 7
 void recul::recul7(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
-  double xa,ya,xb,yb,xc,yc,xd,yd,l;
+  double xa,za,xb,zb,xc,zc,xd,zd,l;
 
   xa=coord(1,1);
-  ya=coord(1,2);
+  za=coord(1,2);
   xb=coord(2,1);
-  yb=coord(2,2);
+  zb=coord(2,2);
   xc=coord(3,1);
-  yc=coord(3,2);
+  zc=coord(3,2);
   xd=coord(4,1);
-  yd=coord(4,2);
+  zd=coord(4,2);
 
-  l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
+  l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
   double S1, S2;
 
   S1=xc*xc*(1/tan(alpha)+tan(alpha))/2;
-  S2=yd*yd*(1/tan(alpha)+tan(alpha))/2;
-  C_solide(i,(j-1+nx)%nx)=C_solide(i,(j-1+nx)%nx)-S1/(dx*dy);
+  S2=zd*zd*(1/tan(alpha)+tan(alpha))/2;
+  _C_solide(i,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx)%_nx)-S1/(_dx*_dz);
   if (i-1>=0) {
-    C_solide(i-1,j)=C_solide(i-1,j)-S2/(dx*dy);
+    _C_solide(i-1,j)=_C_solide(i-1,j)-S2/(_dx*_dz);
   }
-  C_solide(i,j)=C_solide(i,j)-(l*vrdt-S1-S2)/(dx*dy);
+  _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S1-S2)/(_dx*_dz);
 
-  return C_solide;
 }
 
 //C à gauche et D en dessous, depasse dans le coin cas 8
 void recul::recul8(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
-  double xa,ya,xb,yb,xc,yc,xd,yd,l;
+  double xa,za,xb,zb,xc,zc,xd,zd,l;
 
   xa=coord(1,1);
-  ya=coord(1,2);
+  za=coord(1,2);
   xb=coord(2,1);
-  yb=coord(2,2);
+  zb=coord(2,2);
   xc=coord(3,1);
-  yc=coord(3,2);
+  zc=coord(3,2);
   xd=coord(4,1);
-  yd=coord(4,2);
+  zd=coord(4,2);
 
-  l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
+  l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
   double S1, S2, S3;
 
   S1=xc*xc*(1/tan(alpha)+tan(alpha))/2;
-  S2=yd*yd*(1/tan(alpha)+tan(alpha))/2;
-  S3=(abs(xc)*tan(alpha)-yc)*(abs(xc)*tan(alpha)-yc)/(2*tan(alpha));
+  S2=zd*zd*(1/tan(alpha)+tan(alpha))/2;
+  S3=(-xc*tan(alpha)-zc)*(-xc*tan(alpha)-zc)/(2*tan(alpha));
 
-  C_solide(i,(j-1+nx)%nx)=C_solide(i,(j-1+nx)%nx)-(S1-S3)/(dx*dy);
+  _C_solide(i,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx)%_nx)-(S1-S3)/(_dx*_dz);
   if (i-1>=0) {
-    C_solide(i-1,j)=C_solide(i-1,j)-(S2-S3)/(dx*dy);
+    _C_solide(i-1,j)=_C_solide(i-1,j)-(S2-S3)/(_dx*_dz);
   }
-  C_solide(i,j)=C_solide(i,j)-(l*vrdt-S1-S2+S3)/(dx*dy);
+  _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S1-S2+S3)/(_dx*_dz);
 
-  return C_solide;
 }
 
 ////////////////////////////////////////////////////////////////////////à remplir
 void recul::recul9(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
-  double xa,ya,xb,yb,xc,yc,xd,yd,l;
+  double xa,za,xb,zb,xc,zc,xd,zd,l;
 
   xa=coord(1,1);
-  ya=coord(1,2);
+  za=coord(1,2);
   xb=coord(2,1);
-  yb=coord(2,2);
+  zb=coord(2,2);
   xc=coord(3,1);
-  yc=coord(3,2);
+  zc=coord(3,2);
   xd=coord(4,1);
-  yd=coord(4,2);
+  zd=coord(4,2);
 
-  l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
+  l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
   //à compléter
 
-  return C_solide;
 }
 
 //D en dessous cas 10
 void recul::recul10(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
-  double xa,ya,xb,yb,xc,yc,xd,yd,l;
+  double xa,za,xb,zb,xc,zc,xd,zd,l;
 
   xa=coord(1,1);
-  ya=coord(1,2);
+  za=coord(1,2);
   xb=coord(2,1);
-  yb=coord(2,2);
+  zb=coord(2,2);
   xc=coord(3,1);
-  yc=coord(3,2);
+  zc=coord(3,2);
   xd=coord(4,1);
-  yd=coord(4,2);
+  zd=coord(4,2);
 
-  l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
+  l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
   double S2;
 
-  S2=yd*yd*(1/tan(alpha)+tan(alpha))/2;
+  S2=zd*zd*(1/tan(alpha)+tan(alpha))/2;
   if (i-1>=0) {
-    C_solide(i-1,j)=C_solide(i-1,j)-S2/(dx*dy);
+    _C_solide(i-1,j)=_C_solide(i-1,j)-S2/(_dx*_dz);
   }
-  C_solide(i,j)=C_solide(i,j)-(l*vrdt-S2)/(dx*dy);
+  _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S2)/(_dx*_dz);
 
-  return C_solide;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////à remplir
 void recul::recul11(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
-  double xa,ya,xb,yb,xc,yc,xd,yd,l;
+  double xa,za,xb,zb,xc,zc,xd,zd,l;
 
   xa=coord(1,1);
-  ya=coord(1,2);
+  za=coord(1,2);
   xb=coord(2,1);
-  yb=coord(2,2);
+  zb=coord(2,2);
   xc=coord(3,1);
-  yc=coord(3,2);
+  zc=coord(3,2);
   xd=coord(4,1);
-  yd=coord(4,2);
+  zd=coord(4,2);
 
-  l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
+  l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
   //à compléter
 
-  return C_solide;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////à remplir
 void recul::recul12(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
-  double xa,ya,xb,yb,xc,yc,xd,yd,l;
+  double xa,za,xb,zb,xc,zc,xd,zd,l;
 
   xa=coord(1,1);
-  ya=coord(1,2);
+  za=coord(1,2);
   xb=coord(2,1);
-  yb=coord(2,2);
+  zb=coord(2,2);
   xc=coord(3,1);
-  yc=coord(3,2);
+  zc=coord(3,2);
   xd=coord(4,1);
-  yd=coord(4,2);
+  zd=coord(4,2);
 
-  l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
+  l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
   //à compléter
 
-  return C_solide;
 }
 
 /////////////////////////////////////////////////////////////à remplir
 void recul::recul13(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
-  double xa,ya,xb,yb,xc,yc,xd,yd,l;
+  double xa,za,xb,zb,xc,zc,xd,zd,l;
 
   xa=coord(1,1);
-  ya=coord(1,2);
+  za=coord(1,2);
   xb=coord(2,1);
-  yb=coord(2,2);
+  zb=coord(2,2);
   xc=coord(3,1);
-  yc=coord(3,2);
+  zc=coord(3,2);
   xd=coord(4,1);
-  yd=coord(4,2);
+  zd=coord(4,2);
 
-  l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
+  l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
   //à compléter
 
-  return C_solide;
 }
 
 //////////////////////////////////////////////////////////////////à remplir
 void recul::recul14(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
-  double xa,ya,xb,yb,xc,yc,xd,yd,l;
+  double xa,za,xb,zb,xc,zc,xd,zd,l;
 
   xa=coord(1,1);
-  ya=coord(1,2);
+  za=coord(1,2);
   xb=coord(2,1);
-  yb=coord(2,2);
+  zb=coord(2,2);
   xc=coord(3,1);
-  yc=coord(3,2);
+  zc=coord(3,2);
   xd=coord(4,1);
-  yd=coord(4,2);
+  zd=coord(4,2);
 
-  l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
+  l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
   //à compléter
 
-  return C_solide;
 }
 
 //////////////////////////////////////////////////////////////////////à remplir
 void recul::recul15(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
-  double xa,ya,xb,yb,xc,yc,xd,yd,l;
+  double xa,za,xb,zb,xc,zc,xd,zd,l;
 
   xa=coord(1,1);
-  ya=coord(1,2);
+  za=coord(1,2);
   xb=coord(2,1);
-  yb=coord(2,2);
+  zb=coord(2,2);
   xc=coord(3,1);
-  yc=coord(3,2);
+  zc=coord(3,2);
   xd=coord(4,1);
-  yd=coord(4,2);
+  zd=coord(4,2);
 
-  l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
+  l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
   //à compléter
 
-  return C_solide;
 }
 
 ///////////////////////////////////////////////////////////////////////////////à remplir
 void recul::recul16(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
-  double xa,ya,xb,yb,xc,yc,xd,yd,l;
+  double xa,za,xb,zb,xc,zc,xd,zd,l;
 
   xa=coord(1,1);
-  ya=coord(1,2);
+  za=coord(1,2);
   xb=coord(2,1);
-  yb=coord(2,2);
+  zb=coord(2,2);
   xc=coord(3,1);
-  yc=coord(3,2);
+  zc=coord(3,2);
   xd=coord(4,1);
-  yd=coord(4,2);
+  zd=coord(4,2);
 
-  l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
+  l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
   //à compléter
 
-  return C_solide;
 }
 
 ////////////////////////////////////////////////////////////////////////////////à remplir
 void recul::recul17(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
-  double xa,ya,xb,yb,xc,yc,xd,yd,l;
+  double xa,za,xb,zb,xc,zc,xd,zd,l;
 
   xa=coord(1,1);
-  ya=coord(1,2);
+  za=coord(1,2);
   xb=coord(2,1);
-  yb=coord(2,2);
+  zb=coord(2,2);
   xc=coord(3,1);
-  yc=coord(3,2);
+  zc=coord(3,2);
   xd=coord(4,1);
-  yd=coord(4,2);
+  zd=coord(4,2);
 
-  l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
+  l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
   //à compléter
 
-  return C_solide;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////à remplir
 void recul::recul18(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
-  double xa,ya,xb,yb,xc,yc,xd,yd,l;
+  double xa,za,xb,zb,xc,zc,xd,zd,l;
 
   xa=coord(1,1);
-  ya=coord(1,2);
+  za=coord(1,2);
   xb=coord(2,1);
-  yb=coord(2,2);
+  zb=coord(2,2);
   xc=coord(3,1);
-  yc=coord(3,2);
+  zc=coord(3,2);
   xd=coord(4,1);
-  yd=coord(4,2);
+  zd=coord(4,2);
 
-  l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
+  l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
   //à compléter
 
-  return C_solide;
 }
