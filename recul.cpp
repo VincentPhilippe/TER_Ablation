@@ -4,109 +4,141 @@
 using namespace std;
 using namespace Eigen;
 
-void recul_surface(Eigen::MatrixXd Surface, Eigen::MatrixXd C_solide, double dt, double dx, double dy)
+recul::recul(readdata& data, diffusion& diffusion, plic& plic)
 {
+  _data=data;
+  _diff=diff;
+  _plic=plic;
+  _dt=_data.getdt();
+  _dx=_data.getdx();
+  _dz=_data.getdz();
+  _ninterf=MatrixXd::Zero(1,1);
+  _interface=MatrixXd::Zero(1,1);
+  _vitesse=VectorXd::Zero(1);
+  _C_solide=MatrixXd::Zero(1,1);
+  _nx=1
+  _nz=1
+}
+
+recul::~recul()
+{}
+
+void recul::recul_surface()
+{
+  //récuperer _ninterf _interface _vitesse avec des get
   //N_surface, Nx, Ny
-  double N_surface, Nx, Ny;
-
-  N_surface = Surface.rows();
-  Nx = C_solide.cols();
-  Ny = C_solide.rows();
-
+  _nx = _ninterf.cols();
+  _nz = _ninterf.rows();
   //boucle sur les surfaces
-  for(int k=0; k<N_surface; k++)
+  for(int i=0; i<_nx; i++)
   {
-    double i, j;
+    for(int j=0; j<_nz; j++)
+    {
+      double k;
 
-    i = Surface(k,0);
-    j = Surface(k,1);
+      k = _ninterf(i,j);
 
-    //calcul de l'angle alpha
-    double xa, ya, xb, yb, t_alpha, alpha;
+      if (k>0) {
 
-    xa = Surface(k,2);
-    ya = Surface(k,3);
-    xb = Surface(k,4);
-    yb = Surface(k,5);
-    t_alpha = (yb-ya)/(xb-xa);
-    alpha = atan(t_alpha);
+        //calcul de l'angle alpha
+        double xa, ya, xb, yb, t_alpha, alpha;
 
-    //calcul des coordonnées des points C et D
-    double xc, yc, xd, yd, vr, vrdt;
+        xa = _interface(1,k-1);
+        ya = _interface(2,k-1);
+        xb = _interface(3,k-1);
+        yb = _interface(4,k-1);
+        t_alpha = (yb-ya)/(xb-xa);
+        alpha = atan(t_alpha);
 
-    vr = Surface(k,6);
-    vrdt = vr*dt;
-    xc = xa + vrdt*sin(alpha);
-    yc = ya - vrdt*cos(alpha);
-    xd = xb + vrdt*sin(alpha);
-    yd = yb - vrdt*cos(alpha);
+        //calcul des coordonnées des points C et D
+        double xc, yc, xd, yd, vr, vrdt;
 
-    //identification du cas et modification du tableau des concentrations en solide
-    if (xc<0) {
-      if (xd<0) {
-        if (yc<0) {//yd forcément négatif
-          /* code *///cas 3
-        } else {//yc>0
-          if (yd<0) {
-            /* code *///cas 2
-          } else {//yd>0
-            /* code *///cas 1
+        vr = _vitesse(k);
+        vrdt = vr*dt;
+        xc = xa + vrdt*sin(alpha);
+        yc = ya - vrdt*cos(alpha);
+        xd = xb + vrdt*sin(alpha);
+        yd = yb - vrdt*cos(alpha);
+
+        MatrixXd coord;
+        coord.resize(4,2);
+        coord(1,1)=xa;
+        coord(1,2)=ya;
+        coord(2,1)=xb;
+        coord(2,2)=yb;
+        coord(3,1)=xc;
+        coord(3,2)=yc;
+        coord(4,1)=xd;
+        coord(4,2)=yd;
+
+        //identification du cas et modification du tableau des concentrations en solide
+        if (xc<0) {
+          if (xd<0) {
+            if (yc<0) {//yd forcément négatif
+              recul3(i, j, alpha, vrdt, coord);
+            } else {//yc>0
+              if (yd<0) {
+                recul2(i, j, alpha, vrdt, coord);
+              } else {//yd>0
+                recul1(i, j, alpha, vrdt, coord);
+              }
+            }
+          } else {//0<xd<dx
+            if (yc<0) {//yd forcémentnégatif
+              recul9(i, j, alpha, vrdt, coord);
+            } else {//yc>0
+              if (yd<0) {
+                /* code */ //////////////////////////////////////////////////////attention 2 cas possibles cas 7 et 8
+              } else {//yd>0
+                recul4(i, j, alpha, vrdt, coord);
+              }
+            }
           }
-        }
-      } else {//0<xd<dx
-        if (yc<0) {//yd forcémentnégatif
-          /* code *///cas 9
-        } else {//yc>0
-          if (yd<0) {
-            /* code */ //attention 2 cas possibles cas 7 et 8
-          } else {//yd>0
-            /* code *///cas 4
-          }
-        }
-      }
-    } else if (xc<dx) {
-      if (xd<dx) {
-        if (yc<0) {
-          if (yd<0) {
-            /* code *///cas 11
+        } else if (xc<dx) {
+          if (xd<dx) {
+            if (yc<0) {
+              if (yd<0) {
+                recul11(i, j, alpha, vrdt, coord);
+              } else {
+                recul6(i, j, alpha, vrdt, coord);
+              }
+            } else {
+              if (yd<0) {
+                recul10(i, j, alpha, vrdt, coord);
+              } else {
+                recul5(i, j, alpha, vrdt, coord);
+              }
+            }
           } else {
-            /* code *///cas 6
+            if (yc<0) {
+              if (yd<0) {
+                recul17(i, j, alpha, vrdt, coord);
+              } else {
+                /* code *///////////////////////////////////////////////////////////////////////cas 13 et 14
+              }
+            } else {
+              recul12(i, j, alpha, vrdt, coord);
+            }
           }
         } else {
-          if (yd<0) {
-            /* code *///cas 10
+          if (yc<0) {
+            if (yd<0) {
+              recul18(i, j, alpha, vrdt, coord);
+            } else {
+              recul16(i, j, alpha, vrdt, coord);
+            }
           } else {
-            /* code *///cas 5
+            recul15(i, j, alpha, vrdt, coord);
           }
         }
-      } else {
-        if (yc<0) {
-          if (yd<0) {
-            /* code *///cas 17
-          } else {
-            /* code *///cas 13 et 14
-          }
-        } else {
-          /* code *///cas 12
-        }
-      }
-    } else {
-      if (yc<0) {
-        if (yd<0) {
-          /* code *///cas 18
-        } else {
-          /* code *///cas 16
-        }
-      } else {
-        /* code *///cas 15
+
       }
     }
-
   }
 }
 
-//////////////////////////////////////////////////à remplir
-Eigen::MatrixXd recul1(Eigen::MatrixXd C_solide, int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord, double dx, double dy, int nx)
+
+void recul::recul1(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,ya,xb,yb,xc,yc,xd,yd,l;
 
@@ -121,13 +153,20 @@ Eigen::MatrixXd recul1(Eigen::MatrixXd C_solide, int i, int j, double alpha, dou
 
   l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
 
-  //à compléter
+  double Stot, S1, S2, l1, l2;
+  Stot=vrdt*l;
+  l1 = -xc*sin(alpha);
+  l2 = -xd*sin(alpha);
+  S1 = l*(l1+l2)/2;
+  S2 = Stot-S1;
+  C_solide(i,(j-1+nx)%nx)=C_solide(i,(j-1+nx%nx))-S1/(dx*dy);
+  C_solide(i,j)=C_solide(i,j)-(S2)/(dx*dy);
 
   return C_solide;
 }
 
-/////////////////////////////////////////////////////////à remplir
-Eigen::MatrixXd recul2(Eigen::MatrixXd C_solide, int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord, double dx, double dy, int nx)
+
+void recul::recul2(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,ya,xb,yb,xc,yc,xd,yd,l;
 
@@ -142,13 +181,24 @@ Eigen::MatrixXd recul2(Eigen::MatrixXd C_solide, int i, int j, double alpha, dou
 
   l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
 
-  //à compléter
+  double Stot, S1, S2, S3, S4;
+  Stot=vrdt*l;
+  S3 = xb*xb/(2*tan(alpha));
+  S1 = -xc*yc-yc*yc/(2*tan(alpha))+xc*xc/(2*tan(alpha));
+  S2 = xd*yd-xd*xd/(2*tan(alpha))+yd*yd/(2*tan(alpha));
+  S4 = Stot-(S1+S2+S3);
+  C_solide(i,(j-1+nx)%nx)=C_solide(i,(j-1+nx%nx))-S1/(dx*dy);
+  C_solide(i,j)=C_solide(i,j)-(S4)/(dx*dy);
+  if (i-1>=0) {
+    C_solide(i-1,(j-1+nx)%nx)=C_solide(i,(j-1+nx)%nx)-S2/(dx*dy);
+    C_solide(i-1,j)=C_solide(i-1,j)-S3/(dx*dy);
+  }
 
   return C_solide;
 }
 
-//////////////////////////////////////////////////////////////à remplir
-Eigen::MatrixXd recul3(Eigen::MatrixXd C_solide, int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord, double dx, double dy, int nx)
+
+void recul::recul3(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,ya,xb,yb,xc,yc,xd,yd,l;
 
@@ -163,13 +213,24 @@ Eigen::MatrixXd recul3(Eigen::MatrixXd C_solide, int i, int j, double alpha, dou
 
   l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
 
-  //à compléter
+  double Stot, S1, S2, S3, S4;
+  Stot=vrdt*l;
+  S1 = ya*ya*tan(alpha)/2;
+  S4 = ya*xb/2;
+  S3 = xb*xb/(2*tan(alpha));
+  S2 = Stot-(S1+S3+S4);
+  C_solide(i,(j-1+nx)%nx)=C_solide(i,(j-1+nx%nx))-S1/(dx*dy);
+  C_solide(i,j)=C_solide(i,j)-(S4)/(dx*dy);
+  if (i-1>=0) {
+    C_solide(i-1,(j-1+nx)%nx)=C_solide(i,(j-1+nx)%nx)-S2/(dx*dy);
+    C_solide(i-1,j)=C_solide(i-1,j)-S3/(dx*dy);
+  }
 
   return C_solide;
 }
 
 //C à gauche cas 4
-Eigen::MatrixXd recul4(Eigen::MatrixXd C_solide, int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord, double dx, double dy, int nx)
+void recul::recul4(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,ya,xb,yb,xc,yc,xd,yd,l;
 
@@ -194,7 +255,7 @@ Eigen::MatrixXd recul4(Eigen::MatrixXd C_solide, int i, int j, double alpha, dou
 }
 
 //C et D dans Cij cas 5
-Eigen::MatrixXd recul5(Eigen::MatrixXd C_solide, int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord, double dx, double dy, int nx)
+void recul::recul5(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,ya,xb,yb,xc,yc,xd,yd,l;
 
@@ -215,7 +276,7 @@ Eigen::MatrixXd recul5(Eigen::MatrixXd C_solide, int i, int j, double alpha, dou
 }
 
 ////////////////////////////////////////////////////////////////à remplir
-Eigen::MatrixXd recul6(Eigen::MatrixXd C_solide, int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord, double dx, double dy, int nx)
+void recul::recul6(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,ya,xb,yb,xc,yc,xd,yd,l;
 
@@ -230,13 +291,19 @@ Eigen::MatrixXd recul6(Eigen::MatrixXd C_solide, int i, int j, double alpha, dou
 
   l=sqrt((xb-xa)*(xb-xa)+(yb-ya)*(yb-ya));
 
-  //à compléter
+  double S2;
+
+  S2=yd*yd*(1/tan(alpha)+tan(alpha))/2;
+  if (i-1>=0) {
+    C_solide(i-1,j)=C_solide(i-1,j)-S2/(dx*dy);
+  }
+  C_solide(i,j)=C_solide(i,j)-(l*vrdt-S2)/(dx*dy);
 
   return C_solide;
 }
 
 //C à gauche et D en dessous cas 7
-Eigen::MatrixXd recul7(Eigen::MatrixXd C_solide, int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord, double dx, double dy, int nx)
+void recul::recul7(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,ya,xb,yb,xc,yc,xd,yd,l;
 
@@ -257,7 +324,7 @@ Eigen::MatrixXd recul7(Eigen::MatrixXd C_solide, int i, int j, double alpha, dou
   S2=yd*yd*(1/tan(alpha)+tan(alpha))/2;
   C_solide(i,(j-1+nx)%nx)=C_solide(i,(j-1+nx)%nx)-S1/(dx*dy);
   if (i-1>=0) {
-    C_solide(i-1,j)=C_solide(i,j-1)-S2/(dx*dy);
+    C_solide(i-1,j)=C_solide(i-1,j)-S2/(dx*dy);
   }
   C_solide(i,j)=C_solide(i,j)-(l*vrdt-S1-S2)/(dx*dy);
 
@@ -265,7 +332,7 @@ Eigen::MatrixXd recul7(Eigen::MatrixXd C_solide, int i, int j, double alpha, dou
 }
 
 //C à gauche et D en dessous, depasse dans le coin cas 8
-Eigen::MatrixXd recul8(Eigen::MatrixXd C_solide, int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord, double dx, double dy, int nx)
+void recul::recul8(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,ya,xb,yb,xc,yc,xd,yd,l;
 
@@ -288,7 +355,7 @@ Eigen::MatrixXd recul8(Eigen::MatrixXd C_solide, int i, int j, double alpha, dou
 
   C_solide(i,(j-1+nx)%nx)=C_solide(i,(j-1+nx)%nx)-(S1-S3)/(dx*dy);
   if (i-1>=0) {
-    C_solide(i-1,j)=C_solide(i,j-1)-(S2-S3)/(dx*dy);
+    C_solide(i-1,j)=C_solide(i-1,j)-(S2-S3)/(dx*dy);
   }
   C_solide(i,j)=C_solide(i,j)-(l*vrdt-S1-S2+S3)/(dx*dy);
 
@@ -296,7 +363,7 @@ Eigen::MatrixXd recul8(Eigen::MatrixXd C_solide, int i, int j, double alpha, dou
 }
 
 ////////////////////////////////////////////////////////////////////////à remplir
-Eigen::MatrixXd recul9(Eigen::MatrixXd C_solide, int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord, double dx, double dy, int nx)
+void recul::recul9(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,ya,xb,yb,xc,yc,xd,yd,l;
 
@@ -317,7 +384,7 @@ Eigen::MatrixXd recul9(Eigen::MatrixXd C_solide, int i, int j, double alpha, dou
 }
 
 //D en dessous cas 10
-Eigen::MatrixXd recul10(Eigen::MatrixXd C_solide, int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord, double dx, double dy, int nx)
+void recul::recul10(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,ya,xb,yb,xc,yc,xd,yd,l;
 
@@ -336,7 +403,7 @@ Eigen::MatrixXd recul10(Eigen::MatrixXd C_solide, int i, int j, double alpha, do
 
   S2=yd*yd*(1/tan(alpha)+tan(alpha))/2;
   if (i-1>=0) {
-    C_solide(i-1,j)=C_solide(i,j-1)-S2/(dx*dy);
+    C_solide(i-1,j)=C_solide(i-1,j)-S2/(dx*dy);
   }
   C_solide(i,j)=C_solide(i,j)-(l*vrdt-S2)/(dx*dy);
 
@@ -344,7 +411,7 @@ Eigen::MatrixXd recul10(Eigen::MatrixXd C_solide, int i, int j, double alpha, do
 }
 
 ///////////////////////////////////////////////////////////////////////////////////à remplir
-Eigen::MatrixXd recul11(Eigen::MatrixXd C_solide, int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord, double dx, double dy, int nx)
+void recul::recul11(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,ya,xb,yb,xc,yc,xd,yd,l;
 
@@ -365,7 +432,7 @@ Eigen::MatrixXd recul11(Eigen::MatrixXd C_solide, int i, int j, double alpha, do
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////à remplir
-Eigen::MatrixXd recul12(Eigen::MatrixXd C_solide, int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord, double dx, double dy, int nx)
+void recul::recul12(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,ya,xb,yb,xc,yc,xd,yd,l;
 
@@ -386,7 +453,7 @@ Eigen::MatrixXd recul12(Eigen::MatrixXd C_solide, int i, int j, double alpha, do
 }
 
 /////////////////////////////////////////////////////////////à remplir
-Eigen::MatrixXd recul13(Eigen::MatrixXd C_solide, int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord, double dx, double dy, int nx)
+void recul::recul13(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,ya,xb,yb,xc,yc,xd,yd,l;
 
@@ -407,7 +474,7 @@ Eigen::MatrixXd recul13(Eigen::MatrixXd C_solide, int i, int j, double alpha, do
 }
 
 //////////////////////////////////////////////////////////////////à remplir
-Eigen::MatrixXd recul14(Eigen::MatrixXd C_solide, int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord, double dx, double dy, int nx)
+void recul::recul14(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,ya,xb,yb,xc,yc,xd,yd,l;
 
@@ -428,7 +495,7 @@ Eigen::MatrixXd recul14(Eigen::MatrixXd C_solide, int i, int j, double alpha, do
 }
 
 //////////////////////////////////////////////////////////////////////à remplir
-Eigen::MatrixXd recul15(Eigen::MatrixXd C_solide, int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord, double dx, double dy, int nx)
+void recul::recul15(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,ya,xb,yb,xc,yc,xd,yd,l;
 
@@ -449,7 +516,7 @@ Eigen::MatrixXd recul15(Eigen::MatrixXd C_solide, int i, int j, double alpha, do
 }
 
 ///////////////////////////////////////////////////////////////////////////////à remplir
-Eigen::MatrixXd recul16(Eigen::MatrixXd C_solide, int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord, double dx, double dy, int nx)
+void recul::recul16(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,ya,xb,yb,xc,yc,xd,yd,l;
 
@@ -470,7 +537,7 @@ Eigen::MatrixXd recul16(Eigen::MatrixXd C_solide, int i, int j, double alpha, do
 }
 
 ////////////////////////////////////////////////////////////////////////////////à remplir
-Eigen::MatrixXd recul17(Eigen::MatrixXd C_solide, int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord, double dx, double dy, int nx)
+void recul::recul17(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,ya,xb,yb,xc,yc,xd,yd,l;
 
@@ -491,7 +558,7 @@ Eigen::MatrixXd recul17(Eigen::MatrixXd C_solide, int i, int j, double alpha, do
 }
 
 /////////////////////////////////////////////////////////////////////////////////////à remplir
-Eigen::MatrixXd recul18(Eigen::MatrixXd C_solide, int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord, double dx, double dy, int nx)
+void recul::recul18(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,ya,xb,yb,xc,yc,xd,yd,l;
 
