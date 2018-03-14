@@ -4,11 +4,11 @@
 using namespace std;
 
 //constructeur
-plic::plic(read_data* read_data)
-  : _phi(read_data->Get_c_solide())
+plic::plic(recul* recul)
+  : _phi(recul->Get_c_solide())
   {
     _interface.resize(1,4);
-    _ninterf.resize(lon,lar);
+    _ninterf.resize(1,1);
   }
 
 
@@ -48,20 +48,40 @@ double plic::grad_y(const i,const j)
 
 void plic::interf(const int lon,const int lar)
 {
-    _ninterf.resize(lon,lar);
-    ifinterf.resize(_squares.size());  //ifinterf[i]=1 si _squares[i] interface, 0 sinon
-    _interface.resize(nb_inter,4) ;  //nb_inter = max(_ninter), à voir plus tard
+    lon=_phi.cols()
+    lar=_phi.rows()
     k=0;
+    _ninterf.resize(lon,lar);
+    for (int i=1;i<lon;i++)
+     {
+        for (int j=1;j<lar;j++)
+        {
+          p=_phi[i][j];
+          if ((p>0.) && (p<1.))   //si on est sur l'interface
+          {
+              k++;
+              _ninterf[i][j]=k;
+          }
+          else
+          {
+            _ninterf[i][j]=0;
+          }
+        }
+      }
+    //ifinterf.resize(_squares.size());  //ifinterf[i]=1 si _squares[i] interface, 0 sinon
+    _interface.resize(k,4) ;
+    //k=0;
     _pointsupl=0;
     for (int i=1;i<lon;i++)
      {
         for (int j=1;j<lar;j++)
         {
-            p=_phi(i,j);
+            p=_phi[i][j];
             if ((p>0.) && (p<1.))   //si on est sur l'interface
             {
-                k++;
-                _ninterf[i][j]=k;
+                //k++;
+                //_ninterf[i][j]=k;
+
                 //Calcul du gradient
                 nx=grad_x(i,j)/sqrt(grad_x(i,j)^2+grad_y(i,j)^2);
                 ny=grad_y(i,j)/sqrt(grad_x(i,j)^2+grad_y(i,j)^2);
@@ -69,7 +89,7 @@ void plic::interf(const int lon,const int lar)
 
 
                 //interface
-                _pointsupl+=2;
+                //_pointsupl+=2;
                 if (p<=ny/(2*nxx))
                 {
                     typinterf[i][j]=3;  //triangle vers la droite
@@ -81,7 +101,7 @@ void plic::interf(const int lon,const int lar)
 
                     if (_inteface[k][4]==1)then   // si l'un des nouveaux points tombe sur l'angle du carré, on ne le compte pas comme point supplémentaire
                     {
-                        _pointsupl-=1
+                        //_pointsupl-=1
                     }
                 }
                 else if (p>=1-ny/(2*nxx))
@@ -95,7 +115,7 @@ void plic::interf(const int lon,const int lar)
 
                     if (_inteface[k][1]==1)then
                     {
-                        _pointsupl-=1   // si l'un des nouveaux points tombe sur l'angle du carré, on ne le compte pas comme point supplémentaire
+                        //_pointsupl-=1   // si l'un des nouveaux points tombe sur l'angle du carré, on ne le compte pas comme point supplémentaire
                     }
                 }
                 else
@@ -138,7 +158,7 @@ void plic::interf(const int lon,const int lar)
           }
           else
           {
-            _ninterf[i][j]=0;
+            //_ninterf[i][j]=0;
             typinterf[i][j]=0;
           }
         }
