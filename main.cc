@@ -1,4 +1,5 @@
 #include <iostream>
+#include "maillage.h"
 
 using namespace std;
 
@@ -13,9 +14,9 @@ int main() {
   Afficher menu
   */
 
-  /*
-  Création maillage
-  */
+  /*****************************Création maillage****************************/
+
+  maillage Cartesien("maillage_1", 0.1, 0.1, 10., 10.);
 
   /*
   Initialisation concentration et surface
