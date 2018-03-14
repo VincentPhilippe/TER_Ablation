@@ -14,7 +14,7 @@ public:
   ~recul();
 void update(plic& plic, diffusion& diffusion)
 
-  void recul_surface(Eigen::MatrixXd ninterf, Eigen::MatrixXd interface, Eigen::VectorXd vitesse);
+  void recul_surface();
 void recul1(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
 void recul2(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
 void recul3(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);

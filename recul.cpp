@@ -34,12 +34,12 @@ recul::recul(read_data& read_data)
 recul::~recul()
 {}
 
-void recul::recul_surface(MatrixXd ninterf, MatrixXd interface, VectorXd vitesse)
+void recul::recul_surface()
 {
   //récuperer _ninterf _interface _vitesse avec des arguments
-  _ninterf=ninterf;
-  _interface=interface;
-  _vitesse=vitesse;
+  _ninterf=plic.Get_ninterf();
+  _interface=plic.Get_interface();
+  _vitesse=diffusion.GetVitesse();
 
   //N_surface, Nx, Ny
   _nx = _ninterf.cols();
