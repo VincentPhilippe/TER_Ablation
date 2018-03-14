@@ -1,4 +1,5 @@
 #include <iostream>
+#include "maillage.h"
 #include "read_data.h"
 
 using namespace std;
@@ -13,7 +14,7 @@ int main(int argc, char** argv)
   }
   const string data_file_name = argv[1];
 
-  // ----------------------- Fichier de données --------------------------------
+  // --------------------------- Fichier de données --------------------------------/
   read_data* data_file = new read_data(data_file_name);
   data_file->read_datafile();
   //------- /
@@ -28,9 +29,9 @@ int main(int argc, char** argv)
   Afficher menu
   */
 
-  /*
-  Création maillage
-  */
+  // -------------------------- Création du maillage -------------------------------/
+  Cartesien maillage("maillage_1", 0.1, 0.1, 10., 10.);
+  // ------- /
 
   /*
   Initialisation concentration et surface
