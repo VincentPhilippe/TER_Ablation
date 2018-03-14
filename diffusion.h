@@ -2,15 +2,12 @@
 
 #include "Dense"
 #include "maillage.h"
-#include "read_data.h"
-#include "rebuild_surface.h"
+#include "ablation.h"
 
 class diffusion{
 
 private:
   Maillage2DCarre& _maillage;
-  ReadData& _data;
-  Plic _surface;
 
   Eigen::MatrixXd _concentration;
   Eigen::VectorXd _vitesse;
@@ -18,7 +15,7 @@ private:
 
 public:
 
-  diffusion(Maillage2DCarre& maillage, ReadData& data, Plic& _surface);
+  diffusion(Maillage2DCarre& maillage);
   void resolution();
   void vitesse();
   ~diffusion(){};

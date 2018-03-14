@@ -3,7 +3,8 @@
 class recul
 {
 public:
-  recul(read_data& data, diffusion& diffusion, plic& plic);
+  //recul(read_data& data, diffusion& diffusion, plic& plic);
+  recul(double dt, double dx, double dz, Eigen::MatrixXd C_solide);
   ~recul();
   void recul_surface();
 void recul1(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
@@ -35,7 +36,7 @@ private:
   double _dz;
   int _nx;
   int _nz;
-  readdata& _data;
-  diffusion& _diff;
-  plic& _plic;
+  //readdata& _data;
+  //diffusion& _diff;
+  //plic& _plic;
 };

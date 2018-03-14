@@ -4,7 +4,7 @@
 using namespace std;
 using namespace Eigen;
 
-recul::recul(readdata& data, diffusion& diffusion, plic& plic)
+/*recul::recul(readdata& data, diffusion& diffusion, plic& plic)
 {
   _data=data;
   _diff=diff;
@@ -16,8 +16,22 @@ recul::recul(readdata& data, diffusion& diffusion, plic& plic)
   _interface=MatrixXd::Zero(1,1);
   _vitesse=VectorXd::Zero(1);
   _C_solide=MatrixXd::Zero(1,1);
-  _nx=1
-  _nz=1
+  _nx=1;
+  _nz=1;
+}*/
+
+//constructeur 2
+recul::recul(double dt, double dx, double dz, MatrixXd C_solide)
+{
+  _dt=0;
+  _dx=0;
+  _dz=0;
+  _ninterf=MatrixXd::Zero(1,1);
+  _interface=MatrixXd::Zero(1,1);
+  _vitesse=VectorXd::Zero(1);
+  _C_solide=MatrixXd::Zero(1,1);
+  _nx=1;
+  _nz=1;
 }
 
 recul::~recul()
@@ -25,8 +39,8 @@ recul::~recul()
 
 void recul::recul_surface()
 {
-  //récuperer _ninterf _interface _vitesse avec des get
-  
+  //récuperer _ninterf _interface _vitesse avec des get ou en argument
+
   //N_surface, Nx, Ny
   _nx = _ninterf.cols();
   _nz = _ninterf.rows();
