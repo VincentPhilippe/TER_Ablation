@@ -5,7 +5,6 @@
 
 #include "Dense"
 #include "maillage.h"
-#include "ablation.h"
 
 class diffusion{
 
