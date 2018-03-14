@@ -6,6 +6,12 @@
 #include "Dense"
 #include "maillage.h"
 
+enum State_Case{
+  BORD_HAUT,BORD_BAS, AIR, BORD_DROIT, BORD_GAUCHE, INTERFACE
+};
+
+
+
 class diffusion{
 
 private:
