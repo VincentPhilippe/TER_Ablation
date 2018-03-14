@@ -30,10 +30,20 @@ void diffusion::Vitesse() // Permet de donner la vitesse normale en chaque point
 
 }
 
-string diffusion::Watch(int i, int j)
+enum State_Case diffusion::Watch(int i, int j)
 {
   if(i == 0)
   {
-    return('')
+    return(BORD_HAUT); // Bord haut
   }
+  if(i == _maillage.GetNx()+1)
+  if(j == 0)
+  {
+    return(BORD_GAUCHE);
+  }
+  if (j == _maillage.GetNz()+1)
+   {
+    return(BORD_DROIT);
+  }
+  if(j == )
 }
