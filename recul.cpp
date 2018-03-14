@@ -1,17 +1,28 @@
 #include "recul.h"
 #include "Dense"
+#include <cmath>
+#include "plic.h"
+#include "diffusion.h"
 
 using namespace std;
 using namespace Eigen;
 
-/*recul::recul(readdata& data, diffusion& diffusion, plic& plic)
+recul::recul(read_data& read_data)
 {
-  _data=data;
-  _diff=diff;
-  _plic=plic;
-  _dt=_data.getdt();
-  _dx=_data.getdx();
-  _dz=_data.getdz();
+  _read_data=read_data;
+  _dtmax=_read_data.Get_dt();
+  _dt=_dtmax;
+  _dx=_read_data.Get_dx();
+  _dz=_read_data.Get_dz();
+}
+
+//constructeur 2
+/*recul::recul(double dt, double dx, double dz, MatrixXd C_solide)
+{
+  _dtmax=dt;
+  _dt=_dtmax;
+  _dx=dx;
+  _dz=dz;
   _ninterf=MatrixXd::Zero(1,1);
   _interface=MatrixXd::Zero(1,1);
   _vitesse=VectorXd::Zero(1);
@@ -20,30 +31,28 @@ using namespace Eigen;
   _nz=1;
 }*/
 
-//constructeur 2
-recul::recul(double dt, double dx, double dz, MatrixXd C_solide)
-{
-  _dt=0;
-  _dx=0;
-  _dz=0;
-  _ninterf=MatrixXd::Zero(1,1);
-  _interface=MatrixXd::Zero(1,1);
-  _vitesse=VectorXd::Zero(1);
-  _C_solide=MatrixXd::Zero(1,1);
-  _nx=1;
-  _nz=1;
-}
-
 recul::~recul()
 {}
 
-void recul::recul_surface()
+void recul::recul_surface(MatrixXd ninterf, MatrixXd interface, VectorXd vitesse)
 {
-  //récuperer _ninterf _interface _vitesse avec des get ou en argument
+  //récuperer _ninterf _interface _vitesse avec des arguments
+  _ninterf=ninterf;
+  _interface=interface;
+  _vitesse=vitesse;
 
   //N_surface, Nx, Ny
   _nx = _ninterf.cols();
   _nz = _ninterf.rows();
+
+  double maxvr;
+  maxvr=_vitesse.maxCoeff();
+  if (maxvr*_dtmax<_dx & maxvr*_dtmax<_dz) {
+    _dt=_dtmax;
+  } else {
+    _dt=min(_dx,_dz)/maxvr;
+  }
+
   //boucle sur les surfaces
   for(int i=0; i<_nx; i++)
   {
@@ -58,10 +67,10 @@ void recul::recul_surface()
         //calcul de l'angle alpha
         double xa, za, xb, zb, t_alpha, alpha;
 
-        xa = _interface(1,k-1);
-        za = _interface(2,k-1);
-        xb = _interface(3,k-1);
-        zb = _interface(4,k-1);
+        xa = j*_dx + _interface(1,k-1);
+        za = (i+1)*_dz - _interface(2,k-1);
+        xb = j*_dx + _interface(3,k-1);
+        zb = (i+1)*_dz - _interface(4,k-1);
         t_alpha = (zb-za)/(xb-xa);
         alpha = atan(t_alpha);
 
@@ -77,14 +86,14 @@ void recul::recul_surface()
 
         MatrixXd coord;
         coord.resize(4,2);
-        coord(1,1)=xa;
-        coord(1,2)=za;
-        coord(2,1)=xb;
-        coord(2,2)=zb;
-        coord(3,1)=xc;
-        coord(3,2)=zc;
-        coord(4,1)=xd;
-        coord(4,2)=zd;
+        coord(0,0)=xa;
+        coord(0,1)=za;
+        coord(1,0)=xb;
+        coord(1,1)=zb;
+        coord(2,0)=xc;
+        coord(2,1)=zc;
+        coord(3,0)=xd;
+        coord(3,1)=zd;
 
         //identification du cas et modification du tableau des concentrations en solide
         if (xc<0) {
@@ -165,14 +174,14 @@ void recul::recul1(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,za,xb,zb,xc,zc,xd,zd,l;
 
-  xa=coord(1,1);
-  za=coord(1,2);
-  xb=coord(2,1);
-  zb=coord(2,2);
-  xc=coord(3,1);
-  zc=coord(3,2);
-  xd=coord(4,1);
-  zd=coord(4,2);
+  xa=coord(0,0);
+  za=coord(0,1);
+  xb=coord(1,0);
+  zb=coord(1,1);
+  xc=coord(2,0);
+  zc=coord(2,1);
+  xd=coord(3,0);
+  zd=coord(3,1);
 
   l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
@@ -192,14 +201,14 @@ void recul::recul2(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,za,xb,zb,xc,zc,xd,zd,l;
 
-  xa=coord(1,1);
-  za=coord(1,2);
-  xb=coord(2,1);
-  zb=coord(2,2);
-  xc=coord(3,1);
-  zc=coord(3,2);
-  xd=coord(4,1);
-  zd=coord(4,2);
+  xa=coord(0,0);
+  za=coord(0,1);
+  xb=coord(1,0);
+  zb=coord(1,1);
+  xc=coord(2,0);
+  zc=coord(2,1);
+  xd=coord(3,0);
+  zd=coord(3,1);
 
   l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
@@ -211,9 +220,9 @@ void recul::recul2(int i, int j, double alpha, double vrdt, MatrixXd coord)
   S4 = Stot-(S1+S2+S3);
   _C_solide(i,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx%_nx))-S1/(_dx*_dz);
   _C_solide(i,j)=_C_solide(i,j)-(S4)/(_dx*_dz);
-  if (i-1>=0) {
-    _C_solide(i-1,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx)%_nx)-S2/(_dx*_dz);
-    _C_solide(i-1,j)=_C_solide(i-1,j)-S3/(_dx*_dz);
+  if (i+1<_nx) {
+    _C_solide(i+1,(j-1+_nx)%_nx)=_C_solide(i+1,(j-1+_nx)%_nx)-S2/(_dx*_dz);
+    _C_solide(i+1,j)=_C_solide(i+1,j)-S3/(_dx*_dz);
   }
 
 }
@@ -223,14 +232,14 @@ void recul::recul3(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,za,xb,zb,xc,zc,xd,zd,l;
 
-  xa=coord(1,1);
-  za=coord(1,2);
-  xb=coord(2,1);
-  zb=coord(2,2);
-  xc=coord(3,1);
-  zc=coord(3,2);
-  xd=coord(4,1);
-  zd=coord(4,2);
+  xa=coord(0,0);
+  za=coord(0,1);
+  xb=coord(1,0);
+  zb=coord(1,1);
+  xc=coord(2,0);
+  zc=coord(2,1);
+  xd=coord(3,0);
+  zd=coord(3,1);
 
   l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
@@ -242,9 +251,9 @@ void recul::recul3(int i, int j, double alpha, double vrdt, MatrixXd coord)
   S2 = Stot-(S1+S3+S4);
   _C_solide(i,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx%_nx))-S1/(_dx*_dz);
   _C_solide(i,j)=_C_solide(i,j)-(S4)/(_dx*_dz);
-  if (i-1>=0) {
-    _C_solide(i-1,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx)%_nx)-S2/(_dx*_dz);
-    _C_solide(i-1,j)=_C_solide(i-1,j)-S3/(_dx*_dz);
+  if (i+1<_nx) {
+    _C_solide(i+1,(j-1+_nx)%_nx)=_C_solide(i+1,(j-1+_nx)%_nx)-S2/(_dx*_dz);
+    _C_solide(i+1,j)=_C_solide(i+1,j)-S3/(_dx*_dz);
   }
 
 }
@@ -254,14 +263,14 @@ void recul::recul4(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,za,xb,zb,xc,zc,xd,zd,l;
 
-  xa=coord(1,1);
-  za=coord(1,2);
-  xb=coord(2,1);
-  zb=coord(2,2);
-  xc=coord(3,1);
-  zc=coord(3,2);
-  xd=coord(4,1);
-  zd=coord(4,2);
+  xa=coord(0,0);
+  za=coord(0,1);
+  xb=coord(1,0);
+  zb=coord(1,1);
+  xc=coord(2,0);
+  zc=coord(2,1);
+  xd=coord(3,0);
+  zd=coord(3,1);
 
   l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
@@ -278,14 +287,14 @@ void recul::recul5(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,za,xb,zb,xc,zc,xd,zd,l;
 
-  xa=coord(1,1);
-  za=coord(1,2);
-  xb=coord(2,1);
-  zb=coord(2,2);
-  xc=coord(3,1);
-  zc=coord(3,2);
-  xd=coord(4,1);
-  zd=coord(4,2);
+  xa=coord(0,0);
+  za=coord(0,1);
+  xb=coord(1,0);
+  zb=coord(1,1);
+  xc=coord(2,0);
+  zc=coord(2,1);
+  xd=coord(3,0);
+  zd=coord(3,1);
 
   l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
@@ -298,22 +307,22 @@ void recul::recul6(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,za,xb,zb,xc,zc,xd,zd,l;
 
-  xa=coord(1,1);
-  za=coord(1,2);
-  xb=coord(2,1);
-  zb=coord(2,2);
-  xc=coord(3,1);
-  zc=coord(3,2);
-  xd=coord(4,1);
-  zd=coord(4,2);
+  xa=coord(0,0);
+  za=coord(0,1);
+  xb=coord(1,0);
+  zb=coord(1,1);
+  xc=coord(2,0);
+  zc=coord(2,1);
+  xd=coord(3,0);
+  zd=coord(3,1);
 
   l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
   double S2;
 
   S2=zd*zd*(1/tan(alpha)+tan(alpha))/2;
-  if (i-1>=0) {
-    _C_solide(i-1,j)=_C_solide(i-1,j)-S2/(_dx*_dz);
+  if (i+1<_nx) {
+    _C_solide(i+1,j)=_C_solide(i+1,j)-S2/(_dx*_dz);
   }
   _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S2)/(_dx*_dz);
 
@@ -324,14 +333,14 @@ void recul::recul7(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,za,xb,zb,xc,zc,xd,zd,l;
 
-  xa=coord(1,1);
-  za=coord(1,2);
-  xb=coord(2,1);
-  zb=coord(2,2);
-  xc=coord(3,1);
-  zc=coord(3,2);
-  xd=coord(4,1);
-  zd=coord(4,2);
+  xa=coord(0,0);
+  za=coord(0,1);
+  xb=coord(1,0);
+  zb=coord(1,1);
+  xc=coord(2,0);
+  zc=coord(2,1);
+  xd=coord(3,0);
+  zd=coord(3,1);
 
   l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
@@ -340,8 +349,8 @@ void recul::recul7(int i, int j, double alpha, double vrdt, MatrixXd coord)
   S1=xc*xc*(1/tan(alpha)+tan(alpha))/2;
   S2=zd*zd*(1/tan(alpha)+tan(alpha))/2;
   _C_solide(i,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx)%_nx)-S1/(_dx*_dz);
-  if (i-1>=0) {
-    _C_solide(i-1,j)=_C_solide(i-1,j)-S2/(_dx*_dz);
+  if (i+1<_nx) {
+    _C_solide(i+1,j)=_C_solide(i+1,j)-S2/(_dx*_dz);
   }
   _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S1-S2)/(_dx*_dz);
 
@@ -352,14 +361,14 @@ void recul::recul8(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,za,xb,zb,xc,zc,xd,zd,l;
 
-  xa=coord(1,1);
-  za=coord(1,2);
-  xb=coord(2,1);
-  zb=coord(2,2);
-  xc=coord(3,1);
-  zc=coord(3,2);
-  xd=coord(4,1);
-  zd=coord(4,2);
+  xa=coord(0,0);
+  za=coord(0,1);
+  xb=coord(1,0);
+  zb=coord(1,1);
+  xc=coord(2,0);
+  zc=coord(2,1);
+  xd=coord(3,0);
+  zd=coord(3,1);
 
   l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
@@ -370,8 +379,8 @@ void recul::recul8(int i, int j, double alpha, double vrdt, MatrixXd coord)
   S3=(-xc*tan(alpha)-zc)*(-xc*tan(alpha)-zc)/(2*tan(alpha));
 
   _C_solide(i,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx)%_nx)-(S1-S3)/(_dx*_dz);
-  if (i-1>=0) {
-    _C_solide(i-1,j)=_C_solide(i-1,j)-(S2-S3)/(_dx*_dz);
+  if (i+1<_nx) {
+    _C_solide(i+1,j)=_C_solide(i+1,j)-(S2-S3)/(_dx*_dz);
   }
   _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S1-S2+S3)/(_dx*_dz);
 
@@ -382,14 +391,14 @@ void recul::recul9(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,za,xb,zb,xc,zc,xd,zd,l;
 
-  xa=coord(1,1);
-  za=coord(1,2);
-  xb=coord(2,1);
-  zb=coord(2,2);
-  xc=coord(3,1);
-  zc=coord(3,2);
-  xd=coord(4,1);
-  zd=coord(4,2);
+  xa=coord(0,0);
+  za=coord(0,1);
+  xb=coord(1,0);
+  zb=coord(1,1);
+  xc=coord(2,0);
+  zc=coord(2,1);
+  xd=coord(3,0);
+  zd=coord(3,1);
 
   l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
@@ -402,22 +411,22 @@ void recul::recul10(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,za,xb,zb,xc,zc,xd,zd,l;
 
-  xa=coord(1,1);
-  za=coord(1,2);
-  xb=coord(2,1);
-  zb=coord(2,2);
-  xc=coord(3,1);
-  zc=coord(3,2);
-  xd=coord(4,1);
-  zd=coord(4,2);
+  xa=coord(0,0);
+  za=coord(0,1);
+  xb=coord(1,0);
+  zb=coord(1,1);
+  xc=coord(2,0);
+  zc=coord(2,1);
+  xd=coord(3,0);
+  zd=coord(3,1);
 
   l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
   double S2;
 
   S2=zd*zd*(1/tan(alpha)+tan(alpha))/2;
-  if (i-1>=0) {
-    _C_solide(i-1,j)=_C_solide(i-1,j)-S2/(_dx*_dz);
+  if (i+1<_nx) {
+    _C_solide(i+1,j)=_C_solide(i+1,j)-S2/(_dx*_dz);
   }
   _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S2)/(_dx*_dz);
 
@@ -428,14 +437,14 @@ void recul::recul11(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,za,xb,zb,xc,zc,xd,zd,l;
 
-  xa=coord(1,1);
-  za=coord(1,2);
-  xb=coord(2,1);
-  zb=coord(2,2);
-  xc=coord(3,1);
-  zc=coord(3,2);
-  xd=coord(4,1);
-  zd=coord(4,2);
+  xa=coord(0,0);
+  za=coord(0,1);
+  xb=coord(1,0);
+  zb=coord(1,1);
+  xc=coord(2,0);
+  zc=coord(2,1);
+  xd=coord(3,0);
+  zd=coord(3,1);
 
   l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
@@ -448,14 +457,14 @@ void recul::recul12(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,za,xb,zb,xc,zc,xd,zd,l;
 
-  xa=coord(1,1);
-  za=coord(1,2);
-  xb=coord(2,1);
-  zb=coord(2,2);
-  xc=coord(3,1);
-  zc=coord(3,2);
-  xd=coord(4,1);
-  zd=coord(4,2);
+  xa=coord(0,0);
+  za=coord(0,1);
+  xb=coord(1,0);
+  zb=coord(1,1);
+  xc=coord(2,0);
+  zc=coord(2,1);
+  xd=coord(3,0);
+  zd=coord(3,1);
 
   l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
@@ -468,14 +477,14 @@ void recul::recul13(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,za,xb,zb,xc,zc,xd,zd,l;
 
-  xa=coord(1,1);
-  za=coord(1,2);
-  xb=coord(2,1);
-  zb=coord(2,2);
-  xc=coord(3,1);
-  zc=coord(3,2);
-  xd=coord(4,1);
-  zd=coord(4,2);
+  xa=coord(0,0);
+  za=coord(0,1);
+  xb=coord(1,0);
+  zb=coord(1,1);
+  xc=coord(2,0);
+  zc=coord(2,1);
+  xd=coord(3,0);
+  zd=coord(3,1);
 
   l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
@@ -488,14 +497,14 @@ void recul::recul14(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,za,xb,zb,xc,zc,xd,zd,l;
 
-  xa=coord(1,1);
-  za=coord(1,2);
-  xb=coord(2,1);
-  zb=coord(2,2);
-  xc=coord(3,1);
-  zc=coord(3,2);
-  xd=coord(4,1);
-  zd=coord(4,2);
+  xa=coord(0,0);
+  za=coord(0,1);
+  xb=coord(1,0);
+  zb=coord(1,1);
+  xc=coord(2,0);
+  zc=coord(2,1);
+  xd=coord(3,0);
+  zd=coord(3,1);
 
   l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
@@ -508,14 +517,14 @@ void recul::recul15(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,za,xb,zb,xc,zc,xd,zd,l;
 
-  xa=coord(1,1);
-  za=coord(1,2);
-  xb=coord(2,1);
-  zb=coord(2,2);
-  xc=coord(3,1);
-  zc=coord(3,2);
-  xd=coord(4,1);
-  zd=coord(4,2);
+  xa=coord(0,0);
+  za=coord(0,1);
+  xb=coord(1,0);
+  zb=coord(1,1);
+  xc=coord(2,0);
+  zc=coord(2,1);
+  xd=coord(3,0);
+  zd=coord(3,1);
 
   l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
@@ -528,14 +537,14 @@ void recul::recul16(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,za,xb,zb,xc,zc,xd,zd,l;
 
-  xa=coord(1,1);
-  za=coord(1,2);
-  xb=coord(2,1);
-  zb=coord(2,2);
-  xc=coord(3,1);
-  zc=coord(3,2);
-  xd=coord(4,1);
-  zd=coord(4,2);
+  xa=coord(0,0);
+  za=coord(0,1);
+  xb=coord(1,0);
+  zb=coord(1,1);
+  xc=coord(2,0);
+  zc=coord(2,1);
+  xd=coord(3,0);
+  zd=coord(3,1);
 
   l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
@@ -548,14 +557,14 @@ void recul::recul17(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,za,xb,zb,xc,zc,xd,zd,l;
 
-  xa=coord(1,1);
-  za=coord(1,2);
-  xb=coord(2,1);
-  zb=coord(2,2);
-  xc=coord(3,1);
-  zc=coord(3,2);
-  xd=coord(4,1);
-  zd=coord(4,2);
+  xa=coord(0,0);
+  za=coord(0,1);
+  xb=coord(1,0);
+  zb=coord(1,1);
+  xc=coord(2,0);
+  zc=coord(2,1);
+  xd=coord(3,0);
+  zd=coord(3,1);
 
   l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 
@@ -568,14 +577,14 @@ void recul::recul18(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,za,xb,zb,xc,zc,xd,zd,l;
 
-  xa=coord(1,1);
-  za=coord(1,2);
-  xb=coord(2,1);
-  zb=coord(2,2);
-  xc=coord(3,1);
-  zc=coord(3,2);
-  xd=coord(4,1);
-  zd=coord(4,2);
+  xa=coord(0,0);
+  za=coord(0,1);
+  xb=coord(1,0);
+  zb=coord(1,1);
+  xc=coord(2,0);
+  zc=coord(2,1);
+  xd=coord(3,0);
+  zd=coord(3,1);
 
   l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
 

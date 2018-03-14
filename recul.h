@@ -1,12 +1,20 @@
+#ifndef RECUL_H
+#define RECUL_H
+
 #include "Dense"
+#include <cmath>
+#include "plic.h"
+#include "diffusion.h"
 
 class recul
 {
 public:
-  //recul(read_data& data, diffusion& diffusion, plic& plic);
-  recul(double dt, double dx, double dz, Eigen::MatrixXd C_solide);
+  recul();
+  //recul(double dt, double dx, double dz, Eigen::MatrixXd C_solide);
   ~recul();
-  void recul_surface();
+void update(plic& plic, diffusion& diffusion)
+
+  void recul_surface(Eigen::MatrixXd ninterf, Eigen::MatrixXd interface, Eigen::VectorXd vitesse);
 void recul1(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
 void recul2(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
 void recul3(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
@@ -26,17 +34,22 @@ void recul16(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
 void recul17(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
 void recul18(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
 
+inline Eigen::MatrixXd Get_C_solide(){return _C_solide;};
+
 private:
   Eigen::MatrixXd _ninterf;
   Eigen::MatrixXd _interface;
   Eigen::VectorXd _vitesse;
   Eigen::MatrixXd _C_solide;
   double _dt;
+  double _dtmax;
   double _dx;
   double _dz;
   int _nx;
   int _nz;
-  //readdata& _data;
-  //diffusion& _diff;
-  //plic& _plic;
+  read_data& _read_data;
+  diffusion& _diff;
+  plic& _plic;
 };
+
+#ENDIF
