@@ -1,0 +1,33 @@
+dx
+0.01
+dz
+0.01
+Lx
+1.
+Lz
+1.
+dt
+0.01
+tfinal
+1.
+D
+0.01
+
+Flux
+upwind
+
+Dim
+2D
+#2D, 3D
+
+Da
+uniforme
+#uniforme, custom
+
+C0
+uniforme
+#uniforme, custom
+
+Surface
+uniforme
+#uniforme, custom
