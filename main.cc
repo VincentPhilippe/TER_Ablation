@@ -1,8 +1,23 @@
 #include <iostream>
+#include "read_data.h"
 
 using namespace std;
 
-int main() {
+int main(int argc, char** argv)
+{
+
+  if (argc < 2)
+  {
+    cout << "Please, enter the name of your data file." << endl;
+    abort();
+  }
+  const string data_file_name = argv[1];
+
+  // ----------------------- Fichier de données --------------------------------
+  read_data* data_file = new read_data(data_file_name);
+  data_file->read_datafile();
+  //------- /
+
   /* code */
 
   /*
@@ -42,5 +57,6 @@ int main() {
 
 // Fin de la boucle
 
+  delete data_file;
   return 0;
 }

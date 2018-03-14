@@ -2,8 +2,14 @@
 
 using namespace Eigen;
 
-//constructeur par défaut
-Maillage2DCarre::Maillage2DCarre()
+// constructeur maillage par défaut
+Maillage::Maillage(){}
+
+//destructeur maillage
+Maillage::~Maillage(){}
+
+//constructeur maillage cartésien par défaut
+Cartesien::Cartesien() : Maillage()
 {
   _name = "default";
   _deltaX = 0.1;
@@ -11,11 +17,17 @@ Maillage2DCarre::Maillage2DCarre()
   _Lx = 10;
   _Lz = 10;
 
-  int _nbX = _Lx/_deltaX;
-  int _nbZ = _Lz/_deltaZ;
+  _nbX = _Lx/_deltaX;
+  _nbZ = _Lz/_deltaZ;
 
   _coordX.resize(_nbX);
   _coordZ.resize(_nbZ);
+  _indices.resize(_nbX*_nbZ);
+
+  for (int i = 0 ; i < _nbX*_nbZ ; i++)
+  {
+    _indices(i) = i;
+  }
 
   for (int i = 0 ; i < _nbX ; i++)
   {
@@ -29,8 +41,8 @@ Maillage2DCarre::Maillage2DCarre()
 
 };
 
-//constructeur
-Maillage2DCarre::Maillage2DCarre(std::string name, double deltaX, double deltaZ, double Lx, double Lz)
+//constructeur maillage cartésien
+Cartesien::Cartesien(std::string name, double deltaX, double deltaZ, double Lx, double Lz) : Maillage()
 {
   _name = name;
   _deltaX = deltaX;
@@ -38,11 +50,17 @@ Maillage2DCarre::Maillage2DCarre(std::string name, double deltaX, double deltaZ,
   _Lx = Lx;
   _Lz = Lz;
 
-  int _nbX = _Lx/_deltaX;
-  int _nbZ = _Lz/_deltaZ;
+  _nbX = _Lx/_deltaX;
+  _nbZ = _Lz/_deltaZ;
 
   _coordX.resize(_nbX);
   _coordZ.resize(_nbZ);
+  _indices.resize(_nbX*_nbZ);
+
+  for (int i = 0 ; i < _nbX*_nbZ ; i++)
+  {
+    _indices(i) = i;
+  }
 
   for (int i = 0 ; i < _nbX ; i++)
   {
@@ -57,4 +75,4 @@ Maillage2DCarre::Maillage2DCarre(std::string name, double deltaX, double deltaZ,
 };
 
 //destructeur
-Maillage2DCarre::~Maillage2DCarre(){};
+Cartesien::~Cartesien(){};
