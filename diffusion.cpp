@@ -2,13 +2,12 @@
 
 #include "Dense"
 #include "maillage.h"
-#include "read_data.h"
-#include "rebuild_surface.h"
+#include "ablation.h"
 
 using namespace std;
 using namespace Eigen;
 
-diffusion::diffusion(Maillage2DCarre& maillage, ReadData& data, Plic& _surface)
+diffusion::diffusion(Maillage2DCarre& maillage)
 {
   _maillage = maillage;
   _data = data;
@@ -20,10 +19,10 @@ diffusion::diffusion(Maillage2DCarre& maillage, ReadData& data, Plic& _surface)
 
 void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
 {
-  double dt = 0.4*dx, erreur = 10;
+  double dt = 0.4*_maillage.Getdx(), erreur = 10;
   int n;
   MatrixXd C1;
-  C1 = MatrixXd::Zero(maillage.GetNz(), maillage.GetNx());
+  C1 = MatrixXd::Zero(_maillage.GetNz(), _maillage.GetNx());
 
   while(erreur > 1e-5, n < 100000)
   {
