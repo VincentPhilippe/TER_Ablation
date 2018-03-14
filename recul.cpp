@@ -1,15 +1,11 @@
 #include "recul.h"
-#include "Dense"
-#include <cmath>
-#include "plic.h"
-#include "diffusion.h"
 
 using namespace std;
 using namespace Eigen;
 
-recul::recul(read_data& read_data)
+recul::recul(read_data &_data)
 {
-  _read_data=read_data;
+  _read_data&=_data&;
   _dtmax=_read_data.Get_dt();
   _dt=_dtmax;
   _dx=_read_data.Get_dx();

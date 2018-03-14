@@ -5,14 +5,15 @@
 #include <cmath>
 #include "plic.h"
 #include "diffusion.h"
+#include "read_data.h"
 
 class recul
 {
 public:
-  recul();
+  recul(read_data &read_data);
   //recul(double dt, double dx, double dz, Eigen::MatrixXd C_solide);
   ~recul();
-void update(plic& plic, diffusion& diffusion)
+void update(plic& plic, diffusion& diffusion);
 
   void recul_surface();
 void recul1(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
@@ -52,4 +53,4 @@ private:
   plic& _plic;
 };
 
-#ENDIF
+#endif
