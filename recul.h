@@ -13,7 +13,7 @@ public:
   recul(read_data &read_data);
   //recul(double dt, double dx, double dz, Eigen::MatrixXd C_solide);
   ~recul();
-void update(plic& plic, diffusion& diffusion);
+void update(plic *plic, diffusion *diffusion){_plic=plic, _diff=diffusion;};/////////////////////////////////////////////////////////////////
 
   void recul_surface();
 void recul1(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
@@ -50,7 +50,6 @@ private:
   int _nz;
   read_data& _read_data;
   diffusion *_diff;
-  //*_diff=new diffusion;
   plic *_plic;
 };
 
