@@ -1,9 +1,11 @@
+#ifndef PLIC_H
+#define PLIC_H
+
 #include <vector>
 #include <string>
 #include "Sparse"
 #include "Dense"
-#ifndef PLIC_H
-#define PLIC_H
+
 
 class plic {
   public:
@@ -31,6 +33,6 @@ class plic {
 /////////////////////RESTE A FAIRE///////////////////
 //resize _interface
 //SaveSol
-}
+};
 
-#ENDIF
+#endif
