@@ -49,8 +49,9 @@ private:
   int _nx;
   int _nz;
   read_data& _read_data;
-  diffusion& _diff;
-  plic& _plic;
+  diffusion *_diff;
+  //*_diff=new diffusion;
+  plic *_plic;
 };
 
 #endif

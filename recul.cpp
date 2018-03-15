@@ -4,8 +4,10 @@ using namespace std;
 using namespace Eigen;
 
 recul::recul(read_data &_data)
+:_read_data(_data)//, _diff(0)
 {
-  _read_data&=_data&;
+  //_read_data=&_data;
+  //_diff=0;
   _dtmax=_read_data.Get_dt();
   _dt=_dtmax;
   _dx=_read_data.Get_dx();
@@ -33,9 +35,9 @@ recul::~recul()
 void recul::recul_surface()
 {
   //récuperer _ninterf _interface _vitesse avec des arguments
-  _ninterf=plic.Get_ninterf();
-  _interface=plic.Get_interface();
-  _vitesse=diffusion.GetVitesse();
+  //_ninterf=_plic.Get_ninterf();
+  //_interface=_plic.Get_interface();
+  //_vitesse=_diff.GetVitesse();
 
   //N_surface, Nx, Ny
   _nx = _ninterf.cols();
