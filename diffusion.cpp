@@ -45,9 +45,10 @@ enum State_Case diffusion::Watch(int i, int j) // Regarde l'état de la case (i,
     return(BORD_DROIT);
   }
 
-  if(_plic.Get_ninterf[i,j] != 0){
+  if(_plic->Get_ninterf[i,j] != 0){
     return(INTERFACE);
   }
+  if()
 
   return(AIR);
 
