@@ -9,7 +9,7 @@
 #include "plic.h"
 
 enum State_Case{
-  BORD_HAUT,BORD_BAS, AIR, BORD_DROIT, BORD_GAUCHE, INTERFACE
+  BORD_HAUT,BORD_BAS, AIR, BORD_DROIT, BORD_GAUCHE, INTERFACE, SOLIDE
 };
 
 class diffusion{
@@ -31,9 +31,9 @@ public:
   void Vitesse();
   ~diffusion(){};
   bool Watch(int i, int j);
-  void update(plic *plic){_plic = plic}
-  Eigen::MatrixXd GetConcentration() {return _concentration}
-  Eigen::MatrixXd GetVitesse() {return _vitesse}
+  void update(plic *plic){_plic = plic;}
+  Eigen::MatrixXd GetConcentration() {return _concentration;}
+  Eigen::MatrixXd GetVitesse() {return _vitesse;}
 };
 
 
