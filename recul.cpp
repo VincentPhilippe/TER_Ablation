@@ -3,7 +3,7 @@
 using namespace std;
 using namespace Eigen;
 
-recul::recul(read_data &_data)
+recul::recul(read_data &_data, MatrixXd C_solide)
 :_read_data(_data)//, _diff(0)
 {
   //_read_data=&_data;
@@ -12,22 +12,9 @@ recul::recul(read_data &_data)
   _dt=_dtmax;
   _dx=_read_data.Get_dx();
   _dz=_read_data.Get_dz();
+  _C_solide=C_solide;
 }
 
-//constructeur 2
-/*recul::recul(double dt, double dx, double dz, MatrixXd C_solide)
-{
-  _dtmax=dt;
-  _dt=_dtmax;
-  _dx=dx;
-  _dz=dz;
-  _ninterf=MatrixXd::Zero(1,1);
-  _interface=MatrixXd::Zero(1,1);
-  _vitesse=VectorXd::Zero(1);
-  _C_solide=MatrixXd::Zero(1,1);
-  _nx=1;
-  _nz=1;
-}*/
 
 recul::~recul()
 {}
@@ -35,7 +22,7 @@ recul::~recul()
 void recul::recul_surface()
 {
   //récuperer _ninterf _interface _vitesse avec des arguments
-  _ninterf=_plic->Get_ninterf();
+  //_ninterf=_plic->Get_ninterf();
   _interface=_plic->Get_interface();
   _vitesse=_diff->GetVitesse();
 
@@ -165,6 +152,8 @@ void recul::recul_surface()
       }
     }
   }
+
+
 }
 
 
@@ -675,4 +664,22 @@ void recul::recul18(int i, int j, double alpha, double vrdt, MatrixXd coord)
     _C_solide(i+1,j)=_C_solide(i+1,j)-S3/(_dx*_dz);
   }
 
+}
+
+void recul::cpositive()
+{
+  int k=0;
+  for (int i=0; i<_nx; i++) {
+    for (int j = 0; j <_nz; j++) {
+      if (_C_solide(i,j)<=0) {
+        _C_solide(i,j)=0;
+        _ninterf(i,j)=0;
+      } else if (_C_solide(i,j)>=1) {
+        _ninterf(i,j)=-1;
+      } else {
+        k=k+1;
+        _ninterf(i,j)=k;
+      }
+    }
+  }
 }
