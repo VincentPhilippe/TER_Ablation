@@ -2,6 +2,7 @@
 #define DIFFUSION_H
 
 #include <iostream>
+#include <cmath>
 
 #include "Dense"
 #include "read_data.h"
@@ -12,12 +13,17 @@ enum State_Case{
   BORD_HAUT,BORD_BAS, AIR, BORD_DROIT, BORD_GAUCHE, INTERFACE, SOLIDE
 };
 
+enum Direction{
+  LEFT, BOTTOM, RIGHT, UP
+};
+
 class diffusion{
 
 private:
   read_data& _data;
   Maillage& _maillage;
   plic *_plic;
+  double dx, dz;
 
 
   Eigen::MatrixXd _concentration;
@@ -26,11 +32,16 @@ private:
 
 public:
 
-  Diffusion(read_data& data, Maillage2DCarre& maillage);
-  void Resolution();
-  void Vitesse();
+  diffusion(read_data& data, Maillage& maillage);
   ~diffusion(){};
-  bool Watch(int i, int j);
+  void resolution();
+  void vitesse();
+  double fluxGauche();
+  double fluxBas();
+  double fluxDroite();
+  double fluxHaut();
+  double longueurArete(int k, int l, enum Direction direction);
+  enum State_Case watch(int i, int j);
   void update(plic *plic){_plic = plic;}
   Eigen::MatrixXd GetConcentration() {return _concentration;}
   Eigen::MatrixXd GetVitesse() {return _vitesse;}
