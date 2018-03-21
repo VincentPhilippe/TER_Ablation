@@ -6,10 +6,12 @@ using namespace Eigen;
 
 int main()
 {
-  Cartesien Cartesien("test", 1., 1., 10., 10.);
+  Cartesien3D Cartesien("test", 1., 1., 1., 5., 5., 5.);
   cout << Cartesien.GetIndices() << endl;
   cout << Cartesien.GetCoordX() << endl;
+  cout << Cartesien.GetCoordY() << endl;
   cout << Cartesien.GetCoordZ() << endl;
   cout << Cartesien.GetNx() << endl;
+  cout << Cartesien.GetNy() << endl;
   cout << Cartesien.GetNz() << endl;
 }
