@@ -45,6 +45,8 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_Surface(false)
       if (file_line.find("Lx") != std::string::npos)
       {
         data_file >> _Lx; _if_Lx = true;
+        _Nx = floor(_Lx/_dx);
+        _dx = _Lx/_Nx;
       }
 
       if (file_line.find("Lz") != std::string::npos)
@@ -69,27 +71,80 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_Surface(false)
 
       if (file_line.find("Flux") != std::string::npos)
       {
-        _if_flux = true;
+        data_file >> _flux; _if_flux = true;
       }
 
       if (file_line.find("Dim") != std::string::npos)
       {
-        _if_dim = true;
+        data_file >> _dim; _if_dim = true;
       }
 
       if (file_line.find("Da") != std::string::npos)
       {
-        _if_Da = true;
+        std::string Da_string;
+        data_file >> Da_string; _if_Da = true;
+        if (Da_string == "uniforme")
+        {
+          double Da_unif, Nx_temp;
+          data_file >> Da_unif;
+          _Da.resize(_Nx+1,1);
+          _Da(0)=_Nx;
+          for (int i=0; i<_Nx; i++)
+          {
+            _Da(i) = Da_unif;
+          }
+        }
+        else if (Da_string == "step")
+        {
+
+        }
+        else if (Da_string == "retrieve")
+        {
+
+        }
+        else
+        {
+          cout << "Try again." << endl;
+          abort();
+        }
       }
 
       if (file_line.find("C0") != std::string::npos)
       {
-        _if_C0 = true;
+        std::string C0_string;
+        data_file >> C0_string; _if_C0 = true;
+        if (C0_string == "uniforme")
+        {
+
+        }
+        else if (C0_string == "retrieve")
+        {
+
+        }
+        else
+        {
+          cout << "Try again." << endl;
+          abort();
+        }
       }
 
       if (file_line.find("Surface") != std::string::npos)
       {
-        _if_Surface = true;
+        std::string Surface_string;
+        data_file >> Surface_string; _if_Surface = true;
+        if (Surface_string == "uniforme")
+        {
+
+        }
+        else if (Surface_string == "retrieve")
+        {
+
+        }
+        else
+        {
+          cout << "Try again." << endl;
+          abort();
+        }
       }
 
   }
