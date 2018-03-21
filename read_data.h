@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include "Dense"
 #include <iostream>
 // Définition de la classe
 
@@ -9,12 +10,13 @@ class read_data {
 private:
   std::string _file_name;
   double _dx, _dz, _Lx, _Lz, _dt, _tfinal, _D;
+  int _Nx;
 
   std::string _flux;
   std::string _dim;
-  std::string _Da;
-  std::string _C0;
-  std::string _Surface;
+  Eigen::MatrixXd _Da;
+  Eigen::MatrixXd _C0;
+  Eigen::MatrixXd _Surface;
 
   bool _if_dx;
   bool _if_dz;
@@ -32,19 +34,20 @@ private:
 public: // Méthodes et opérateurs de la classe
   read_data(std::string file_name);
   void read_datafile();
-  std::string Get_file_name() const {return _file_name;}
+  std::string Get_file_name() const {return _file_name;};
   double Get_dx() const {return _dx;};
   double Get_dz() const {return _dz;};
   double Get_dt() const {return _dt;};
+  double Get_Nx() const { return _Nx;};
   double Get_tfinal() const {return _tfinal;};
-  double Get_Lx() const { return _Lx;}
-  double Get_Lz() const { return _Lz;}
-  double Get_D() const { return _D;}
+  double Get_Lx() const { return _Lx;};
+  double Get_Lz() const { return _Lz;};
+  double Get_D() const { return _D;};
   std::string Get_flux() const {return _flux;};
   std::string Get_dim() const {return _dim;};
-  std::string Get_Da() const {return _Da;};
-  std::string Get_C0() const {return _C0;};
-  std::string Get_Surface() const {return _Surface;};
+  Eigen::MatrixXd Get_Da() const {return _Da;};
+  Eigen::MatrixXd Get_C0() const {return _C0;};
+  Eigen::MatrixXd Get_Surface() const {return _Surface;};
 };
 
 #define _READ_DATA_H
