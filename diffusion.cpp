@@ -17,7 +17,7 @@ diffusion::diffusion(read_data& data, Maillage& maillage)
 void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
 {
   double dt = 0.4*(dx+dz), erreur = 10, flux;
-  int n=0, i;
+  int n=0, i, j;
   MatrixXd C1;
   C1 = MatrixXd::Zero(_maillage.GetNz(), _maillage.GetNx());
 
@@ -115,7 +115,7 @@ double diffusion::fluxHaut(int i, int j)
 
 double diffusion::longueurArete(int k, int l, enum Direction direction)
 {
-  
+
 
 
   }
