@@ -30,7 +30,7 @@ int main(int argc, char** argv)
   */
 
   // -------------------------- Création du maillage -------------------------------/
-  Cartesien maillage("maillage_1", 0.1, 0.1, 10., 10.);
+  Cartesien2D maillage("maillage_1", 0.1, 0.1, 10., 10.);
   // ------- /
 
   /*
