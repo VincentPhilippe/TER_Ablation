@@ -87,20 +87,63 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_Surface(false)
         {
           double Da_unif, Nx_temp;
           data_file >> Da_unif;
-          _Da.resize(_Nx+1,1);
-          _Da(0)=_Nx;
-          for (int i=0; i<_Nx; i++)
+          _Da.resize(_Nx+1,2);
+          _Da(0,0)=_Nx;
+          for (int i=1; i<_Nx+1; i++)
           {
-            _Da(i) = Da_unif;
+            _Da(i,0) = i*_dx;
+            _Da(i,1) = Da_unif;
           }
         }
         else if (Da_string == "step")
         {
-
+          double Da_step1, Da_step2, Nx_temp;
+          data_file >> Da_step1 >> Da_step2;
+          _Da.resize(_Nx+1,2);
+          _Da(0,0)=_Nx;
+          for (int i=1; i<floor(_Nx/3); i++)
+          {
+            _Da(i,0) = i*_dx;
+            _Da(i,1) = Da_step1;
+          }
+          for (int i=floor(_Nx/3); i<2*floor(_Nx/3); i++)
+          {
+            _Da(i,0) = i*_dx;
+            _Da(i,1) = Da_step2;
+          }
+          for (int i=2*floor(_Nx/3); i<_Nx+1; i++)
+          {
+            _Da(i,0) = i*_dx;
+            _Da(i,1) = Da_step1;
+          }
         }
         else if (Da_string == "retrieve")
         {
-
+          std::string _Da_file_name;
+          data_file >> _Da_file_name;
+          ifstream Da_file(_Da_file_name.data());
+          if (!Da_file.is_open())
+          {
+            cout << "Unable to open Da file " << _Da_file_name << endl;
+            abort();
+          }
+          else
+          {
+            cout << "-------------------------------------------------" << endl;
+            cout << "Reading Da data file " << _Da_file_name << endl;
+          }
+          int Da_size(0);
+          double _x, _Da_x;
+          Da_file >> Da_size;
+          _Da.resize(Da_size,2);
+          _Da(0,0)=Da_size;
+          for (int i=1; i<_Nx+1; i++)
+          {
+            Da_file >> _x >> _Da_x;
+            _Da(i,0)=_x;
+            _Da(i,1)=_Da_x;
+          }
+          Da_file.close();
         }
         else
         {
