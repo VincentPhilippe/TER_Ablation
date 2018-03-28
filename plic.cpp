@@ -5,7 +5,6 @@ using namespace std;
 
 //constructeur
 plic::plic()
-  :
   {
     _interface.resize(1,4);
   }
@@ -85,8 +84,8 @@ void plic::interf()
                 //_ninterf(i)(j)=k;
 
                 //Calcul du gradient
-                nx=grad_x(i,j)/sqrt(grad_x(i,j)^2+grad_y(i,j)^2);
-                ny=grad_y(i,j)/sqrt(grad_x(i,j)^2+grad_y(i,j)^2);
+                nx=grad_x(i,j)/sqrt(grad_x(i,j)*grad_x(i,j)+grad_y(i,j)*grad_y(i,j));
+                ny=grad_y(i,j)/sqrt(grad_x(i,j)*grad_x(i,j)+grad_y(i,j)*grad_y(i,j));
                 nxx=abs(nx);
 
 
@@ -99,9 +98,9 @@ void plic::interf()
                     _interface(k,1)=sqrt(2*p*ny/nxx);
                     _interface(k,2)=0;
                     _interface(k,3)=0;
-                    _interface(k,4)=2*p/a(1);
+                    //_interface(k,4)=2*p/a(1); ///////////////////////////////////c'est quoi a ?
 
-                    if (_interface(k,4)==1)then   // si l'un des nouveaux points tombe sur l'angle du carré, on ne le compte pas comme point supplémentaire
+                    if (_interface(k,4)==1)   // si l'un des nouveaux points tombe sur l'angle du carré, on ne le compte pas comme point supplémentaire
                     {
                         //_pointsupl-=1
                     }
@@ -112,10 +111,10 @@ void plic::interf()
 
                     _interface(k,1)=1;
                     _interface(k,2)=1-sqrt(2*(1-p)*nxx/ny);
-                    _interface(k,3)=1-2*(1-p)/(1-a(1));
+                    //_interface(k,3)=1-2*(1-p)/(1-a(1));
                     _interface(k,4)=1;
 
-                    if (_interface(k,1)==1)then
+                    if (_interface(k,1)==1)
                     {
                         //_pointsupl-=1   // si l'un des nouveaux points tombe sur l'angle du carré, on ne le compte pas comme point supplémentaire
                     }
@@ -144,7 +143,7 @@ void plic::interf()
                 }
                 if (nx<0)
                 {
-                    if (typinterf(i,j)==-4)then
+                    if (typinterf(i,j)==-4)
                     {
                         typinterf(i,j)-=10;
                     }
@@ -157,14 +156,19 @@ void plic::interf()
                     _interface(k,4)=1-_interface(k,4);
                 }
             }
-          }
-          else
+            else
+            {
+              //_ninterf(i,j)=0;
+              typinterf(i,j)=0;
+            }
+          }//////////////////////////////////////////////////le else devait surement aller avant }
+          /*else
           {
             //_ninterf(i,j)=0;
             typinterf(i,j)=0;
-          }
+          }*/
         }
-        return 0;
+        //return 0;fonction void pas de return
 }
 
 

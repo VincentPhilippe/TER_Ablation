@@ -1,7 +1,7 @@
 dx
-0.01
+0.1
 dz
-0.01
+0.2
 Lx
 1.
 Lz
@@ -10,11 +10,12 @@ dt
 0.01
 tfinal
 1.
-D
+Diff
 0.01
 
 Flux
 upwind
+#upwind
 
 Dim
 2D
@@ -23,15 +24,17 @@ Dim
 Da
 uniforme 1.0
 #uniforme 1.0
-#step
+#step 1.0 2.0
 #retrieve retrieve_file
 
 C0
 uniforme 1.0
 #uniforme 1.0
 #retrieve retrieve_file
+#step 1.0 2.0
 
 Surface
 uniforme 1.0
 #uniforme 1.0
 #retrieve retrieve_file
+#step 1.0 2.0
