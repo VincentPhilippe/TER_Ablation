@@ -21,7 +21,7 @@ class diffusion{
 
 private:
   read_data& _data;
-  Maillage& _maillage;
+  Cartesien2D& _maillage;
   plic *_plic;
   double dx, dz;
 
@@ -32,14 +32,14 @@ private:
 
 public:
 
-  diffusion(read_data& data, Maillage& maillage);
+  diffusion(read_data& data,Cartesien2D& maillage);
   ~diffusion(){};
   void resolution();
   void vitesse();
-  double fluxGauche();
-  double fluxBas();
-  double fluxDroite();
-  double fluxHaut();
+  double fluxGauche(int i, int j);
+  double fluxBas(int i, int j);
+  double fluxDroite(int i, int j);
+  double fluxHaut(int i, int j);
   double longueurArete(int k, int l, enum Direction direction);
   enum State_Case watch(int i, int j);
   void update(plic *plic){_plic = plic;}
