@@ -1,6 +1,7 @@
 #ifndef RECUL_H
 #define RECUL_H
 
+#include "objet.h"
 #include "Dense"
 #include <cmath>
 #include "plic.h"
