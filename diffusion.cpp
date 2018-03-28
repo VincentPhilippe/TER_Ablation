@@ -49,7 +49,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
 double diffusion::fluxGauche(int i, int j)
 {
   double flux;
-  switch(watch(i-1,j))
+  switch(watchCell(i-1,j))
   {
     case BORD_GAUCHE:
       flux = -(_concentration[Nx,j]-_concentration[i,j])/dx;
@@ -66,7 +66,7 @@ double diffusion::fluxGauche(int i, int j)
 double diffusion::fluxBas(int i, int j)
 {
   double flux;
-  switch(watch(i,j+1))
+  switch(watchCell(i,j+1))
   {
     case BORD_BAS:
       flux = 0;
@@ -74,7 +74,7 @@ double diffusion::fluxBas(int i, int j)
 
     default :
       flux = -(_concentration[i,j+1]-_concentration[i,j])/dz;
-      flux *= longueurArete(i,j,BOTTOM);
+      flux *= longueurArete(i,j,DOWN);
       break;
   }
 }
@@ -82,7 +82,7 @@ double diffusion::fluxBas(int i, int j)
 double diffusion::fluxDroite(int i, int j)
 {
   double flux;
-  switch(watch(i+1,j))
+  switch(watchCell(i+1,j))
   {
     case BORD_DROIT:
       flux = -(_concentration[0,j]-_concentration[i,j])/dx;
@@ -99,7 +99,7 @@ double diffusion::fluxDroite(int i, int j)
 double diffusion::fluxHaut(int i, int j)
 {
   double flux;
-  switch(watch(i,j-1))
+  switch(watchCell(i,j-1))
   {
     case BORD_HAUT:
       flux = -(1-_concentration[i,j])/dz;
@@ -116,9 +116,6 @@ double diffusion::fluxHaut(int i, int j)
 double diffusion::longueurArete(int k, int l, enum Direction direction)
 {
   
-
-
-  }
 }
 
 void diffusion::vitesse() // Permet de donner la vitesse normale en chaque point de la surface
@@ -126,7 +123,7 @@ void diffusion::vitesse() // Permet de donner la vitesse normale en chaque point
 
 }
 
-enum State_Case diffusion::watch(int i, int j) // Regarde l'état de la case (i,j)
+enum State_Cell diffusion::watchCell(int i, int j) // Regarde l'état de la case (i,j)
 {
 
   if(i == 0){
