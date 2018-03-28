@@ -48,6 +48,7 @@ double plic::grad_y(const int i,const int j)
 
 void plic::interf()
 {
+    _ninterf=_recul->Get_ninterf();
     _phi=_recul->Get_C_solide();
     int lon=_phi.cols();
     int lar=_phi.rows();
@@ -98,7 +99,7 @@ void plic::interf()
                     _interface(k,1)=sqrt(2*p*ny/nxx);
                     _interface(k,2)=0;
                     _interface(k,3)=0;
-                    //_interface(k,4)=2*p/a(1); ///////////////////////////////////c'est quoi a ?
+                    _interface(k,4)=2*p/_interface(k,1);
 
                     if (_interface(k,4)==1)   // si l'un des nouveaux points tombe sur l'angle du carré, on ne le compte pas comme point supplémentaire
                     {
@@ -111,7 +112,7 @@ void plic::interf()
 
                     _interface(k,1)=1;
                     _interface(k,2)=1-sqrt(2*(1-p)*nxx/ny);
-                    //_interface(k,3)=1-2*(1-p)/(1-a(1));
+                    _interface(k,3)=1-2*(1-p)/(1-_interface(k,2));
                     _interface(k,4)=1;
 
                     if (_interface(k,1)==1)
@@ -161,14 +162,8 @@ void plic::interf()
               //_ninterf(i,j)=0;
               typinterf(i,j)=0;
             }
-          }//////////////////////////////////////////////////le else devait surement aller avant }
-          /*else
-          {
-            //_ninterf(i,j)=0;
-            typinterf(i,j)=0;
-          }*/
+          }
         }
-        //return 0;fonction void pas de return
 }
 
 

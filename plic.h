@@ -17,7 +17,6 @@ class plic {
   double grad_y(const int i, const int j);
   void interf();
   const Eigen::MatrixXd Get_interface() const {return _interface;};
-  const Eigen::MatrixXd Get_ninterf() const {return _ninterf;};
 
   private:
   recul *_recul;
