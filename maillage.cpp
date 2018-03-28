@@ -1,6 +1,7 @@
 #include "maillage.h"
-
+#include <iostream>
 using namespace Eigen;
+using namespace std;
 
 // constructeur maillage par défaut
 Maillage::Maillage(){}
@@ -24,15 +25,11 @@ Cartesien2D::Cartesien2D() : Maillage()
   _coordZ.resize(_nbZ);
   _indices.resize(_nbX*_nbZ);
 
-  for (int i = 0 ; i < _nbX*_nbZ ; i++)
-  {
-    _indices(i) = i;
-  }
-
   for (int i = 0 ; i < _nbZ ; i++)
   {
     for (int j = 0 ; j < _nbX ; j++)
     {
+      _indices(i*_nbX+j) = i*_nbX+j;
       _coordX(i*_nbX+j) = _deltaX*j + _deltaX/2;
       _coordZ(i*_nbX+j) = _deltaZ*i + _deltaZ/2;
     }
@@ -55,15 +52,11 @@ Cartesien2D::Cartesien2D(std::string name, double deltaX, double deltaZ, double 
   _coordZ.resize(_nbX*_nbZ);
   _indices.resize(_nbX*_nbZ);
 
-  for (int i = 0 ; i < _nbX*_nbZ ; i++)
-  {
-    _indices(i) = i;
-  }
-
   for (int i = 0 ; i < _nbZ ; i++)
   {
     for (int j = 0 ; j < _nbX ; j++)
     {
+      _indices(i*_nbX+j) = i*_nbX+j;
       _coordX(i*_nbX+j) = _deltaX*j + _deltaX/2;
       _coordZ(i*_nbX+j) = _deltaZ*i + _deltaZ/2;
     }
@@ -85,15 +78,10 @@ Cartesien3D::Cartesien3D() : Maillage()
   _nbY = _Ly/_deltaY;
   _nbZ = _Lz/_deltaZ;
 
-  _coordX.resize(_nbX);
-  _coordY.resize(_nbY);
-  _coordZ.resize(_nbZ);
+  _coordX.resize(_nbX*_nbZ*_nbY);
+  _coordY.resize(_nbX*_nbZ*_nbY);
+  _coordZ.resize(_nbX*_nbZ*_nbY);
   _indices.resize(_nbX*_nbZ*_nbY);
-
-  for (int i = 0 ; i < _nbX*_nbZ*_nbY ; i++)
-  {
-    _indices(i) = i;
-  }
 
   for (int i = 0 ; i < _nbZ ; i++)
   {
@@ -101,9 +89,10 @@ Cartesien3D::Cartesien3D() : Maillage()
     {
       for (int k = 0 ; k < _nbX ; k++)
       {
-      _coordX(i*_nbX*_nbY+k) = _deltaX*k + _deltaX/2;
-      _coordY(i*_nbX*_nbY+k) = _deltaY*j + _deltaY/2;
-      _coordZ(i*_nbX*_nbY+k) = _deltaZ*i + _deltaZ/2;
+      _indices(i*_nbX*_nbY + j*_nbX + k) = i*_nbX*_nbY + j*_nbX + k;
+      _coordX(i*_nbX*_nbY + j*_nbX + k) = _deltaX*k + _deltaX/2;
+      _coordY(i*_nbX*_nbY + j*_nbX + k) = _deltaY*j + _deltaY/2;
+      _coordZ(i*_nbX*_nbY + j*_nbX + k) = _deltaZ*i + _deltaZ/2;
       }
     }
   }
@@ -125,7 +114,7 @@ Cartesien3D::Cartesien3D(std::string name, double deltaX, double deltaY, double 
   _nbZ = _Lz/_deltaZ;
 
   _coordX.resize(_nbX*_nbZ*_nbY);
-  _coordZ.resize(_nbX*_nbZ*_nbY);
+  _coordY.resize(_nbX*_nbZ*_nbY);
   _coordZ.resize(_nbX*_nbZ*_nbY);
   _indices.resize(_nbX*_nbZ*_nbY);
 
@@ -135,9 +124,10 @@ Cartesien3D::Cartesien3D(std::string name, double deltaX, double deltaY, double 
     {
       for (int k = 0 ; k < _nbX ; k++)
       {
-      _coordX(i*_nbX*_nbY+k*_nbY) = deltaX*k + deltaX/2;
-      _coordY(i*_nbX*_nbY+k*_nbY) = deltaY*j + deltaY/2;
-      _coordZ(i*_nbX*_nbY+k*_nbY) = deltaZ*i + deltaZ/2;
+      _indices(i*_nbX*_nbY + j*_nbX + k) = i*_nbX*_nbY + j*_nbX + k;
+      _coordX(i*_nbX*_nbY + j*_nbX + k) = _deltaX*k + _deltaX/2;
+      _coordY(i*_nbX*_nbY + j*_nbX + k) = _deltaY*j + _deltaY/2;
+      _coordZ(i*_nbX*_nbY + j*_nbX + k) = _deltaZ*i + _deltaZ/2;
       }
     }
   }

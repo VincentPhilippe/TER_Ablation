@@ -9,7 +9,7 @@
 class read_data {
 private:
   std::string _file_name;
-  double _dx, _dz, _Lx, _Lz, _dt, _tfinal, _D;
+  double _dx, _dz, _Lx, _Lz, _dt, _tfinal, _Diff;
   int _Nx;
 
   std::string _flux;
@@ -24,7 +24,7 @@ private:
   bool _if_Lz;
   bool _if_dt;
   bool _if_tfinal;
-  bool _if_D;
+  bool _if_Diff;
   bool _if_flux;
   bool _if_dim;
   bool _if_Da;
@@ -42,7 +42,7 @@ public: // Méthodes et opérateurs de la classe
   double Get_tfinal() const {return _tfinal;};
   double Get_Lx() const { return _Lx;};
   double Get_Lz() const { return _Lz;};
-  double Get_D() const { return _D;};
+  double Get_Diff() const { return _Diff;};
   std::string Get_flux() const {return _flux;};
   std::string Get_dim() const {return _dim;};
   Eigen::MatrixXd Get_Da() const {return _Da;};
