@@ -48,12 +48,19 @@ double plic::grad_y(const int i,const int j)
 
 void plic::interf()
 {
+    dx=_read_data->Get_dx();
+    dz=_read_data->Get_dz();
     _ninterf=_recul->Get_ninterf();
     _phi=_recul->Get_C_solide();
     int lon=_phi.cols();
     int lar=_phi.rows();
-    int k=0;
-    _ninterf.resize(lon,lar);
+    int _kmax=_recul->Get_nbinterface();
+    _interface.resize(_kmax,4);
+    tri.resize(1,3);
+    quad.resize(1,4);
+    penta.resize(1,5);
+    int num=0;
+    /*
     for (int i=1;i<lon;i++)
      {
         for (int j=1;j<lar;j++)
@@ -72,16 +79,18 @@ void plic::interf()
       }
     //ifinterf.resize(_squares.size());  //ifinterf(i)=1 si _squares(i) interface, 0 sinon
     _interface.resize(k,4) ;
-    //k=0;
+    */
+    k=0;
     _pointsupl=0;
     for (int i=1;i<lon;i++)
      {
         for (int j=1;j<lar;j++)
         {
             p=_phi(i,j);
+            num++;
             if ((p>0.) && (p<1.))   //si on est sur l'interface
             {
-                //k++;
+                k++;
                 //_ninterf(i)(j)=k;
 
                 //Calcul du gradient
@@ -94,12 +103,11 @@ void plic::interf()
                 //_pointsupl+=2;
                 if (p<=ny/(2*nxx))
                 {
-                    typinterf(i,j)=3;  //triangle vers la droite
-
-                    _interface(k,1)=sqrt(2*p*ny/nxx);
+                    //typinterf(i,j)=3;  //triangle vers la droite
+                    _interface(k,1)=dx*sqrt(2*p*ny/nxx);
                     _interface(k,2)=0;
                     _interface(k,3)=0;
-                    _interface(k,4)=2*p/_interface(k,1);
+                    _interface(k,4)=dz*2*p/_interface(k,1);
 
                     if (_interface(k,4)==1)   // si l'un des nouveaux points tombe sur l'angle du carré, on ne le compte pas comme point supplémentaire
                     {
@@ -110,10 +118,10 @@ void plic::interf()
                 {
                     typinterf(i,j)=5;  //pentagone vers la droite
 
-                    _interface(k,1)=1;
-                    _interface(k,2)=1-sqrt(2*(1-p)*nxx/ny);
-                    _interface(k,3)=1-2*(1-p)/(1-_interface(k,2));
-                    _interface(k,4)=1;
+                    _interface(k,1)=dx*1;
+                    _interface(k,2)=dx*(1-sqrt(2*(1-p)*nxx/ny));
+                    _interface(k,3)=dz*(1-2*(1-p)/(1-_interface(k,2)));
+                    _interface(k,4)=dz*1;
 
                     if (_interface(k,1)==1)
                     {
@@ -126,20 +134,20 @@ void plic::interf()
                     {
                         typinterf(i,j)=4; //quadrillatère vers la droite
 
-                        _interface(k,1)=1;
-                        _interface(k,2)=p-nxx/(2*ny);
+                        _interface(k,1)=dx*1;
+                        _interface(k,2)=dx*(p-nxx/(2*ny));
                         _interface(k,3)=0;
-                        _interface(k,4)=p+nxx/(2*ny);
+                        _interface(k,4)=dz*(p+nxx/(2*ny));
                     }
                     else
                     {
                         typinterf(i,j)=-4; //quadrillatère vers le haut
 
 
-                        _interface(k,1)=p+ny/(2*nxx);
+                        _interface(k,1)=dx*(p+ny/(2*nxx));
                         _interface(k,2)=0;
-                        _interface(k,3)=p-ny/(2*nxx);
-                        _interface(k,4)=1;
+                        _interface(k,3)=dz*(p-ny/(2*nxx));
+                        _interface(k,4)=dz*1;
                     }
                 }
                 if (nx<0)
@@ -159,7 +167,6 @@ void plic::interf()
             }
             else
             {
-              //_ninterf(i,j)=0;
               typinterf(i,j)=0;
             }
           }
@@ -167,8 +174,8 @@ void plic::interf()
 }
 
 
-/*
 
+/*
 // Sauvegarde la solution
 void plic::SaveSol( int n)
 {
@@ -282,5 +289,4 @@ void plic::SaveSol( int n)
 	cout<<sqrt(sum)<<endl;
 	solution.close();
 }
-
 */
