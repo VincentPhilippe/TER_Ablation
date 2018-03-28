@@ -1,12 +1,12 @@
 #ifndef PLIC_H
 #define PLIC_H
 
+#include "objet.h"
 #include <vector>
 #include <string>
 #include "Sparse"
 #include "Dense"
 #include "recul.h"
-
 
 class plic {
   public:
