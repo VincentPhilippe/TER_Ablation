@@ -24,8 +24,8 @@ recul3D::~recul3D()
 
 
 
-VectorXd recul3D::eqplan(double xa, double ya, double za, double xb, double yb, double zb, double xc, double yc, double zc)
-{
+  VectorXd recul3D::eqplan(double xa, double ya, double za, double xb, double yb, double zb, double xc, double yc, double zc)
+  {
     MatrixXd A;
     VectorXd vect;
     A.resize(4,4);
@@ -37,8 +37,8 @@ VectorXd recul3D::eqplan(double xa, double ya, double za, double xb, double yb, 
     return sol;
   }
 
-double recul3D::volume_pyramide(double xa, double ya, double za, double xb, double yb, double zb, double xc, double yc, double zc, double xd, double yd, double zd)//MatrixXd coord)
-{
+  double recul3D::volume_pyramide(double xa, double ya, double za, double xb, double yb, double zb, double xc, double yc, double zc, double xd, double yd, double zd)//MatrixXd coord)
+  {
     VectorXd sol;
     sol.resize(4);
     sol=eqplan(xa,ya,za,xb,yb,zb,xc,yc,zc);
@@ -60,8 +60,8 @@ double recul3D::volume_pyramide(double xa, double ya, double za, double xb, doub
 
   }
 
-double recul3D::surface_triangle(double xa, double ya, double za, double xb, double yb, double zb, double xc, double yc, double zc)
-{
+  double recul3D::surface_triangle(double xa, double ya, double za, double xb, double yb, double zb, double xc, double yc, double zc)
+  {
     double alpha, surface, la, lb, lc;
     la=sqrt((xc-xb)*(xc-xb)+(yc-yb)*(yc-yb)+(zc-zb)*(zc-zb));
     lb=sqrt((xc-xa)*(xc-xa)+(yc-ya)*(yc-ya)+(zc-za)*(zc-za));
@@ -73,8 +73,8 @@ double recul3D::surface_triangle(double xa, double ya, double za, double xb, dou
   }
 
   //cas 7 coin solide tous reste dans E
-void recul3D::recul3D_1(MatrixXd repere, MatrixXd coord, double vrdt)
-{
+  void recul3D::recul3D_1(MatrixXd repere, MatrixXd coord, double vrdt)
+  {
     double il, jl, kl;
     //attention repère reduit à D, E, G, H, M, O, Q, R
     il=repere(1,0);//attention pas la bonne ligne
@@ -106,14 +106,14 @@ void recul3D::recul3D_1(MatrixXd repere, MatrixXd coord, double vrdt)
     surf=surface_triangle(xa1,ya1,za1,xb1,yb1,zb1,xc1,yc1,zc1);
     voltot=surf*vrdt;
 
+    
 
 
-    //attention condition
     _C_solide[il][jl][kl]-=voltot/(_dx*_dy*_dz);
   }
 
-MatrixXd recul3D::repereglobal(int i, int j, int k)
-{
+  MatrixXd recul3D::repereglobal(int i, int j, int k)
+  {
     MatrixXd repere;
     repere.resize(18,3);
     repere.row(0) << i-1,j-1,k;//A
@@ -138,8 +138,8 @@ MatrixXd recul3D::repereglobal(int i, int j, int k)
     return repere;
   }
 
-MatrixXd recul3D::rotationz(MatrixXd repere_prec)
-{
+  MatrixXd recul3D::rotationz(MatrixXd repere_prec)
+  {
     MatrixXd repere_suiv;
     repere_suiv.resize(18,3);
     repere_suiv.row(0)=repere_prec.row(2);
@@ -164,8 +164,8 @@ MatrixXd recul3D::rotationz(MatrixXd repere_prec)
     return repere_suiv;
   }
 
-MatrixXd recul3D::reductionrepere(MatrixXd repere_prec)
-{
+  MatrixXd recul3D::reductionrepere(MatrixXd repere_prec)
+  {
     MatrixXd repere_suiv;
     repere_suiv.resize(8,3);
     repere_suiv.row(0)=repere_prec.row(3);//D
@@ -180,8 +180,8 @@ MatrixXd recul3D::reductionrepere(MatrixXd repere_prec)
     return repere_suiv;
   }
 
-MatrixXd recul3D::rotationcoin(MatrixXd repere_prec)
-{
+  MatrixXd recul3D::rotationcoin(MatrixXd repere_prec)
+  {
     MatrixXd repere_suiv;
     repere_suiv.resize(8,3);
     repere_suiv.row(0)=repere_prec.row(5);//O->D

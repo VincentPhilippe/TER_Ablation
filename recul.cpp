@@ -52,10 +52,16 @@ void recul::recul_surface()
         //calcul de l'angle alpha
         double xa, za, xb, zb, t_alpha, alpha;
 
-        xa = -j*_dx + _interface(0,k-1);
+        //repere local
+        xa = _interface(0,k-1);
+        za = _interface(1,k-1);
+        xb = _interface(2,k-1);
+        zb = _interface(3,k-1);
+
+        /*xa = -j*_dx + _interface(0,k-1);
         za = (i+1)*_dz - _interface(1,k-1);
         xb = -j*_dx + _interface(2,k-1);
-        zb = (i+1)*_dz - _interface(3,k-1);
+        zb = (i+1)*_dz - _interface(3,k-1);*/
         t_alpha = (zb-za)/(xb-xa);
         alpha = atan(t_alpha);
 
