@@ -59,6 +59,9 @@ void plic::interf()
     tri.resize(1,3);
     quad.resize(1,4);
     penta.resize(1,5);
+    tri1.resize(1,3);
+    quad1.resize(1,4);
+    penta1.resize(1,5);
     int num=0;
     /*
     for (int i=1;i<lon;i++)
@@ -87,7 +90,6 @@ void plic::interf()
         for (int j=1;j<lar;j++)
         {
             p=_phi(i,j);
-            num++;
             if ((p>0.) && (p<1.))   //si on est sur l'interface
             {
                 k++;
@@ -104,10 +106,14 @@ void plic::interf()
                 if (p<=ny/(2*nxx))
                 {
                     //typinterf(i,j)=3;  //triangle vers la droite
+                    num+=2;
                     _interface(k,1)=dx*sqrt(2*p*ny/nxx);
                     _interface(k,2)=0;
                     _interface(k,3)=0;
                     _interface(k,4)=dz*2*p/_interface(k,1);
+
+                    //pttri1(0,0)=i*dx
+                    tri1(0,0)=lar;
 
                     if (_interface(k,4)==1)   // si l'un des nouveaux points tombe sur l'angle du carré, on ne le compte pas comme point supplémentaire
                     {
@@ -174,8 +180,8 @@ void plic::interf()
 }
 
 
-
 /*
+
 // Sauvegarde la solution
 void plic::SaveSol( int n)
 {

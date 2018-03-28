@@ -30,7 +30,7 @@ class plic {
   Eigen::MatrixXd _interface; //_interface[k][ax,ay,bx,by], où k est le numéro de la case, les coordonnées sont en locales, 0 en bas à gauche
   Eigen::MatrixXd tri,quad,penta;  //contient les somments pour chaque polygones
   Eigen::MatrixXd pttri,ptquad,ptpenta; //contient les coord des sommets
-
+  Eigen::MatrixXd tri1,quad1,penta1; //outils
   // Sauvegarde la solution
 	void SaveSol( int n);
 
