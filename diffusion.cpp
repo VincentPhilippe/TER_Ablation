@@ -4,14 +4,14 @@
 using namespace std;
 using namespace Eigen;
 
-diffusion::diffusion(read_data& data, Maillage& maillage)
+diffusion::diffusion(read_data& data, Cartesien2D& maillage)
  : _data(data), _maillage(maillage)
 {
   dx = _data.Get_dx();
   dz = _data.Get_dz();
 
   _concentration = _data.Get_C0();
-  _vitesse = MatrixXd::Zero(maillage.GetNx());
+  _vitesse = VectorXd::Zero(_maillage.GetNx());
 }
 
 void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
@@ -26,15 +26,15 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
     for(int i = 1; i < _maillage.GetNx(); i++){
       j = 1;
       flux = 0;
-      while(plic->Get_ninterf()[i,j] == 0){
+      while(_plic->Get_ninterf()(i,j) == 0){
         flux += fluxGauche(i,j);
         flux += fluxBas(i,j);
         flux += fluxDroite(i,j);
         flux += fluxHaut(i,j);
 
-        C1[i,j] = _concentration[i,j] + (dt/dx*dz)*flux;
+        C1(i,j) = _concentration(i,j) + (dt/dx*dz)*flux;
 
-        erreur += abs(C1[i,j] - _concentration[i,j]);
+        erreur += abs(C1(i,j) - _concentration(i,j));
 
         j++;
 
@@ -52,12 +52,12 @@ double diffusion::fluxGauche(int i, int j)
   switch(watch(i-1,j))
   {
     case BORD_GAUCHE:
-      flux = -(_concentration[Nx,j]-_concentration[i,j])/dx;
+      flux = -(_concentration(_maillage.GetNx(),j)-_concentration(i,j))/dx;
       flux *= longueurArete(i,j,LEFT);
       break;
 
     default :
-      flux = -(_concentration[i-1,j]-_concentration[i,j])/dx;
+      flux = -(_concentration(i-1,j)-_concentration(i,j))/dx;
       flux *= longueurArete(i,j,LEFT);
       break;
   }
@@ -73,7 +73,7 @@ double diffusion::fluxBas(int i, int j)
       break;
 
     default :
-      flux = -(_concentration[i,j+1]-_concentration[i,j])/dz;
+      flux = -(_concentration(i,j+1)-_concentration(i,j))/dz;
       flux *= longueurArete(i,j,BOTTOM);
       break;
   }
@@ -85,12 +85,12 @@ double diffusion::fluxDroite(int i, int j)
   switch(watch(i+1,j))
   {
     case BORD_DROIT:
-      flux = -(_concentration[0,j]-_concentration[i,j])/dx;
+      flux = -(_concentration(0,j)-_concentration(i,j))/dx;
       flux *= longueurArete(i,j,RIGHT);
       break;
 
     default :
-      flux = -(_concentration[i+1,j]-_concentration[i,j])/dx;
+      flux = -(_concentration(i+1,j)-_concentration(i,j))/dx;
       flux *= longueurArete(i,j,RIGHT);
       break;
   }
@@ -102,12 +102,12 @@ double diffusion::fluxHaut(int i, int j)
   switch(watch(i,j-1))
   {
     case BORD_HAUT:
-      flux = -(1-_concentration[i,j])/dz;
+      flux = -(1-_concentration(i,j))/dz;
       flux *= longueurArete(i,j,UP);
       break;
 
     default :
-      flux = -(_concentration[i,j-1]-_concentration[i,j])/dz;
+      flux = -(_concentration(i,j-1)-_concentration(i,j))/dz;
       flux *= longueurArete(i,j,UP);
       break;
   }
@@ -118,7 +118,6 @@ double diffusion::longueurArete(int k, int l, enum Direction direction)
 
 
 
-  }
 }
 
 void diffusion::vitesse() // Permet de donner la vitesse normale en chaque point de la surface
@@ -145,10 +144,10 @@ enum State_Case diffusion::watch(int i, int j) // Regarde l'état de la case (i,
     return(BORD_DROIT);
   }
 
-  if(_plic->Get_ninterf()[i,j] > 0){
+  if(_plic->Get_ninterf()(i,j) > 0){
     return(INTERFACE);
   }
-  if(_plic->Get_ninterf()[i,j] = -1){
+  if(_plic->Get_ninterf()(i,j) == -1){
     return(SOLIDE);
   }
 
