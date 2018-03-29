@@ -61,6 +61,7 @@ double diffusion::fluxGauche(int i, int j)
       flux *= longueurArete(i,j,LEFT);
       break;
   }
+  return(flux);
 }
 
 double diffusion::fluxBas(int i, int j)
@@ -73,15 +74,13 @@ double diffusion::fluxBas(int i, int j)
       break;
 
     default :
-<<<<<<< HEAD
       flux = -(_concentration[i,j+1]-_concentration[i,j])/dz;
       flux *= longueurArete(i,j,DOWN);
-=======
       flux = -(_concentration(i,j+1)-_concentration(i,j))/dz;
       flux *= longueurArete(i,j,BOTTOM);
->>>>>>> 4c3dae7aa2af92daa39691ab5488aa149f643f0a
       break;
   }
+  return(flux);
 }
 
 double diffusion::fluxDroite(int i, int j)
@@ -99,6 +98,7 @@ double diffusion::fluxDroite(int i, int j)
       flux *= longueurArete(i,j,RIGHT);
       break;
   }
+  return(flux);
 }
 
 double diffusion::fluxHaut(int i, int j)
@@ -116,17 +116,46 @@ double diffusion::fluxHaut(int i, int j)
       flux *= longueurArete(i,j,UP);
       break;
   }
+  return(flux);
 }
 
-double diffusion::longueurArete(int k, int l, enum Direction direction)
+double diffusion::longueurArete(int i, int j, enum Direction direction)
 {
-<<<<<<< HEAD
-  
-=======
+  enum State_Cell courante, voisine;
+  int num_cell, k=0;
+  Matrix< double, 2, 4> liste;
+
+  if(watchCell(i,j)==INTERFACE)
+  {
+      num_cell = int()_plic->Get_ninterface()(i,j);
+      liste(0,k) = _plic->Get_interface()(0,numcell-1);
+      liste(1,k) = _plic->Get_interface()(1,numcell-1);
+      k++;
+      liste(0,k) = _plic->Get_interface()(2,numcell-1);
+      liste(1,k) = _plic->Get_interface()(3,numcell-1);
+      k++;
+
+  }
+  switch(direction)
+  {
+    case LEFT:
+      if(watchCell((i-1+_maillage.GetNz())%_maillage.GetNz(),j)==INTERFACE)
+      {
+        num_cell = int()_plic->Get_ninterface()(i,j);
+        liste(0,k) = _plic->Get_interface()(0,numcell-1);
+        liste(1,k) = _plic->Get_interface()(1,numcell-1);
+        k++;
+        liste(0,k) = _plic->Get_interface()(2,numcell-1);
+        liste(1,k) = _plic->Get_interface()(3,numcell-1);
+        k++;
+      }
+
+
+  }
 
 
 
->>>>>>> 4c3dae7aa2af92daa39691ab5488aa149f643f0a
+  }
 }
 
 void diffusion::vitesse() // Permet de donner la vitesse normale en chaque point de la surface

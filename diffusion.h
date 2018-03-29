@@ -15,7 +15,7 @@ enum State_Cell{
 };
 
 enum State_Interf{
-  AIR, SOLIDE, MIXTE
+  AA, SS, AS
 };
 
 enum Direction{

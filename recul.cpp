@@ -52,10 +52,16 @@ void recul::recul_surface()
         //calcul de l'angle alpha
         double xa, za, xb, zb, t_alpha, alpha;
 
-        xa = -j*_dx + _interface(0,k-1);
+        //repere local
+        xa = _interface(0,k-1);
+        za = _interface(1,k-1);
+        xb = _interface(2,k-1);
+        zb = _interface(3,k-1);
+
+        /*xa = -j*_dx + _interface(0,k-1);
         za = (i+1)*_dz - _interface(1,k-1);
         xb = -j*_dx + _interface(2,k-1);
-        zb = (i+1)*_dz - _interface(3,k-1);
+        zb = (i+1)*_dz - _interface(3,k-1);*/
         t_alpha = (zb-za)/(xb-xa);
         alpha = atan(t_alpha);
 
@@ -79,7 +85,7 @@ void recul::recul_surface()
         coord(2,1)=zc;
         coord(3,0)=xd;
         coord(3,1)=zd;
-        
+
         //identification du cas et modification du tableau des concentrations en solide
         if (xc<0) {
           if (xd<0) {
@@ -689,7 +695,7 @@ void recul::recul18(int i, int j, double alpha, double vrdt, MatrixXd coord)
 
 void recul::cpositive()
 {
-  int k=0;
+  _nbinterface=0;
   for (int i=0; i<_nz; i++) {
     for (int j = 0; j <_nx; j++) {
       if (_C_solide(i,j)<=0) {
@@ -698,8 +704,8 @@ void recul::cpositive()
       } else if (_C_solide(i,j)>=1) {
         _ninterf(i,j)=-1;
       } else {
-        k=k+1;
-        _ninterf(i,j)=k;
+        _nbinterface=_nbinterface+1;
+        _ninterf(i,j)=_nbinterface;
       }
     }
   }
