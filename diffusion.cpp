@@ -26,7 +26,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
     for(int i = 1; i < _maillage.GetNx(); i++){
       j = 1;
       flux = 0;
-      while(_plic->Get_ninterf()(i,j) == 0){
+      while(_plic->Get_interface()(i,j) == 0){
         flux += fluxGauche(i,j);
         flux += fluxBas(i,j);
         flux += fluxDroite(i,j);
@@ -74,7 +74,7 @@ double diffusion::fluxBas(int i, int j)
       break;
 
     default :
-      flux = -(_concentration[i,j+1]-_concentration[i,j])/dz;
+      flux = -(_concentration(i,j+1)-_concentration(i,j))/dz;
       flux *= longueurArete(i,j,DOWN);
       flux = -(_concentration(i,j+1)-_concentration(i,j))/dz;
       flux *= longueurArete(i,j,BOTTOM);
@@ -127,12 +127,12 @@ double diffusion::longueurArete(int i, int j, enum Direction direction)
 
   if(watchCell(i,j)==INTERFACE)
   {
-      num_cell = int()_plic->Get_ninterface()(i,j);
-      liste(0,k) = _plic->Get_interface()(0,numcell-1);
-      liste(1,k) = _plic->Get_interface()(1,numcell-1);
+      num_cell = _plic->Get_interface()(i,j);
+      liste(0,k) = _plic->Get_interface()(0,num_cell-1);
+      liste(1,k) = _plic->Get_interface()(1,num_cell-1);
       k++;
-      liste(0,k) = _plic->Get_interface()(2,numcell-1);
-      liste(1,k) = _plic->Get_interface()(3,numcell-1);
+      liste(0,k) = _plic->Get_interface()(2,num_cell-1);
+      liste(1,k) = _plic->Get_interface()(3,num_cell-1);
       k++;
 
   }
@@ -141,19 +141,14 @@ double diffusion::longueurArete(int i, int j, enum Direction direction)
     case LEFT:
       if(watchCell((i-1+_maillage.GetNz())%_maillage.GetNz(),j)==INTERFACE)
       {
-        num_cell = int()_plic->Get_ninterface()(i,j);
-        liste(0,k) = _plic->Get_interface()(0,numcell-1);
-        liste(1,k) = _plic->Get_interface()(1,numcell-1);
+        num_cell = _plic->Get_interface()(i,j);
+        liste(0,k) = _plic->Get_interface()(0,num_cell-1);
+        liste(1,k) = _plic->Get_interface()(1,num_cell-1);
         k++;
-        liste(0,k) = _plic->Get_interface()(2,numcell-1);
-        liste(1,k) = _plic->Get_interface()(3,numcell-1);
+        liste(0,k) = _plic->Get_interface()(2,num_cell-1);
+        liste(1,k) = _plic->Get_interface()(3,num_cell-1);
         k++;
       }
-
-
-  }
-
-
 
   }
 }
@@ -182,10 +177,10 @@ enum State_Cell diffusion::watchCell(int i, int j) // Regarde l'état de la case
     return(BORD_DROIT);
   }
 
-  if(_plic->Get_ninterf()(i,j) > 0){
+  if(_plic->Get_interface()(i,j) > 0){
     return(INTERFACE);
   }
-  if(_plic->Get_ninterf()(i,j) == -1){
+  if(_plic->Get_interface()(i,j) == -1){
     return(SOLIDE);
   }
 
