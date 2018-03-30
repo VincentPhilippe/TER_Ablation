@@ -56,13 +56,16 @@ void plic::interf()
     int lar=_phi.rows();
     int _kmax=_recul->Get_nbinterface();
     _interface.resize(_kmax,4);
-    tri.resize(1,3);
-    quad.resize(1,4);
-    penta.resize(1,5);
-    tri1.resize(1,3);
-    quad1.resize(1,4);
-    penta1.resize(1,5);
+    tri.resize(3*lon,3); //arbitraire pour le moment, assez grand pour contenir tous les triangles
+    quad.resize(3*lon,4);
+    penta.resize(3*lon,5);
+    pttri.resize(9*lon,3);
+    ptquad.resize(12*lon,4);
+    ptpenta.resize(15*lon,5);
     int num=0;
+    int nbtri=0;
+    int nbquad=0;
+    int nbpenta=0;
     /*
     for (int i=1;i<lon;i++)
      {
@@ -93,7 +96,6 @@ void plic::interf()
             if ((p>0.) && (p<1.))   //si on est sur l'interface
             {
                 k++;
-                //_ninterf(i)(j)=k;
 
                 //Calcul du gradient
                 nx=grad_x(i,j)/sqrt(grad_x(i,j)*grad_x(i,j)+grad_y(i,j)*grad_y(i,j));
@@ -112,12 +114,46 @@ void plic::interf()
                     _interface(k,3)=0;
                     _interface(k,4)=dz*2*p/_interface(k,1);
 
-                    //pttri1(0,0)=i*dx
-                    tri1(0,0)=lar;
+                    //on rentre les coordonnées des sommets du triangles
+
+
+                    if (nx>0)
+                    {
+                      pttri(nbtri*3,0)=i*dx;
+                      pttri(nbtri*3+1,0)=i*dx+_interface(k,1);
+                      pttri(nbtri*3+2,0)=i*dx;
+                    }
+                    else //si orienté vers la gauche
+                    {
+                      pttri(nbtri*3,0)=(i+1)*dx;
+                      pttri(nbtri*3+1,0)=i*dx+dx-_interface(k,1);
+                      pttri(nbtri*3+2,0)=(i+1)*dx;
+                    }
+                    pttri(nbtri*3,1)=(j+1)*dz;
+                    pttri(nbtri*3,2)=0.0;
+                    pttri(nbtri*3+1,1)=(j+1)*dz;
+                    pttri(nbtri*3+1,2)=0.0;
+                    pttri(nbtri*3+2,1)=(j+1)*dz-_interface(k,4);
+                    pttri(nbtri*3+2,2)=0.0;
+
+                    if (nx<0)
+                    {
+                      for (int l=0;l<3;l++)
+                      {
+
+                      }
+                    }
+
+                    //on assigne les sommets au triangle
+
+                    //1er essai : on définit plusieurs fois les mêmes points
+                    //tri(nbtri,0)=;
+                    nbtri++;
 
                     if (_interface(k,4)==1)   // si l'un des nouveaux points tombe sur l'angle du carré, on ne le compte pas comme point supplémentaire
                     {
                         //_pointsupl-=1
+                        cout<<"point sur un angle"<<endl;
                     }
                 }
                 else if (p>=1-ny/(2*nxx))
@@ -125,9 +161,41 @@ void plic::interf()
                     typinterf(i,j)=5;  //pentagone vers la droite
 
                     _interface(k,1)=dx*1;
-                    _interface(k,2)=dx*(1-sqrt(2*(1-p)*nxx/ny));
-                    _interface(k,3)=dz*(1-2*(1-p)/(1-_interface(k,2)));
+                    _interface(k,2)=dz*(1-sqrt(2*(1-p)*nxx/ny));
+                    _interface(k,3)=dx*(1-2*(1-p)/(1-(_interface(k,2))/dz));
                     _interface(k,4)=dz*1;
+
+                    //on rentre les coordonnées des sommets
+
+
+                    if (nx>0)
+                    {
+                      ptpenta(nbpenta*5,0)=(i+1)*dx;
+                      ptpenta(nbpenta*5+1,0)=i*dx+_interface(k,1);
+                      ptpenta(nbpenta*5+2,0)=i*dx+_interface(k,3);
+                      ptpenta(nbpenta*5+3,0)=i*dx;
+                      ptpenta(nbpenta*5+4,0)=i*dx;
+                    }
+                    else //si orienté vers la gauche
+                    {
+                      ptpenta(nbpenta*5,0)=(i)*dx;
+                      ptpenta(nbpenta*5+1,0)=i*dx+dx-_interface(k,1);
+                      ptpenta(nbpenta*5+2,0)=i*dx+dx-_interface(k,3);
+                      ptpenta(nbpenta*5+3,0)=(i+1)*dx;
+                      ptpenta(nbpenta*5+4,0)=(i+1)*dx;
+                    }
+                    ptpenta(nbpenta*5,1)=(j+1)*dz;
+                    ptpenta(nbpenta*5,2)=0.0;
+                    ptpenta(nbpenta*5+1,1)=(j+1)*dz-_interface(k,2);
+                    ptpenta(nbpenta*5+1,2)=0.0;
+                    ptpenta(nbpenta*5+2,1)=j*dz;
+                    ptpenta(nbpenta*5+2,2)=0.0;
+                    ptpenta(nbpenta*5+3,1)=j*dz;
+                    ptpenta(nbpenta*5+3,2)=0.0;
+                    ptpenta(nbpenta*5+4,1)=(j+1)*dz;
+                    ptpenta(nbpenta*5+4,2)=0.0;
+
+                    nbpenta++;
 
                     if (_interface(k,1)==1)
                     {
@@ -138,23 +206,71 @@ void plic::interf()
                 {
                     if (nxx<ny)
                     {
-                        typinterf(i,j)=4; //quadrillatère vers la droite
+                        typinterf(i,j)=4; //quadrillatère vers le haut
 
                         _interface(k,1)=dx*1;
-                        _interface(k,2)=dx*(p-nxx/(2*ny));
+                        _interface(k,2)=dz*(p-nxx/(2*ny));
                         _interface(k,3)=0;
                         _interface(k,4)=dz*(p+nxx/(2*ny));
+                        //on rentre les coordonnées des sommets
+                        if (nx>0)
+                        {
+                          ptquad(nbquad*4,0)=i*dx;
+                          ptquad(nbquad*4+1,0)=(i+1)*dx;
+                          ptquad(nbquad*4+2,0)=(i+1)*dx;
+                          ptquad(nbquad*4+3,0)=i*dx;
+                        }
+                        else //si orienté vers la gauche
+                        {
+                          ptquad(nbquad*4,0)=(i+1)*dx;
+                          ptquad(nbquad*4+1,0)=(i)*dx;
+                          ptquad(nbquad*4+2,0)=(i)*dx;
+                          ptquad(nbquad*4+3,0)=(i+1)*dx;
+                        }
+                        ptquad(nbquad*4,1)=(j+1)*dz;
+                        ptquad(nbquad*4,2)=0.0;
+                        ptquad(nbquad*4+1,1)=(j+1)*dz;
+                        ptquad(nbquad*4+1,2)=0.0;
+                        ptquad(nbquad*4+2,1)=(j+1)*dz-_interface(k,2);
+                        ptquad(nbquad*4+2,2)=0.0;
+                        ptquad(nbquad*4+3,1)=(j+1)*dz-_interface(k,4);
+                        ptquad(nbquad*4+3,2)=0.0;
+
                     }
                     else
                     {
-                        typinterf(i,j)=-4; //quadrillatère vers le haut
-
+                        typinterf(i,j)=-4; //quadrillatère vers la droite
 
                         _interface(k,1)=dx*(p+ny/(2*nxx));
                         _interface(k,2)=0;
-                        _interface(k,3)=dz*(p-ny/(2*nxx));
+                        _interface(k,3)=dx*(p-ny/(2*nxx));
                         _interface(k,4)=dz*1;
+
+                        //on rentre les coordonnées des sommets
+                        if (nx>0)
+                        {
+                          ptquad(nbquad*4,0)=i*dx;
+                          ptquad(nbquad*4+1,0)=i*dx+_interface(k,1);
+                          ptquad(nbquad*4+2,0)=i*dx+_interface(k,3);
+                          ptquad(nbquad*4+3,0)=i*dx;
+                        }
+                        else //si orienté vers la gauche
+                        {
+                          ptquad(nbquad*4,0)=(i+1)*dx;
+                          ptquad(nbquad*4+1,0)=(i+1)*dx-_interface(k,1);
+                          ptquad(nbquad*4+2,0)=(i+1)*dx-_interface(k,3);
+                          ptquad(nbquad*4+3,0)=(i+1)*dx;
+                        }
+                        ptquad(nbquad*4,1)=(j+1)*dz;
+                        ptquad(nbquad*4,2)=0.0;
+                        ptquad(nbquad*4+1,1)=(j+1)*dz;
+                        ptquad(nbquad*4+1,2)=0.0;
+                        ptquad(nbquad*4+2,1)=(j)*dz;
+                        ptquad(nbquad*4+2,2)=0.0;
+                        ptquad(nbquad*4+3,1)=(j)*dz;
+                        ptquad(nbquad*4+3,2)=0.0;
                     }
+                    nbquad++;
                 }
                 if (nx<0)
                 {
@@ -167,13 +283,26 @@ void plic::interf()
                         typinterf(i,j)+=10;  //vers la gauche
                     }
 
-                    _interface(k,2)=1-_interface(k,2);
-                    _interface(k,4)=1-_interface(k,4);
+                    _interface(k,2)=dx-_interface(k,2);
+                    _interface(k,4)=dz-_interface(k,4);
                 }
             }
             else
             {
               typinterf(i,j)=0;
+              ptquad(nbquad*4,0)=(i+1)*dx;
+              ptquad(nbquad*4,1)=(j+1)*dz;
+              ptquad(nbquad*4,2)=0.0;
+              ptquad(nbquad*4+1,0)=(i+1)*dx;
+              ptquad(nbquad*4+1,1)=(j)*dz;
+              ptquad(nbquad*4+1,2)=0.0;
+              ptquad(nbquad*4+2,0)=(i)*dx;
+              ptquad(nbquad*4+2,1)=(j)*dz;
+              ptquad(nbquad*4+2,2)=0.0;
+              ptquad(nbquad*4+3,0)=(i)*dx;
+              ptquad(nbquad*4+3,1)=(j+1)*dz;
+              ptquad(nbquad*4+3,2)=0.0;
+              nbquad++;
             }
           }
         }
