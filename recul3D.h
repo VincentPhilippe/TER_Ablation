@@ -20,11 +20,11 @@ public:
   Eigen::VectorXd eqplan(std::vector<double> pta, std::vector<double> ptb, std::vector<double> ptc);
   double volume_pyramide(std::vector<double> pta, std::vector<double> ptb, std::vector<double> ptc, std::vector<double> ptd);//Eigen::MatrixXd coord);
   double surface_triangle(std::vector<double> pta, std::vector<double> ptb, std::vector<double> ptc);
-  void recul3D_1(Eigen::MatrixXd repere, Eigen::MatrixXd coord, double vrdt);
+  void recul3D_1(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
   Eigen::MatrixXd repereglobal(int i, int j, int k);
   void rotationz(Eigen::MatrixXd& repere_prec, std::vector<std::vector<double>>& coord);
-  Eigen::MatrixXd reductionrepere(Eigen::MatrixXd repere_prec);
-  Eigen::MatrixXd rotationcoin(Eigen::MatrixXd repere_prec);
+  void reductionrepere(Eigen::MatrixXd& repere_prec);
+  void rotationcoin(Eigen::MatrixXd& repere_prec, std::vector<std::vector<double>>& coord);
 
   inline std::vector<std::vector<std::vector<double> > > Get_C_solide(){return _C_solide;};
   inline std::vector<std::vector<std::vector<double> > > Get_ninterf(){return _ninterf;};
