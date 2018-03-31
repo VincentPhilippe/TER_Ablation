@@ -139,20 +139,42 @@ void plic::interf()
                     pttri(nbtri*3+2,1)=(j+1)*dz-_interface(k,4);
                     pttri(nbtri*3+2,2)=0.0;
 
-                    if (nx<0)
+                    //case opposée
+                    if (nx>0)
                     {
-                      for (int l=0;l<3;l++)
-                      {
-
-                      }
+                      ptpenta(nbpenta*5,0)=(i+1)*dx;
+                      ptpenta(nbpenta*5+1,0)=i*dx+_interface(k,1);
+                      ptpenta(nbpenta*5+2,0)=i*dx;
+                      ptpenta(nbpenta*5+3,0)=i*dx;
+                      ptpenta(nbpenta*5+4,0)=(i+1)*dx;
                     }
+                    else //si orienté vers la gauche
+                    {
+                      ptpenta(nbpenta*5,0)=(i+1)*dx;
+                      ptpenta(nbpenta*5+1,0)=i*dx+dx-_interface(k,1);
+                      ptpenta(nbpenta*5+2,0)=(i+1)*dx;
+                      ptpenta(nbpenta*5+3,0)=(i+1)*dx;
+                      ptpenta(nbpenta*5+4,0)=(i)*dx;
+                    }
+                    ptpenta(nbpenta*5,1)=(j+1)*dz;
+                    ptpenta(nbpenta*5,2)=0.0;
+                    ptpenta(nbpenta*5+1,1)=(j+1)*dz;
+                    ptpenta(nbpenta*5+1,2)=0.0;
+                    ptpenta(nbpenta*5+2,1)=(j+1)*dz-_interface(k,4);
+                    ptpenta(nbpenta*5+2,2)=0.0;
+                    ptpenta(nbpenta*5+3,1)=(j)*dz;
+                    ptpenta(nbpenta*5+3,2)=0.0;
+                    ptpenta(nbpenta*5+4,1)=(j)*dz;
+                    ptpenta(nbpenta*5+4,2)=0.0;
 
                     //on assigne les sommets au triangle
 
                     //1er essai : on définit plusieurs fois les mêmes points
                     //tri(nbtri,0)=;
                     trivalcase(nbtri)=1;
+                    pentvalcase(nbpenta)=0;
                     nbtri++;
+                    nbpenta++;
 
 
                     if (_interface(k,4)==1)   // si l'un des nouveaux points tombe sur l'angle du carré, on ne le compte pas comme point supplémentaire
@@ -200,8 +222,32 @@ void plic::interf()
                     ptpenta(nbpenta*5+4,1)=(j+1)*dz;
                     ptpenta(nbpenta*5+4,2)=0.0;
 
+
+                    //case opposée
+                    if (nx>0)
+                    {
+                      pttri(nbtri*3,0)=(i+1)*dx;
+                      pttri(nbtri*3+1,0)=(i+1)*dx
+                      pttri(nbtri*3+2,0)=i*dx+_interface(k,3);
+                    }
+                    else //si orienté vers la gauche
+                    {
+                      pttri(nbtri*3,0)=(i)*dx;
+                      pttri(nbtri*3+1,0)=i*dx;
+                      pttri(nbtri*3+2,0)=i*dx+dx-_interface(k,3);
+                    }
+                    pttri(nbtri*3,1)=(j)*dz;
+                    pttri(nbtri*3,2)=0.0;
+                    pttri(nbtri*3+1,1)=(j+1)*dz-_interface(k,2);
+                    pttri(nbtri*3+1,2)=0.0;
+                    pttri(nbtri*3+2,1)=j*dz;
+                    pttri(nbtri*3+2,2)=0.0;
+
+
                     pentvalcase(nbpenta)=1;
+                    trivalcase(nbtri)=0;
                     nbpenta++;
+                    nbtri++;
 
                     if (_interface(k,1)==1)
                     {
@@ -242,6 +288,30 @@ void plic::interf()
                         ptquad(nbquad*4+3,1)=(j+1)*dz-_interface(k,4);
                         ptquad(nbquad*4+3,2)=0.0;
 
+                        //case opposée
+                        if (nx>0)
+                        {
+                          ptquad(nbquad*4,0)=i*dx;
+                          ptquad(nbquad*4+1,0)=(i+1)*dx;
+                          ptquad(nbquad*4+2,0)=(i+1)*dx;
+                          ptquad(nbquad*4+3,0)=i*dx;
+                        }
+                        else //si orienté vers la gauche
+                        {
+                          ptquad(nbquad*4,0)=(i+1)*dx;
+                          ptquad(nbquad*4+1,0)=(i)*dx;
+                          ptquad(nbquad*4+2,0)=(i)*dx;
+                          ptquad(nbquad*4+3,0)=(i+1)*dx;
+                        }
+                        ptquad(nbquad*4,1)=(j)*dz;
+                        ptquad(nbquad*4,2)=0.0;
+                        ptquad(nbquad*4+1,1)=(j)*dz;
+                        ptquad(nbquad*4+1,2)=0.0;
+                        ptquad(nbquad*4+2,1)=(j+1)*dz-_interface(k,2);
+                        ptquad(nbquad*4+2,2)=0.0;
+                        ptquad(nbquad*4+3,1)=(j+1)*dz-_interface(k,4);
+                        ptquad(nbquad*4+3,2)=0.0;
+
                     }
                     else
                     {
@@ -275,11 +345,37 @@ void plic::interf()
                         ptquad(nbquad*4+2,2)=0.0;
                         ptquad(nbquad*4+3,1)=(j)*dz;
                         ptquad(nbquad*4+3,2)=0.0;
+
+                        //case opposée
+                        if (nx>0)
+                        {
+                          ptquad(nbquad*4,0)=(i+1)*dx;
+                          ptquad(nbquad*4+1,0)=i*dx+_interface(k,1);
+                          ptquad(nbquad*4+2,0)=i*dx+_interface(k,3);
+                          ptquad(nbquad*4+3,0)=(i+1)*dx;
+                        }
+                        else //si orienté vers la gauche
+                        {
+                          ptquad(nbquad*4,0)=(i)*dx;
+                          ptquad(nbquad*4+1,0)=(i+1)*dx-_interface(k,1);
+                          ptquad(nbquad*4+2,0)=(i+1)*dx-_interface(k,3);
+                          ptquad(nbquad*4+3,0)=(i)*dx;
+                        }
+                        ptquad(nbquad*4,1)=(j+1)*dz;
+                        ptquad(nbquad*4,2)=0.0;
+                        ptquad(nbquad*4+1,1)=(j+1)*dz;
+                        ptquad(nbquad*4+1,2)=0.0;
+                        ptquad(nbquad*4+2,1)=(j)*dz;
+                        ptquad(nbquad*4+2,2)=0.0;
+                        ptquad(nbquad*4+3,1)=(j)*dz;
+                        ptquad(nbquad*4+3,2)=0.0;
                     }
                     quadvalcase(nbquad)=1;
                     nbquad++;
+                    quadvalcase(nbquad)=0;
+                    nbquad++;
                 }
-                if (nx<0)
+                if (nx<0) //si orienté vers la gauche
                 {
                     if (typinterf(i,j)==-4)
                     {
