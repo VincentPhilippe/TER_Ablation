@@ -62,6 +62,9 @@ void plic::interf()
     pttri.resize(9*lon,3);
     ptquad.resize(12*lon,4);
     ptpenta.resize(15*lon,5);
+    trivalcase.resize(3*lon);
+    quadvalcase.resize(3*lon);
+    pentvalcase.resize(3*lon);
     int num=0;
     int nbtri=0;
     int nbquad=0;
@@ -148,7 +151,9 @@ void plic::interf()
 
                     //1er essai : on définit plusieurs fois les mêmes points
                     //tri(nbtri,0)=;
+                    trivalcase(nbtri)=1;
                     nbtri++;
+
 
                     if (_interface(k,4)==1)   // si l'un des nouveaux points tombe sur l'angle du carré, on ne le compte pas comme point supplémentaire
                     {
@@ -195,6 +200,7 @@ void plic::interf()
                     ptpenta(nbpenta*5+4,1)=(j+1)*dz;
                     ptpenta(nbpenta*5+4,2)=0.0;
 
+                    pentvalcase(nbpenta)=1;
                     nbpenta++;
 
                     if (_interface(k,1)==1)
@@ -270,6 +276,7 @@ void plic::interf()
                         ptquad(nbquad*4+3,1)=(j)*dz;
                         ptquad(nbquad*4+3,2)=0.0;
                     }
+                    quadvalcase(nbquad)=1;
                     nbquad++;
                 }
                 if (nx<0)
@@ -302,21 +309,26 @@ void plic::interf()
               ptquad(nbquad*4+3,0)=(i)*dx;
               ptquad(nbquad*4+3,1)=(j+1)*dz;
               ptquad(nbquad*4+3,2)=0.0;
+
+              quadvalcase(nbquad)=0;
               nbquad++;
             }
           }
         }
+        pttri.resize(nbtri*3,3);
+        ptquad.resize(nbquad*4,3);
+        ptpenta.resize(nbpenta*5,3);
 }
 
 
-/*
+
 
 // Sauvegarde la solution
 void plic::SaveSol( int n)
 {
 	string name_file = _results + "/solution_" + std::to_string(n) + ".vtk";
 
-  int nb_vert = (lon+1)*(lar+1) + pointsupl;  //nombre de points
+  int nb_vert = nbtri*3+nbquad*4+nbpenta*5  //nombre de points
 
   //assert((sol.size() == _triangles.size()) && "The size of the solution vector is not the same than the number of _triangles !");
 
@@ -330,6 +342,7 @@ void plic::SaveSol( int n)
   solution << "DATASET UNSTRUCTURED_GRID" << endl;
 
   solution << "POINTS " << nb_vert << " float " << endl;   //ajouter des points sur l'interface en fonction du type d'interface
+  /*
   for (int i = 0 ; i < lon+1 ; ++i)
   {
       for(int j=0;j<lar+1;j++)
@@ -349,9 +362,37 @@ void plic::SaveSol( int n)
           }
       }
   }
+  */
+  for (int i=0;i<nbtri*3;++i)
+  {
+    solution << pttri(i,0)<<" "<<pttri(i,1)<<" "<<pttri(i,2)<<endl;
+  }
+  for (int i=0;i<nbquad*4;++i)
+  {
+    solution << ptquad(i,0)<<" "<<ptquad(i,1)<<" "<<ptquad(i,2)<<endl;
+  }
+  for (int i=0;i<nbpenta*4;++i)
+  {
+    solution << ptpenta(i,0)<<" "<<ptpenta(i,1)<<" "<<ptpenta(i,2)<<endl;
+  }
   solution << endl;
 
-  solution << "CELLS " << lon*(lar+1) << " " << lon*lar*4 << endl;
+
+  solution << "CELLS " << nbtri+nbquad+nbpenta << " " << (nbtri+nbquad+nbpenta)*4 << endl; //deuxieme terme kesako ?
+  for (int i;i<nbtri;++i)
+  {
+    solution << 3 << " "<< i*3 <<" "<<i*3 +1<<" "<<i*3 +2<<endl;
+  }
+  for (int i;i<nbquad;++i)
+  {
+    solution << 4 << " "<< nbtri+i*4 <<" "<<nbtri+i*4 +1<<" "<<nbtri+i*4 +2<<" "<<nbtri+i*4 +3<<endl;
+  }
+  for (int i;i<nbpenta;++i)
+  {
+    solution << 5 << " "<< nbtri+nbquad+i*5 <<" "<<nbtri+nbquad+i*5 +1<<" "<<nbtri+nbquad+i*5 +2<<" "<<nbtri+nbquad+i*5 +3<<" "<<nbtri+nbquad+i*5 +4<<endl;
+  }
+
+/*
   for (int i = 0 ; i < lon ; ++i)
   {
       for (int j=0;j<lar;j++)
@@ -370,9 +411,24 @@ void plic::SaveSol( int n)
         }
       }
   }
+  */
   solution << endl;
 
-  solution << "CELL_TYPES " << lon*(lar+1) << endl;
+  solution << "CELL_TYPES " << nbtri+nbquad+nbpenta << endl;
+  for (int i;i<nbtri;++i)
+  {
+    solution << 5<<endl;
+  }
+  for (int i;i<nbquad;++i)
+  {
+    solution << 9<<endl;
+  }
+  for (int i;i<nbpenta;++i)
+  {
+    solution << 7<<endl;
+  }
+
+  /*
   for (int i = 0 ; i < lon ; ++i)
   {
       for (int j = 0 ; j < lon ; ++j)
@@ -395,12 +451,26 @@ void plic::SaveSol( int n)
           }
       }
   }
+  */
   solution << endl;
 
-  solution << "CELL_DATA " << _squares.size() << endl;
+  solution << "CELL_DATA " << nbtri+nbquad+nbpenta << endl;
   solution << "SCALARS sol float 1" << endl;
   solution << "LOOKUP_TABLE default" << endl;
-	double sum=0;
+	//double sum=0;
+  for (int i;i<nbtri;i++)
+  {
+    solution << trivalcase(i)<<endl;
+  }
+  for (int i;i<nbquad;i++)
+  {
+    solution << quadvalcase(i)<<endl;
+  }
+  for (int i;i<nbpenta;i++)
+  {
+    solution << pentvalcase(i)<<endl;
+  }
+  /*
   for (int i = 0 ; i < lon ; ++i)
   {
       for (int j=0;j<lar;++j)
@@ -419,9 +489,9 @@ void plic::SaveSol( int n)
           }
       }
   }
+  */
   solution << endl;
 
-	cout<<sqrt(sum)<<endl;
+	//cout<<sqrt(sum)<<endl;
 	solution.close();
 }
-*/
