@@ -10,7 +10,7 @@ class read_data {
 private:
   std::string _file_name;
   double _dx, _dz, _Lx, _Lz, _dt, _tfinal, _Diff;
-  int _Nx;
+  int _Nx, _Nz;
 
   std::string _flux;
   std::string _dim;
@@ -39,6 +39,7 @@ public: // Méthodes et opérateurs de la classe
   double Get_dz() const {return _dz;};
   double Get_dt() const {return _dt;};
   double Get_Nx() const { return _Nx;};
+  double Get_Nz() const { return _Nz;};
   double Get_tfinal() const {return _tfinal;};
   double Get_Lx() const { return _Lx;};
   double Get_Lz() const { return _Lz;};

@@ -75,7 +75,7 @@ void recul::recul_surface()
         xd = xb + vrdt*sin(alpha);
         zd = zb - vrdt*cos(alpha);
 
-        MatrixXd coord;
+        /*MatrixXd coord;
         coord.resize(4,2);
         coord(0,0)=xa;
         coord(0,1)=za;
@@ -84,32 +84,104 @@ void recul::recul_surface()
         coord(2,0)=xc;
         coord(2,1)=zc;
         coord(3,0)=xd;
-        coord(3,1)=zd;
+        coord(3,1)=zd;*/
+
+        l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
+        alpha=abs(alpha);
 
         //identification du cas et modification du tableau des concentrations en solide
         if (xc<0) {
           if (xd<0) {
             if (zc<0) {//yd forcément négatif
-              recul3(i, j, alpha, vrdt, coord);
+              //recul3(i, j, alpha, vrdt, coord);
+              double Stot, S1, S2, S3, S4;
+              Stot=vrdt*l;
+              S1 = za*za*tan(alpha)/2;
+              S4 = za*xb/2;
+              S3 = xb*xb/(2*tan(alpha));
+              S2 = Stot-(S1+S3+S4);
+              _C_solide(i,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx)%_nx)-S1/(_dx*_dz);
+              _C_solide(i,j)=_C_solide(i,j)-(S4)/(_dx*_dz);
+              if (i+1<_nz) {
+                _C_solide(i+1,(j-1+_nx)%_nx)=_C_solide(i+1,(j-1+_nx)%_nx)-S2/(_dx*_dz);
+                _C_solide(i+1,j)=_C_solide(i+1,j)-S3/(_dx*_dz);
+              }
             } else {//yc>0
               if (zd<0) {
-                recul2(i, j, alpha, vrdt, coord);
+                //recul2(i, j, alpha, vrdt, coord);
+                double Stot, S1, S2, S3, S4;
+                Stot=vrdt*l;
+                S3 = xb*xb/(2*tan(alpha));
+                S1 = -xc*zc-zc*zc/(2*tan(alpha))+xc*xc/(2*tan(alpha));
+                S2 = xd*zd-xd*xd/(2*tan(alpha))+zd*zd/(2*tan(alpha));
+                S4 = Stot-(S1+S2+S3);
+                _C_solide(i,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx)%_nx)-S1/(_dx*_dz);
+                _C_solide(i,j)=_C_solide(i,j)-(S4)/(_dx*_dz);
+                if (i+1<_nz) {
+                  _C_solide(i+1,(j-1+_nx)%_nx)=_C_solide(i+1,(j-1+_nx)%_nx)-S2/(_dx*_dz);
+                  _C_solide(i+1,j)=_C_solide(i+1,j)-S3/(_dx*_dz);
+                }
               } else {//yd>0
-                recul1(i, j, alpha, vrdt, coord);
+                //recul1(i, j, alpha, vrdt, coord);
+                double Stot, S1, S2, l1, l2;
+                Stot=vrdt*l;
+                l1 = -xc*sin(alpha);
+                l2 = -xd*sin(alpha);
+                S1 = l*(l1+l2)/2;
+                S2 = Stot-S1;
+                _C_solide(i,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx)%_nx)-S1/(_dx*_dz);
+                _C_solide(i,j)=_C_solide(i,j)-(S2)/(_dx*_dz);
               }
             }
           } else {//0<xd<dx
             if (zc<0) {//yd forcémentnégatif
-              recul9(i, j, alpha, vrdt, coord);
+              //recul9(i, j, alpha, vrdt, coord);
+              double Stot, S1, S2, S3, S4;
+              Stot=vrdt*l;
+              S1 = za*za*tan(alpha)/2;
+              S2 = xc*zc-zc*zc*tan(alpha)/2+xc*xc*tan(alpha)/2;
+              S3 = -xd*zd-xd*xd*tan(alpha)/2+zd*zd*tan(alpha)/2;
+              S4 = Stot-(S1+S2+S3);
+
+              _C_solide(i,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx)%_nx)-S1/(_dx*_dz);
+              _C_solide(i,j)=_C_solide(i,j)-(S4)/(_dx*_dz);
+              if (i+1<_nz) {
+                _C_solide(i+1,(j-1+_nx)%_nx)=_C_solide(i+1,(j-1+_nx)%_nx)-S2/(_dx*_dz);
+                _C_solide(i+1,j)=_C_solide(i+1,j)-S3/(_dx*_dz);
+              }
             } else {//yc>0
               if (zd<0) {
                 if (zc-xc*(zd-zc)/(xd-xc)>0) {
-                  recul7(i, j, alpha, vrdt, coord);
+                  //recul7(i, j, alpha, vrdt, coord);
+                  double S1, S2;
+
+                  S1=xc*xc*(1/tan(alpha)+tan(alpha))/2;
+                  S2=zd*zd*(1/tan(alpha)+tan(alpha))/2;
+                  _C_solide(i,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx)%_nx)-S1/(_dx*_dz);
+                  if (i+1<_nz) {
+                    _C_solide(i+1,j)=_C_solide(i+1,j)-S2/(_dx*_dz);
+                  }
+                  _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S1-S2)/(_dx*_dz);
                 } else {
-                  recul8(i, j, alpha, vrdt, coord);
+                  //recul8(i, j, alpha, vrdt, coord);
+                  S1=xc*xc*(1/tan(alpha)+tan(alpha))/2;
+                  S2=zd*zd*(1/tan(alpha)+tan(alpha))/2;
+                  S3=(-xc*tan(alpha)-zc)*(-xc*tan(alpha)-zc)/(2*tan(alpha));
+
+                  _C_solide(i,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx)%_nx)-(S1-S3)/(_dx*_dz);
+                  if (i+1<_nz) {
+                    _C_solide(i+1,j)=_C_solide(i+1,j)-(S2-S3)/(_dx*_dz);
+                    _C_solide(i+1,(j-1+_nx)%_nx)=_C_solide(i+1,(j-1+_nx)%_nx)-S3/(_dx*_dz);
+                  }
+                  _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S1-S2+S3)/(_dx*_dz);
                 }
               } else {//yd>0
-                recul4(i, j, alpha, vrdt, coord);
+                //recul4(i, j, alpha, vrdt, coord);
+                double S1;
+
+                S1=xc*xc*(1/tan(alpha)+tan(alpha))/2;
+                _C_solide(i,(j-1+_nx)%_nx)=_C_solide(i,(j-1+_nx)%_nx)-S1/(_dx*_dz);
+                _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S1)/(_dx*_dz);
               }
             }
           }
@@ -117,41 +189,136 @@ void recul::recul_surface()
           if (xd<_dx) {
             if (zc<0) {
               if (zd<0) {
-                recul11(i, j, alpha, vrdt, coord);
+                //recul11(i, j, alpha, vrdt, coord);
+                double Stot, S1, S2, S3, S4;
+                Stot=vrdt*l;
+                S1=-zc*l;
+                S2=Stot-S1;
+
+                _C_solide(i,j)=_C_solide(i,j)-(S2)/(_dx*_dz);
+                if (i+1<_nz) {
+                  _C_solide(i+1,j)=_C_solide(i+1,j)-S1/(_dx*_dz);
+                }
               } else {
-                recul6(i, j, alpha, vrdt, coord);
+                //recul6(i, j, alpha, vrdt, coord);
+                double S2;
+
+                S2=zc*zc*(1/tan(alpha)+tan(alpha))/2;
+                if (i+1<_nz) {
+                  _C_solide(i+1,j)=_C_solide(i+1,j)-S2/(_dx*_dz);
+                }
+                _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S2)/(_dx*_dz);
               }
             } else {
               if (zd<0) {
-                recul10(i, j, alpha, vrdt, coord);
+                //recul10(i, j, alpha, vrdt, coord);
+                double S2;
+
+                S2=zd*zd*(1/tan(alpha)+tan(alpha))/2;
+                if (i+1<_nz) {
+                  _C_solide(i+1,j)=_C_solide(i+1,j)-S2/(_dx*_dz);
+                }
+                _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S2)/(_dx*_dz);
               } else {
-                recul5(i, j, alpha, vrdt, coord);
+                //recul5(i, j, alpha, vrdt, coord);
+                _C_solide(i,j)=_C_solide(i,j)-l*vrdt/(_dx*_dz);
               }
             }
           } else {
             if (zc<0) {
               if (zd<0) {
-                recul17(i, j, alpha, vrdt, coord);
+                //recul17(i, j, alpha, vrdt, coord);
+                double Stot, S1, S2, S3, S4;
+                Stot=vrdt*l;
+                S1 = za*za*tan(alpha)/2;
+                S2 = xc*zc-zc*zc*tan(alpha)/2+xc*xc*tan(alpha)/2;
+                S3 = -xd*zd-xd*xd*tan(alpha)/2+zd*zd*tan(alpha)/2;
+                S4 = Stot-(S1+S2+S3);
+
+                _C_solide(i,(j+1)%_nx)=_C_solide(i,(j+1)%_nx)-S1/(_dx*_dz);
+                _C_solide(i,j)=_C_solide(i,j)-(S4)/(_dx*_dz);
+                if (i+1<_nz) {
+                  _C_solide(i+1,(j+1)%_nx)=_C_solide(i+1,(j+1)%_nx)-S2/(_dx*_dz);
+                  _C_solide(i+1,j)=_C_solide(i+1,j)-S3/(_dx*_dz);
+                }
               } else {
                 if (zc+(_dx-xc)*(zd-zc)/(xd-xc)>0) {
-                  recul13(i, j, alpha, vrdt, coord);
+                  //recul13(i, j, alpha, vrdt, coord);
+                  double S1, S2;
+
+                  S1=xc*xc*(1/tan(alpha)+tan(alpha))/2;
+                  S2=zd*zd*(1/tan(alpha)+tan(alpha))/2;
+                  _C_solide(i,(j+1)%_nx)=_C_solide(i,(j+1)%_nx)-S1/(_dx*_dz);
+                  if (i+1<_nz) {
+                    _C_solide(i+1,j)=_C_solide(i+1,j)-S2/(_dx*_dz);
+                  }
+                  _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S1-S2)/(_dx*_dz);
                 } else {
-                  recul14(i, j, alpha, vrdt, coord);
+                  //recul14(i, j, alpha, vrdt, coord);
+                  double S1, S2, S3;
+
+                  S1=xc*xc*(1/tan(alpha)+tan(alpha))/2;
+                  S2=zd*zd*(1/tan(alpha)+tan(alpha))/2;
+                  S3=(-xc*tan(alpha)-zc)*(-xc*tan(alpha)-zc)/(2*tan(alpha));
+
+                  _C_solide(i,(j+1)%_nx)=_C_solide(i,(j+1)%_nx)-(S1-S3)/(_dx*_dz);
+                  if (i+1<_nz) {
+                    _C_solide(i+1,j)=_C_solide(i+1,j)-(S2-S3)/(_dx*_dz);
+                    _C_solide(i+1,(j+1)%_nx)=_C_solide(i+1,(j+1)%_nx)-S3/(_dx*_dz);
+                  }
+                  _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S1-S2+S3)/(_dx*_dz);
                 }
               }
             } else {
-              recul12(i, j, alpha, vrdt, coord);
+              //recul12(i, j, alpha, vrdt, coord);
+              double S1;
+
+              S1=xc*xc*(1/tan(alpha)+tan(alpha))/2;
+              _C_solide(i,(j+1)%_nx)=_C_solide(i,(j+1)%_nx)-S1/(_dx*_dz);
+              _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S1)/(_dx*_dz);
             }
           }
         } else {
           if (zc<0) {
             if (zd<0) {
-              recul18(i, j, alpha, vrdt, coord);
+              //recul18(i, j, alpha, vrdt, coord);
+              double Stot, S1, S2, S3, S4;
+              Stot=vrdt*l;
+              S1 = za*za*tan(alpha)/2;
+              S4 = za*xb/2;
+              S3 = xb*xb/(2*tan(alpha));
+              S2 = Stot-(S1+S3+S4);
+              _C_solide(i,(j+1)%_nx)=_C_solide(i,(j+1)%_nx)-S1/(_dx*_dz);
+              _C_solide(i,j)=_C_solide(i,j)-(S4)/(_dx*_dz);
+              if (i+1<_nz) {
+                _C_solide(i+1,(j+1)%_nx)=_C_solide(i+1,(j+1)%_nx)-S2/(_dx*_dz);
+                _C_solide(i+1,j)=_C_solide(i+1,j)-S3/(_dx*_dz);
+              }
             } else {
-              recul16(i, j, alpha, vrdt, coord);
+              //recul16(i, j, alpha, vrdt, coord);
+              double Stot, S1, S2, S3, S4;
+              Stot=vrdt*l;
+              S3 = xb*xb/(2*tan(alpha));
+              S1 = -xc*zc-zc*zc/(2*tan(alpha))+xc*xc/(2*tan(alpha));
+              S2 = xd*zd-xd*xd/(2*tan(alpha))+zd*zd/(2*tan(alpha));
+              S4 = Stot-(S1+S2+S3);
+              _C_solide(i,(j+1)%_nx)=_C_solide(i,(j+1)%_nx)-S1/(_dx*_dz);
+              _C_solide(i,j)=_C_solide(i,j)-(S4)/(_dx*_dz);
+              if (i+1<_nz) {
+                _C_solide(i+1,(j+1)%_nx)=_C_solide(i+1,(j+1)%_nx)-S2/(_dx*_dz);
+                _C_solide(i+1,j)=_C_solide(i+1,j)-S3/(_dx*_dz);
+              }
             }
           } else {
-            recul15(i, j, alpha, vrdt, coord);
+            //recul15(i, j, alpha, vrdt, coord);
+            double Stot, S1, S2, l1, l2;
+            Stot=vrdt*l;
+            l1 = -xc*sin(alpha);
+            l2 = -xd*sin(alpha);
+            S1 = l*(l1+l2)/2;
+            S2 = Stot-S1;
+            _C_solide(i,(j+1)%_nx)=_C_solide(i,(j+1)%_nx)-S1/(_dx*_dz);
+            _C_solide(i,j)=_C_solide(i,j)-(S2)/(_dx*_dz);
           }
         }
 
@@ -162,7 +329,7 @@ void recul::recul_surface()
 
 }
 
-
+/*
 void recul::recul1(int i, int j, double alpha, double vrdt, MatrixXd coord)
 {
   double xa,za,xb,zb,xc,zc,xd,zd,l;
@@ -691,7 +858,7 @@ void recul::recul18(int i, int j, double alpha, double vrdt, MatrixXd coord)
   }
 
 }
-
+*/
 
 void recul::cpositive()
 {

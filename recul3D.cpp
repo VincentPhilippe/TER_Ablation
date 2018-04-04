@@ -81,23 +81,129 @@ recul3D::~recul3D()
     jl=repere(1,1);
     kl=repere(1,2);
 
+    //détermination des points
     vector<double> pta1,ptb1,ptc1,pta2,ptb2,ptc2;
-    pta1=coord[0];
-    ptb1=coord[1];
-    ptc1=coord[2];
-    pta2=coord[3];
-    ptb2=coord[4];
-    ptc2=coord[5];
+    if ((coord[0][0]<coord[1][0]) && (coord[0][0]<coord[2][0])) {
+      pta1=coord[0];
+      pta2=coord[3];
+      if (coord[1][1]<coord[2][1]) {
+        ptb1=coord[1];
+        ptb2=coord[4];
+        ptc1=coord[2];
+        ptc2=coord[5];
+      } else {
+        ptb1=coord[2];
+        ptb2=coord[5];
+        ptc1=coord[1];
+        ptc2=coord[4];
+      }
+    } else if (coord[1][0]<coord[2][0]) {
+      pta1=coord[1];
+      pta2=coord[4];
+      if (coord[0][1]<coord[2][1]) {
+        ptb1=coord[0];
+        ptb2=coord[3];
+        ptc1=coord[2];
+        ptc2=coord[5];
+      } else {
+        ptb1=coord[2];
+        ptb2=coord[5];
+        ptc1=coord[0];
+        ptc2=coord[3];
+      }
+    } else {
+      pta1=coord[2];
+      pta2=coord[5];
+      if (coord[0][1]<coord[1][1]) {
+        ptb1=coord[0];
+        ptb2=coord[3];
+        ptc1=coord[1];
+        ptc2=coord[4];
+      } else {
+        ptb1=coord[1];
+        ptb2=coord[4];
+        ptc1=coord[0];
+        ptc2=coord[3];
+      }
+    }
 
 
     double surf, voltot;
     surf=surface_triangle(pta1,ptb1,ptc1);
     voltot=surf*vrdt;
 
+    //compter le nombre de points en dehors de la surface
+    int nbpt;
+    nbpt=0;
+    if (pta2[0]<0) {
+      nbpt+=1;
+    }
+    if (ptb2[1]<0) {
+      nbpt+=1;
+    }
+    if (ptc2[2]<0) {
+      nbpt+=1;
+    }
 
+    //détermination du cas
+    if (nbpt==0) {
+      _C_solide[il][jl][kl]-=voltot/(_dx*_dy*_dz);
+    } else if (nbpt==1) {
+      if (ptb2[1]<0) {
+        recul3D::rotationcoin(repere, coord)
+        recul3D::rotationcoin(repere, coord)
+        vector<double> point;
+        point=pta1;
+        pta1=ptb1;
+        ptb1=ptc1;
+        ptc1=point;
+        point=pta2;
+        pta2=ptb2;
+        ptb2=ptc2;
+        ptc2=point;
+      } else if (ptc2[2]<0) {
+        recul3D::rotationcoin(repere, coord)
+        vector<double> point;
+        point=pta1;
+        pta1=ptc1;
+        ptc1=ptb1;
+        ptb1=point;
+        point=pta2;
+        pta2=ptc2;
+        ptc2=ptb2;
+        ptb2=point;
+      }
+      /* code */
+    } else if (nbpt==2) {
+      if (pta2[0]>0) {
+        recul3D::rotationcoin(repere, coord)
+        recul3D::rotationcoin(repere, coord)
+        vector<double> point;
+        point=pta1;
+        pta1=ptb1;
+        ptb1=ptc1;
+        ptc1=point;
+        point=pta2;
+        pta2=ptb2;
+        ptb2=ptc2;
+        ptc2=point;
+      } else if (ptb2[2]>0) {
+        recul3D::rotationcoin(repere, coord)
+        vector<double> point;
+        point=pta1;
+        pta1=ptc1;
+        ptc1=ptb1;
+        ptb1=point;
+        point=pta2;
+        pta2=ptc2;
+        ptc2=ptb2;
+        ptb2=point;
+      }
+      /* code */
+    } else {
+      /* code */
+    }
 
-
-    _C_solide[il][jl][kl]-=voltot/(_dx*_dy*_dz);
   }
 
   MatrixXd recul3D::repereglobal(int i, int j, int k)
