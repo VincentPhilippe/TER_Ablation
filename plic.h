@@ -18,6 +18,7 @@ class plic {
   void interf();
   const Eigen::MatrixXd Get_interface() const {return _interface;};
   const Eigen::MatrixXd Get_normal() const {return _normal;};
+  const Eigen::MatrixXd Get_ninterf() const {return _ninterf;};
 
   private:
   recul *_recul;
