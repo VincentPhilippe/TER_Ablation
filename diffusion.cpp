@@ -36,16 +36,10 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
         erreur += abs(C1(i,j) - _concentration(i,j));
         j++;
       }
-// Condition limite interface
-
-
-
-
+      // Condition limite interface
     }
   }
-
     _concentration = C1;
-
 }
 
 double diffusion::fluxGauche(int i, int j)
@@ -176,7 +170,7 @@ double diffusion::longueurArete(int i, int j, enum Direction direction)
       break;
 
       }
-  
+
 
 }
 
