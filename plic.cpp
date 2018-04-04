@@ -106,8 +106,8 @@ void plic::interf()
                 ny=grad_y(i,j)/sqrt(grad_x(i,j)*grad_x(i,j)+grad_y(i,j)*grad_y(i,j));
                 nxx=abs(nx);
 
-                normal(k,0)=nx;
-                normal(k,1)=ny;
+                _normal(k,0)=nx;
+                _normal(k,1)=ny;
 
 
                 //interface
