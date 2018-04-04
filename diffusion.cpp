@@ -132,6 +132,13 @@ double diffusion::longueurArete(int i, int j, enum Direction direction)
       break;
 
     default:
+
+      x1 = (_plic->Get_interface())(0,num_cell-1);
+      z1 = (_plic->Get_interface())(1,num_cell-1);
+      x2 = (_plic->Get_interface())(2,num_cell-1);
+      z2 = (_plic->Get_interface())(3,num_cell-1);
+
+
       if(direction == LEFT)
       {
         if(x1 == 0)
@@ -211,9 +218,11 @@ enum State_Cell diffusion::watchCell(int i, int j) // Regarde l'état de la case
 
 enum State_Interf diffusion::watchInterf(int i, int j, enum Direction direction)
 {
-  Vector< double, 2 > point1, point2;
+  VectorXd point1, point2;
   int num_cell = (int)(_plic->Get_ninterface()(i,j));
 
+  point1.resize(2);
+  point2.resize(2);
   if(num_cell == 0)
   {
     return(A);
@@ -224,11 +233,11 @@ enum State_Interf diffusion::watchInterf(int i, int j, enum Direction direction)
   }
   else
   {
-    point1(0) = _plic->Get_interface()(0,numcell-1);
-    point1(1) = _plic->Get_interface()(1,numcell-1);
+    point1(0) = (_plic->Get_interface())(0,num_cell-1);
+    point1(1) = (_plic->Get_interface())(1,num_cell-1);
 
-    point2(0) = _plic->Get_interface()(2,numcell-1);
-    point2(1) = _plic->Get_interface()(3,numcell-1);
+    point2(0) = (_plic->Get_interface())(2,num_cell-1);
+    point2(1) = (_plic->Get_interface())(3,num_cell-1);
 
     switch(direction)
     {
@@ -252,14 +261,6 @@ enum State_Interf diffusion::watchInterf(int i, int j, enum Direction direction)
           if(point1(1) == dz || point2(1) == dz)
           {
             return(S);
-          }
-          return(A);
-          break;
-
-        case UP:
-          if(point1(1) == dz || point2(1) == dz)
-          {
-            return(AS);
           }
           return(A);
           break;
