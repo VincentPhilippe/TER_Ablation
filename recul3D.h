@@ -17,14 +17,14 @@ public:
   ~recul3D();
   //void update(plic *pplic, diffusion *pdiffusion){_plic=pplic; _diff=pdiffusion;};
 
-  Eigen::VectorXd eqplan(double xa, double ya, double za, double xb, double yb, double zb, double xc, double yc, double zc);
-  double volume_pyramide(double xa, double ya, double za, double xb, double yb, double zb, double xc, double yc, double zc, double xd, double yd, double zd);//Eigen::MatrixXd coord);
-  double surface_triangle(double xa, double ya, double za, double xb, double yb, double zb, double xc, double yc, double zc);
-  void recul3D_1(Eigen::MatrixXd repere, Eigen::MatrixXd coord, double vrdt);
+  Eigen::VectorXd eqplan(std::vector<double> pta, std::vector<double> ptb, std::vector<double> ptc);
+  double volume_pyramide(std::vector<double> pta, std::vector<double> ptb, std::vector<double> ptc, std::vector<double> ptd);//Eigen::MatrixXd coord);
+  double surface_triangle(std::vector<double> pta, std::vector<double> ptb, std::vector<double> ptc);
+  void recul3D_1(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
   Eigen::MatrixXd repereglobal(int i, int j, int k);
-  Eigen::MatrixXd rotationz(Eigen::MatrixXd repere_prec);
-  Eigen::MatrixXd reductionrepere(Eigen::MatrixXd repere_prec);
-  Eigen::MatrixXd rotationcoin(Eigen::MatrixXd repere_prec);
+  void rotationz(Eigen::MatrixXd& repere_prec, std::vector<std::vector<double>>& coord);
+  void reductionrepere(Eigen::MatrixXd& repere_prec);
+  void rotationcoin(Eigen::MatrixXd& repere_prec, std::vector<std::vector<double>>& coord);
 
   inline std::vector<std::vector<std::vector<double> > > Get_C_solide(){return _C_solide;};
   inline std::vector<std::vector<std::vector<double> > > Get_ninterf(){return _ninterf;};

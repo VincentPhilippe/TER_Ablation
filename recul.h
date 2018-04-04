@@ -17,7 +17,7 @@ public:
 void update(plic *pplic, diffusion *pdiffusion){_plic=pplic; _diff=pdiffusion;};/////////////////////////////////////////////////////////////////
 
   void recul_surface();
-void recul1(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
+/*void recul1(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
 void recul2(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
 void recul3(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
 void recul4(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
@@ -34,7 +34,7 @@ void recul14(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
 void recul15(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
 void recul16(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
 void recul17(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
-void recul18(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);
+void recul18(int i, int j, double alpha, double vrdt, Eigen::MatrixXd coord);*/
 void cpositive();
 
 inline Eigen::MatrixXd Get_C_solide(){return _C_solide;};

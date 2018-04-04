@@ -27,6 +27,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
       j = 1;
       flux = 0;
       while(_plic->Get_ninterf()(i,j) == 0){
+      while(_plic->Get_interface()(i,j) == 0){
         flux += fluxGauche(i,j);
         flux += fluxBas(i,j);
         flux += fluxDroite(i,j);
@@ -206,9 +207,11 @@ enum State_Cell diffusion::watchCell(int i, int j) // Regarde l'état de la case
   }
 
   if(_plic->Get_ninterf()(i,j) > 0){
+  if(_plic->Get_interface()(i,j) > 0){
     return(INTERFACE);
   }
   if(_plic->Get_ninterf()(i,j) == -1){
+  if(_plic->Get_interface()(i,j) == -1){
     return(SOLIDE);
   }
 

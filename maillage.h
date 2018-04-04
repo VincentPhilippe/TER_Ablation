@@ -1,3 +1,6 @@
+#ifndef MAILLAGE_H
+#define MAILLAGE_H
+
 #include "Dense"
 
 // classe maillage
@@ -38,6 +41,7 @@ class Cartesien2D : public Maillage
     ~Cartesien2D();
 
     //fonctions d'accès aux variables de l'objet
+    std::string GetMeshName(){return _name;};
     Eigen::VectorXd GetCoordX(){return _coordX;};
     Eigen::VectorXd GetCoordZ(){return _coordZ;};
     Eigen::VectorXd GetIndices(){return _indices;};
@@ -69,6 +73,7 @@ class Cartesien3D : public Maillage
     ~Cartesien3D();
 
     //fonctions d'accès aux variables de l'objet
+    std::string GetMeshName(){return _name;};
     Eigen::VectorXd GetCoordX(){return _coordX;};
     Eigen::VectorXd GetCoordY(){return _coordY;};
     Eigen::VectorXd GetCoordZ(){return _coordZ;};
@@ -78,3 +83,5 @@ class Cartesien3D : public Maillage
     int GetNz(){return _nbZ;};
 
 };
+
+#endif
