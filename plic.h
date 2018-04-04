@@ -16,6 +16,7 @@ class plic {
   double grad_x(const int i, const int j);
   double grad_y(const int i, const int j);
   void interf();
+  void SaveSol(int n);
   const Eigen::MatrixXd Get_interface() const {return _interface;};
   const Eigen::MatrixXd Get_normal() const {return _normal;};
   const Eigen::MatrixXd Get_ninterf() const {return _ninterf;};
