@@ -16,6 +16,7 @@ class plic {
   double grad_x(const int i, const int j);
   double grad_y(const int i, const int j);
   void interf();
+  void SaveSol(int n);
   const Eigen::MatrixXd Get_interface() const {return _interface;};
   const Eigen::MatrixXd Get_normal() const {return _normal;};
   const Eigen::MatrixXd Get_ninterface() const {return _ninterf;};
@@ -33,7 +34,7 @@ class plic {
   Eigen::MatrixXd tri,quad,penta;  //contient les somments pour chaque polygones
   Eigen::MatrixXd pttri,ptquad,ptpenta; //contient les coord des sommets
   Eigen::MatrixXd trivalcase,quadvalcase,pentvalcase; //0 si fluide, 1 si solide
-  Eigen::MatrixXd normal; //renvoie le vecteur unitaire normal à la surface pour la case k; 0-> composante x; 1-> composante y
+  Eigen::MatrixXd _normal; //renvoie le vecteur unitaire normal à la surface pour la case k; 0-> composante x; 1-> composante y
   // Sauvegarde la solution
 	void SaveSol( int n);
 
