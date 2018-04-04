@@ -25,3 +25,5 @@ read_data.o : read_data.cpp read_data.h
 recul.o : recul.cpp recul.h
 	g++ -std=c++11 -I EigenLibrary/Eigen -c -o build/recul.o recul.cpp
 
+recul3D.o : recul3D.cpp recul3D.h
+	g++ -std=c++11 -I EigenLibrary/Eigen -c -o build/recul3D.o recul3D.cpp

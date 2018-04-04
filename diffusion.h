@@ -10,12 +10,16 @@
 #include "maillage.h"
 #include "plic.h"
 
-enum State_Case{
-  BORD_HAUT,BORD_BAS, AIR, BORD_DROIT, BORD_GAUCHE, INTERFACE, SOLIDE
+enum State_Cell{
+  BORD_HAUT, BORD_BAS, AIR, BORD_DROIT, BORD_GAUCHE, INTERFACE, SOLIDE
+};
+
+enum State_Interf{
+  AA, SS, AS
 };
 
 enum Direction{
-  LEFT, BOTTOM, RIGHT, UP
+  LEFT, DOWN, RIGHT, UP
 };
 
 class diffusion{
@@ -42,10 +46,11 @@ public:
   double fluxDroite(int i, int j);
   double fluxHaut(int i, int j);
   double longueurArete(int k, int l, enum Direction direction);
-  enum State_Case watch(int i, int j);
-  void update(plic *plic){_plic = plic;}
-  Eigen::MatrixXd GetConcentration() {return _concentration;}
-  Eigen::MatrixXd GetVitesse() {return _vitesse;}
+  enum State_Cell watchCell(int i, int j);
+  enum State_Interf watchIntef(int i, int j, enum Direction direction);
+  void update(plic *plic){ _plic = plic; }
+  Eigen::MatrixXd GetConcentration() { return _concentration; }
+  Eigen::MatrixXd GetVitesse() { return _vitesse; }
 };
 
 

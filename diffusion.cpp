@@ -26,7 +26,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
     for(int i = 1; i < _maillage.GetNx(); i++){
       j = 1;
       flux = 0;
-      while(_plic->Get_ninterf()(i,j) == 0){
+      while(_plic->Get_interface()(i,j) == 0){
         flux += fluxGauche(i,j);
         flux += fluxBas(i,j);
         flux += fluxDroite(i,j);
@@ -49,7 +49,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
 double diffusion::fluxGauche(int i, int j)
 {
   double flux;
-  switch(watch(i-1,j))
+  switch(watchCell(i-1,j))
   {
     case BORD_GAUCHE:
       flux = -(_concentration(_maillage.GetNx(),j)-_concentration(i,j))/dx;
@@ -61,12 +61,13 @@ double diffusion::fluxGauche(int i, int j)
       flux *= longueurArete(i,j,LEFT);
       break;
   }
+  return(flux);
 }
 
 double diffusion::fluxBas(int i, int j)
 {
   double flux;
-  switch(watch(i,j+1))
+  switch(watchCell(i,j+1))
   {
     case BORD_BAS:
       flux = 0;
@@ -74,15 +75,18 @@ double diffusion::fluxBas(int i, int j)
 
     default :
       flux = -(_concentration(i,j+1)-_concentration(i,j))/dz;
+      flux *= longueurArete(i,j,DOWN);
+      flux = -(_concentration(i,j+1)-_concentration(i,j))/dz;
       flux *= longueurArete(i,j,BOTTOM);
       break;
   }
+  return(flux);
 }
 
 double diffusion::fluxDroite(int i, int j)
 {
   double flux;
-  switch(watch(i+1,j))
+  switch(watchCell(i+1,j))
   {
     case BORD_DROIT:
       flux = -(_concentration(0,j)-_concentration(i,j))/dx;
@@ -94,12 +98,13 @@ double diffusion::fluxDroite(int i, int j)
       flux *= longueurArete(i,j,RIGHT);
       break;
   }
+  return(flux);
 }
 
 double diffusion::fluxHaut(int i, int j)
 {
   double flux;
-  switch(watch(i,j-1))
+  switch(watchCell(i,j-1))
   {
     case BORD_HAUT:
       flux = -(1-_concentration(i,j))/dz;
@@ -111,13 +116,41 @@ double diffusion::fluxHaut(int i, int j)
       flux *= longueurArete(i,j,UP);
       break;
   }
+  return(flux);
 }
 
-double diffusion::longueurArete(int k, int l, enum Direction direction)
+double diffusion::longueurArete(int i, int j, enum Direction direction)
 {
+  enum State_Cell courante, voisine;
+  int num_cell, k=0;
+  Matrix< double, 2, 4> liste;
 
+  if(watchCell(i,j)==INTERFACE)
+  {
+      num_cell = _plic->Get_interface()(i,j);
+      liste(0,k) = _plic->Get_interface()(0,num_cell-1);
+      liste(1,k) = _plic->Get_interface()(1,num_cell-1);
+      k++;
+      liste(0,k) = _plic->Get_interface()(2,num_cell-1);
+      liste(1,k) = _plic->Get_interface()(3,num_cell-1);
+      k++;
 
+  }
+  switch(direction)
+  {
+    case LEFT:
+      if(watchCell((i-1+_maillage.GetNz())%_maillage.GetNz(),j)==INTERFACE)
+      {
+        num_cell = _plic->Get_interface()(i,j);
+        liste(0,k) = _plic->Get_interface()(0,num_cell-1);
+        liste(1,k) = _plic->Get_interface()(1,num_cell-1);
+        k++;
+        liste(0,k) = _plic->Get_interface()(2,num_cell-1);
+        liste(1,k) = _plic->Get_interface()(3,num_cell-1);
+        k++;
+      }
 
+  }
 }
 
 void diffusion::vitesse() // Permet de donner la vitesse normale en chaque point de la surface
@@ -125,7 +158,7 @@ void diffusion::vitesse() // Permet de donner la vitesse normale en chaque point
 
 }
 
-enum State_Case diffusion::watch(int i, int j) // Regarde l'état de la case (i,j)
+enum State_Cell diffusion::watchCell(int i, int j) // Regarde l'état de la case (i,j)
 {
 
   if(i == 0){
@@ -144,10 +177,10 @@ enum State_Case diffusion::watch(int i, int j) // Regarde l'état de la case (i,
     return(BORD_DROIT);
   }
 
-  if(_plic->Get_ninterf()(i,j) > 0){
+  if(_plic->Get_interface()(i,j) > 0){
     return(INTERFACE);
   }
-  if(_plic->Get_ninterf()(i,j) == -1){
+  if(_plic->Get_interface()(i,j) == -1){
     return(SOLIDE);
   }
 
