@@ -27,6 +27,7 @@ class plic {
   Eigen::MatrixXd _phi;
   double p,nx,nxx,ny;
   int _pointsupl,lon,lar,num,k,l;
+  int nbtri,nbquad,nbpenta;
   double dx,dz;
   //std::vector<std::vector<int> > _interface;   //_inteface[i][j,ax,ay,bx,by]
   Eigen::MatrixXd _ninterf, typinterf; //int  //_ninterf(i,j)=k   //numérotes des cases où il y a présence d'interface
