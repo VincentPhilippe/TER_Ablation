@@ -33,12 +33,14 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
         flux += fluxHaut(i,j);
 
         C1(i,j) = _concentration(i,j) + (dt/dx*dz)*flux;
-
         erreur += abs(C1(i,j) - _concentration(i,j));
-
         j++;
-
       }
+// Condition limite interface
+
+
+
+
     }
   }
 
@@ -74,10 +76,13 @@ double diffusion::fluxBas(int i, int j)
       break;
 
     default :
+<<<<<<< HEAD
+=======
       flux = -(_concentration(i,j+1)-_concentration(i,j))/dz;
       flux *= longueurArete(i,j,DOWN);
+>>>>>>> 2425892898eab55c23d397bc2f06acb7bf772fbf
       flux = -(_concentration(i,j+1)-_concentration(i,j))/dz;
-      flux *= longueurArete(i,j,BOTTOM);
+      flux *= longueurArete(i,j,DOWN);
       break;
   }
   return(flux);
@@ -121,12 +126,18 @@ double diffusion::fluxHaut(int i, int j)
 
 double diffusion::longueurArete(int i, int j, enum Direction direction)
 {
-  enum State_Cell courante, voisine;
-  int num_cell, k=0;
-  Matrix< double, 2, 4> liste;
+  double x1, z1, x2, z2;
+  int num_cell = int()_plic->Get_ninterface()(i,j);
 
-  if(watchCell(i,j)==INTERFACE)
+  switch(watchInterf(i, j, direction))
   {
+<<<<<<< HEAD
+    case A:
+      if(direction == UP || direction == DOWN)
+        return(dx);
+      return(dz);
+      break;
+=======
       num_cell = _plic->Get_interface()(i,j);
       liste(0,k) = _plic->Get_interface()(0,num_cell-1);
       liste(1,k) = _plic->Get_interface()(1,num_cell-1);
@@ -134,13 +145,55 @@ double diffusion::longueurArete(int i, int j, enum Direction direction)
       liste(0,k) = _plic->Get_interface()(2,num_cell-1);
       liste(1,k) = _plic->Get_interface()(3,num_cell-1);
       k++;
+>>>>>>> 2425892898eab55c23d397bc2f06acb7bf772fbf
 
-  }
-  switch(direction)
-  {
-    case LEFT:
-      if(watchCell((i-1+_maillage.GetNz())%_maillage.GetNz(),j)==INTERFACE)
+    case S:
+      return(0);
+      break;
+
+    default:
+      x1 = _plic->Get_interface()(0,numcell-1);
+      z1 = _plic->Get_interface()(1,numcell-1);
+      x2 = _plic->Get_interface()(2,numcell-1);
+      z2 = _plic->Get_interface()(3,numcell-1);
+      if(direction == LEFT)
       {
+<<<<<<< HEAD
+        if(x1 == 0)
+        {
+          return(dz - z1);
+        }
+        return(dz - z2);
+      }
+
+      if(direction == RIGHT)
+      {
+        if(x1 == dx)
+        {
+          return(dz - z1);
+        }
+        return(dz - z2);
+      }
+
+      if(direction == UP)
+      {
+        if(z1 == dz)
+        {
+          return(dx - x1);
+        }
+        return(dx - x2);
+      }
+
+      if(direction ==DOWN)
+      {
+        if(z1 == 0)
+        {
+          return(dx - x1);
+        }
+        return(dx - x2);
+      }
+      break;
+=======
         num_cell = _plic->Get_interface()(i,j);
         liste(0,k) = _plic->Get_interface()(0,num_cell-1);
         liste(1,k) = _plic->Get_interface()(1,num_cell-1);
@@ -150,7 +203,9 @@ double diffusion::longueurArete(int i, int j, enum Direction direction)
         k++;
       }
 
+>>>>>>> 2425892898eab55c23d397bc2f06acb7bf772fbf
   }
+
 }
 
 void diffusion::vitesse() // Permet de donner la vitesse normale en chaque point de la surface
@@ -186,4 +241,77 @@ enum State_Cell diffusion::watchCell(int i, int j) // Regarde l'état de la case
 
   return(AIR);
 
+}
+
+enum State_Interf diffusion::watchInterf(int i, int j, enum Direction direction)
+{
+  Vector< double, 2 > point1, point2;
+  int num_cell = int()_plic->Get_ninterface()(i,j);
+
+  if(num_cell == 0)
+  {
+    return(A);
+  }
+  if(num_cell < 0)
+  {
+    return(S);
+  }
+  else
+  {
+    point1(0) = _plic->Get_interface()(0,numcell-1);
+    point1(1) = _plic->Get_interface()(1,numcell-1);
+
+    point2(0) = _plic->Get_interface()(2,numcell-1);
+    point2(1) = _plic->Get_interface()(3,numcell-1);
+
+    switch(direction)
+    {
+      case LEFT:
+        if(point1(0) == 0 || point2(0) == 0)
+        {
+          return(AS);
+        }
+        if(point1(1) == dz || point2(1) == dz)
+        {
+          return(S);
+        }
+        return(A);
+        break;
+
+        case RIGHT:
+          if(point1(0) == dx || point2(0) == dx)
+          {
+            return(AS);
+          }
+          if(point1(1) == dz || point2(1) == dz)
+          {
+            return(S);
+          }
+          return(A);
+          break;
+
+        case UP:
+          if(point1(1) == dz || point2(1) == dz)
+          {
+            return(AS);
+          }
+          return(A);
+          break;
+
+        case UP:
+          if(point1(1) == dz || point2(1) == dz)
+          {
+            return(AS);
+          }
+          return(A);
+          break;
+
+        case DOWN:
+          if(point1(1) == 0 || point2(1) == 0)
+          {
+            return(AS);
+          }
+          return(S);
+    }
+  }
 }
