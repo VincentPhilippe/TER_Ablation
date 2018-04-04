@@ -56,6 +56,7 @@ void plic::interf()
     int lar=_phi.rows();
     int _kmax=_recul->Get_nbinterface();
     _interface.resize(_kmax,4);
+    _normal.resize(_kmax,2);
     tri.resize(3*lon,3); //arbitraire pour le moment, assez grand pour contenir tous les triangles
     quad.resize(3*lon,4);
     penta.resize(3*lon,5);
@@ -104,6 +105,9 @@ void plic::interf()
                 nx=grad_x(i,j)/sqrt(grad_x(i,j)*grad_x(i,j)+grad_y(i,j)*grad_y(i,j));
                 ny=grad_y(i,j)/sqrt(grad_x(i,j)*grad_x(i,j)+grad_y(i,j)*grad_y(i,j));
                 nxx=abs(nx);
+
+                normal(k,0)=nx;
+                normal(k,1)=ny;
 
 
                 //interface
