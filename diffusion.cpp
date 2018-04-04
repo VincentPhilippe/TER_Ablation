@@ -26,7 +26,6 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
     for(int i = 1; i < _maillage.GetNx(); i++){
       j = 1;
       flux = 0;
-      while(_plic->Get_ninterf()(i,j) == 0){
       while(_plic->Get_interface()(i,j) == 0){
         flux += fluxGauche(i,j);
         flux += fluxBas(i,j);
@@ -77,6 +76,11 @@ double diffusion::fluxBas(int i, int j)
       break;
 
     default :
+<<<<<<< HEAD
+=======
+      flux = -(_concentration(i,j+1)-_concentration(i,j))/dz;
+      flux *= longueurArete(i,j,DOWN);
+>>>>>>> 2425892898eab55c23d397bc2f06acb7bf772fbf
       flux = -(_concentration(i,j+1)-_concentration(i,j))/dz;
       flux *= longueurArete(i,j,DOWN);
       break;
@@ -127,11 +131,21 @@ double diffusion::longueurArete(int i, int j, enum Direction direction)
 
   switch(watchInterf(i, j, direction))
   {
+<<<<<<< HEAD
     case A:
       if(direction == UP || direction == DOWN)
         return(dx);
       return(dz);
       break;
+=======
+      num_cell = _plic->Get_interface()(i,j);
+      liste(0,k) = _plic->Get_interface()(0,num_cell-1);
+      liste(1,k) = _plic->Get_interface()(1,num_cell-1);
+      k++;
+      liste(0,k) = _plic->Get_interface()(2,num_cell-1);
+      liste(1,k) = _plic->Get_interface()(3,num_cell-1);
+      k++;
+>>>>>>> 2425892898eab55c23d397bc2f06acb7bf772fbf
 
     case S:
       return(0);
@@ -144,6 +158,7 @@ double diffusion::longueurArete(int i, int j, enum Direction direction)
       z2 = _plic->Get_interface()(3,numcell-1);
       if(direction == LEFT)
       {
+<<<<<<< HEAD
         if(x1 == 0)
         {
           return(dz - z1);
@@ -178,6 +193,17 @@ double diffusion::longueurArete(int i, int j, enum Direction direction)
         return(dx - x2);
       }
       break;
+=======
+        num_cell = _plic->Get_interface()(i,j);
+        liste(0,k) = _plic->Get_interface()(0,num_cell-1);
+        liste(1,k) = _plic->Get_interface()(1,num_cell-1);
+        k++;
+        liste(0,k) = _plic->Get_interface()(2,num_cell-1);
+        liste(1,k) = _plic->Get_interface()(3,num_cell-1);
+        k++;
+      }
+
+>>>>>>> 2425892898eab55c23d397bc2f06acb7bf772fbf
   }
 
 }
@@ -206,11 +232,9 @@ enum State_Cell diffusion::watchCell(int i, int j) // Regarde l'état de la case
     return(BORD_DROIT);
   }
 
-  if(_plic->Get_ninterf()(i,j) > 0){
   if(_plic->Get_interface()(i,j) > 0){
     return(INTERFACE);
   }
-  if(_plic->Get_ninterf()(i,j) == -1){
   if(_plic->Get_interface()(i,j) == -1){
     return(SOLIDE);
   }
