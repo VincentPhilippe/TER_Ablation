@@ -9,13 +9,14 @@
 #include "read_data.h"
 #include "maillage.h"
 #include "plic.h"
+#include "recul.h"
 
 enum State_Cell{
   BORD_HAUT, BORD_BAS, AIR, BORD_DROIT, BORD_GAUCHE, INTERFACE, SOLIDE
 };
 
 enum State_Interf{
-  AA, SS, AS
+  A, S, AS
 };
 
 enum Direction{
@@ -47,7 +48,7 @@ public:
   double fluxHaut(int i, int j);
   double longueurArete(int k, int l, enum Direction direction);
   enum State_Cell watchCell(int i, int j);
-  enum State_Interf watchIntef(int i, int j, enum Direction direction);
+  enum State_Interf watchInterf(int i, int j, enum Direction direction);
   void update(plic *plic){ _plic = plic; }
   Eigen::MatrixXd GetConcentration() { return _concentration; }
   Eigen::MatrixXd GetVitesse() { return _vitesse; }

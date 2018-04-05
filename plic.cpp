@@ -56,6 +56,7 @@ void plic::interf()
     int lar=_phi.rows();
     int _kmax=_recul->Get_nbinterface();
     _interface.resize(_kmax,4);
+    _normal.resize(_kmax,2);
     tri.resize(3*lon,3); //arbitraire pour le moment, assez grand pour contenir tous les triangles
     quad.resize(3*lon,4);
     penta.resize(3*lon,5);
@@ -104,6 +105,9 @@ void plic::interf()
                 nx=grad_x(i,j)/sqrt(grad_x(i,j)*grad_x(i,j)+grad_y(i,j)*grad_y(i,j));
                 ny=grad_y(i,j)/sqrt(grad_x(i,j)*grad_x(i,j)+grad_y(i,j)*grad_y(i,j));
                 nxx=abs(nx);
+
+                _normal(k,0)=nx;
+                _normal(k,1)=ny;
 
 
                 //interface
@@ -227,7 +231,7 @@ void plic::interf()
                     if (nx>0)
                     {
                       pttri(nbtri*3,0)=(i+1)*dx;
-                      pttri(nbtri*3+1,0)=(i+1)*dx
+                      pttri(nbtri*3+1,0)=(i+1)*dx;
                       pttri(nbtri*3+2,0)=i*dx+_interface(k,3);
                     }
                     else //si orienté vers la gauche
@@ -418,11 +422,11 @@ void plic::interf()
 
 
 
-
+/**
 // Sauvegarde la solution
 void plic::SaveSol( int n)
 {
-	string name_file = _results + "/solution_" + std::to_string(n) + ".vtk";
+	string name_file ="test";// _results + "/solution_" + std::to_string(n) + ".vtk";
 
   int nb_vert = nbtri*3+nbquad*4+nbpenta*5  //nombre de points
 
@@ -438,7 +442,7 @@ void plic::SaveSol( int n)
   solution << "DATASET UNSTRUCTURED_GRID" << endl;
 
   solution << "POINTS " << nb_vert << " float " << endl;   //ajouter des points sur l'interface en fonction du type d'interface
-  /*
+  ///*
   for (int i = 0 ; i < lon+1 ; ++i)
   {
       for(int j=0;j<lar+1;j++)
@@ -458,7 +462,7 @@ void plic::SaveSol( int n)
           }
       }
   }
-  */
+
   for (int i=0;i<nbtri*3;++i)
   {
     solution << pttri(i,0)<<" "<<pttri(i,1)<<" "<<pttri(i,2)<<endl;
@@ -507,7 +511,7 @@ void plic::SaveSol( int n)
         }
       }
   }
-  */
+  */ /*
   solution << endl;
 
   solution << "CELL_TYPES " << nbtri+nbquad+nbpenta << endl;
@@ -547,7 +551,7 @@ void plic::SaveSol( int n)
           }
       }
   }
-  */
+  */ /*
   solution << endl;
 
   solution << "CELL_DATA " << nbtri+nbquad+nbpenta << endl;
@@ -585,9 +589,11 @@ void plic::SaveSol( int n)
           }
       }
   }
-  */
+  */ /*
   solution << endl;
 
 	//cout<<sqrt(sum)<<endl;
 	solution.close();
+
 }
+*/
