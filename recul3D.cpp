@@ -173,7 +173,12 @@ recul3D::~recul3D()
         ptc2=ptb2;
         ptb2=point;
       }
-      /* code */
+      /* code *///cas 1 coin sortant
+      //D intersection de A1A2 x=0
+      //E intersection A2B2 x=0
+      //F intersection A2C2 x=0
+      //pyramide A2DEF dans cube D
+      //reste dans cube E
     } else if (nbpt==2) {
       if (pta2[0]>0) {
         recul3D::rotationcoin(repere, coord)
@@ -199,9 +204,9 @@ recul3D::~recul3D()
         ptc2=ptb2;
         ptb2=point;
       }
-      /* code */
+      /* code *///cas 2 coins sortants
     } else {
-      /* code */
+      /* code *///cas 3 coins sortants -> séparer les cas
     }
 
   }
