@@ -228,6 +228,24 @@ void recul::recul_surface()
             if (zc<0) {
               if (zd<0) {
                 //recul17(i, j, alpha, vrdt, coord);
+                double xa1,za1,xb1,zb1,xc1,zc1,xd1,zd1;
+                xb1=_dx-xa;
+                zb1=za;
+                xa1=_dx-xb;
+                za1=zb;
+                xd1=_dx-xc;
+                zd1=zc;
+                xc1=-dx-xd;
+                zc1=zd;
+                xa=xa1;
+                za=za1;
+                xb=xb1;
+                zb=zb1;
+                xc=xc1;
+                zc=zc1;
+                xd=xd1;
+                zd=zd1;
+
                 double Stot, S1, S2, S3, S4;
                 Stot=vrdt*l;
                 S1 = za*za*tan(alpha)/2;
@@ -244,8 +262,25 @@ void recul::recul_surface()
               } else {
                 if (zc+(_dx-xc)*(zd-zc)/(xd-xc)>0) {
                   //recul13(i, j, alpha, vrdt, coord);
-                  double S1, S2;
+                  double xa1,za1,xb1,zb1,xc1,zc1,xd1,zd1;
+                  xb1=_dx-xa;
+                  zb1=za;
+                  xa1=_dx-xb;
+                  za1=zb;
+                  xd1=_dx-xc;
+                  zd1=zc;
+                  xc1=-dx-xd;
+                  zc1=zd;
+                  xa=xa1;
+                  za=za1;
+                  xb=xb1;
+                  zb=zb1;
+                  xc=xc1;
+                  zc=zc1;
+                  xd=xd1;
+                  zd=zd1;
 
+                  double S1, S2;
                   S1=xc*xc*(1/tan(alpha)+tan(alpha))/2;
                   S2=zd*zd*(1/tan(alpha)+tan(alpha))/2;
                   _C_solide(i,(j+1)%_nx)=_C_solide(i,(j+1)%_nx)-S1/(_dx*_dz);
@@ -255,8 +290,25 @@ void recul::recul_surface()
                   _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S1-S2)/(_dx*_dz);
                 } else {
                   //recul14(i, j, alpha, vrdt, coord);
-                  double S1, S2, S3;
+                  double xa1,za1,xb1,zb1,xc1,zc1,xd1,zd1;
+                  xb1=_dx-xa;
+                  zb1=za;
+                  xa1=_dx-xb;
+                  za1=zb;
+                  xd1=_dx-xc;
+                  zd1=zc;
+                  xc1=-dx-xd;
+                  zc1=zd;
+                  xa=xa1;
+                  za=za1;
+                  xb=xb1;
+                  zb=zb1;
+                  xc=xc1;
+                  zc=zc1;
+                  xd=xd1;
+                  zd=zd1;
 
+                  double S1, S2, S3;
                   S1=xc*xc*(1/tan(alpha)+tan(alpha))/2;
                   S2=zd*zd*(1/tan(alpha)+tan(alpha))/2;
                   S3=(-xc*tan(alpha)-zc)*(-xc*tan(alpha)-zc)/(2*tan(alpha));
@@ -271,8 +323,25 @@ void recul::recul_surface()
               }
             } else {
               //recul12(i, j, alpha, vrdt, coord);
-              double S1;
+              double xa1,za1,xb1,zb1,xc1,zc1,xd1,zd1;
+              xb1=_dx-xa;
+              zb1=za;
+              xa1=_dx-xb;
+              za1=zb;
+              xd1=_dx-xc;
+              zd1=zc;
+              xc1=-dx-xd;
+              zc1=zd;
+              xa=xa1;
+              za=za1;
+              xb=xb1;
+              zb=zb1;
+              xc=xc1;
+              zc=zc1;
+              xd=xd1;
+              zd=zd1;
 
+              double S1;
               S1=xc*xc*(1/tan(alpha)+tan(alpha))/2;
               _C_solide(i,(j+1)%_nx)=_C_solide(i,(j+1)%_nx)-S1/(_dx*_dz);
               _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S1)/(_dx*_dz);
@@ -282,6 +351,24 @@ void recul::recul_surface()
           if (zc<0) {
             if (zd<0) {
               //recul18(i, j, alpha, vrdt, coord);
+              double xa1,za1,xb1,zb1,xc1,zc1,xd1,zd1;
+              xb1=_dx-xa;
+              zb1=za;
+              xa1=_dx-xb;
+              za1=zb;
+              xd1=_dx-xc;
+              zd1=zc;
+              xc1=-dx-xd;
+              zc1=zd;
+              xa=xa1;
+              za=za1;
+              xb=xb1;
+              zb=zb1;
+              xc=xc1;
+              zc=zc1;
+              xd=xd1;
+              zd=zd1;
+
               double Stot, S1, S2, S3, S4;
               Stot=vrdt*l;
               S1 = za*za*tan(alpha)/2;
@@ -296,6 +383,24 @@ void recul::recul_surface()
               }
             } else {
               //recul16(i, j, alpha, vrdt, coord);
+              double xa1,za1,xb1,zb1,xc1,zc1,xd1,zd1;
+              xb1=_dx-xa;
+              zb1=za;
+              xa1=_dx-xb;
+              za1=zb;
+              xd1=_dx-xc;
+              zd1=zc;
+              xc1=-dx-xd;
+              zc1=zd;
+              xa=xa1;
+              za=za1;
+              xb=xb1;
+              zb=zb1;
+              xc=xc1;
+              zc=zc1;
+              xd=xd1;
+              zd=zd1;
+
               double Stot, S1, S2, S3, S4;
               Stot=vrdt*l;
               S3 = xb*xb/(2*tan(alpha));
@@ -311,6 +416,24 @@ void recul::recul_surface()
             }
           } else {
             //recul15(i, j, alpha, vrdt, coord);
+            double xa1,za1,xb1,zb1,xc1,zc1,xd1,zd1;
+            xb1=_dx-xa;
+            zb1=za;
+            xa1=_dx-xb;
+            za1=zb;
+            xd1=_dx-xc;
+            zd1=zc;
+            xc1=-dx-xd;
+            zc1=zd;
+            xa=xa1;
+            za=za1;
+            xb=xb1;
+            zb=zb1;
+            xc=xc1;
+            zc=zc1;
+            xd=xd1;
+            zd=zd1;
+
             double Stot, S1, S2, l1, l2;
             Stot=vrdt*l;
             l1 = -xc*sin(alpha);
@@ -839,6 +962,24 @@ void recul::recul18(int i, int j, double alpha, double vrdt, MatrixXd coord)
   zd=coord(2,1);
   xc=_dx-coord(3,0);
   zc=coord(3,1);
+
+  double xa1,za1,xb1,zb1,xc1,zc1,xd1,zd1;
+  xb1=_dx-xa;
+  zb1=za;
+  xa1=_dx-xb;
+  za1=zb;
+  xd1=_dx-xc;
+  zd1=zc;
+  xc1=-dx-xd;
+  zc1=zd;
+  xa=xa1;
+  za=za1;
+  xb=xb1;
+  zb=zb1;
+  xc=xc1;
+  zc=zc1;
+  xd=xd1;
+  zd=zd1;
 
   l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
   alpha=abs(alpha);
