@@ -289,6 +289,9 @@ recul3D::~recul3D()
       int nbar;
       nbar=0;
       //tests arrêtes sortantes
+      if (pta2[1]-pta2[0]*(pta1[1]-pta2[1])/(pta1[0]-pta2[0])<0) {
+        /* code */
+      }
 
       if (nbar==0) {
         /* code *///cas O arrête sortante

@@ -479,7 +479,7 @@ void plic::SaveSol( int n)
   solution << endl;
 
 
-  solution << "CELLS " << nbtri+nbquad+nbpenta << " " << (nbtri+nbquad+nbpenta)*4 << endl; //deuxieme terme kesako ?
+  solution << "CELLS " << nbtri+nbquad+nbpenta << " " << (nbtri*4+nbquad*5+nbpenta*6) << endl; //deuxieme terme kesako ?
   for (int i;i<nbtri;++i)
   {
     solution << 3 << " "<< i*3 <<" "<<i*3 +1<<" "<<i*3 +2<<endl;
