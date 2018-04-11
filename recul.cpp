@@ -8,7 +8,7 @@ recul::recul(read_data &_data)
 {
   //_read_data=&_data;
   //_diff=0;
-  _C_solide=_read_data.Get_Solide();
+  _C_solide=_read_data.Get_C_Solide();
   _dtmax=_read_data.Get_dt();
   _dt=_dtmax;
   _dx=_read_data.Get_dx();
@@ -87,6 +87,7 @@ void recul::recul_surface()
         coord(3,0)=xd;
         coord(3,1)=zd;*/
 
+        double l;
         l=sqrt((xb-xa)*(xb-xa)+(zb-za)*(zb-za));
         alpha=abs(alpha);
 
@@ -165,6 +166,7 @@ void recul::recul_surface()
                   _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S1-S2)/(_dx*_dz);
                 } else {
                   //recul8(i, j, alpha, vrdt, coord);
+                  double S1,S2,S3;
                   S1=xc*xc*(1/tan(alpha)+tan(alpha))/2;
                   S2=zd*zd*(1/tan(alpha)+tan(alpha))/2;
                   S3=(-xc*tan(alpha)-zc)*(-xc*tan(alpha)-zc)/(2*tan(alpha));
@@ -236,7 +238,7 @@ void recul::recul_surface()
                 za1=zb;
                 xd1=_dx-xc;
                 zd1=zc;
-                xc1=-dx-xd;
+                xc1=_dx-xd;
                 zc1=zd;
                 xa=xa1;
                 za=za1;
@@ -270,7 +272,7 @@ void recul::recul_surface()
                   za1=zb;
                   xd1=_dx-xc;
                   zd1=zc;
-                  xc1=-dx-xd;
+                  xc1=_dx-xd;
                   zc1=zd;
                   xa=xa1;
                   za=za1;
@@ -298,7 +300,7 @@ void recul::recul_surface()
                   za1=zb;
                   xd1=_dx-xc;
                   zd1=zc;
-                  xc1=-dx-xd;
+                  xc1=_dx-xd;
                   zc1=zd;
                   xa=xa1;
                   za=za1;
@@ -331,7 +333,7 @@ void recul::recul_surface()
               za1=zb;
               xd1=_dx-xc;
               zd1=zc;
-              xc1=-dx-xd;
+              xc1=_dx-xd;
               zc1=zd;
               xa=xa1;
               za=za1;
@@ -359,7 +361,7 @@ void recul::recul_surface()
               za1=zb;
               xd1=_dx-xc;
               zd1=zc;
-              xc1=-dx-xd;
+              xc1=_dx-xd;
               zc1=zd;
               xa=xa1;
               za=za1;
@@ -391,7 +393,7 @@ void recul::recul_surface()
               za1=zb;
               xd1=_dx-xc;
               zd1=zc;
-              xc1=-dx-xd;
+              xc1=_dx-xd;
               zc1=zd;
               xa=xa1;
               za=za1;
@@ -424,7 +426,7 @@ void recul::recul_surface()
             za1=zb;
             xd1=_dx-xc;
             zd1=zc;
-            xc1=-dx-xd;
+            xc1=_dx-xd;
             zc1=zd;
             xa=xa1;
             za=za1;
@@ -450,6 +452,25 @@ void recul::recul_surface()
     }
   }
   cpositive();
+
+  //écriture dans un fichier
+  ofstream mon_flux;
+  string name_file("C_solide.dat");
+  mon_flux.open(name_file, ios::out);
+  if(mon_flux)
+  {
+    mon_flux << _C_solide << endl;
+    /*for (int i = 0; i < _nz; i++) {
+      for (int j = 0; j < _nx; j++) {
+        mon_flux <<  << endl;
+      }
+    }*/
+  }
+  else
+  {
+    cout << "ERREUR: Impossible d’ouvrir le fichier." << endl;
+  }
+  mon_flux.close();
 
 }
 

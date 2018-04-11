@@ -7,6 +7,8 @@
 #include "plic.h"
 #include "diffusion.h"
 #include "read_data.h"
+#include <fstream>
+#include <iostream>
 
 class recul
 {
