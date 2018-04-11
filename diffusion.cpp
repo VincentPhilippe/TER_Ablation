@@ -16,7 +16,7 @@ diffusion::diffusion(read_data& data, Cartesien2D& maillage)
 
 void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
 {
-  double dt = 0.4*(dx+dz), erreur = 10, flux;
+  double dt = 0.4*(dx+dz), erreur = 10, flux, a;
   int n=0, i, j;
   MatrixXd C1;
   C1 = MatrixXd::Zero(_maillage.GetNz(), _maillage.GetNx());
@@ -36,7 +36,6 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
         erreur += abs(C1(i,j) - _concentration(i,j));
         j++;
       }
-      // Condition limite interface
       // Condition limite interface : calcul des 4 flux + flux interface~ -Da * C
       flux = 0;
       flux += fluxGauche(i,j);
@@ -44,7 +43,8 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
       flux += fluxDroite(i,j);
       flux += fluxHaut(i,j);
       flux += fluxInterf(i,j);
-      C1(i,j) = _concentration(i,j) + (dt/dx*dz)*flux;
+      a = aireInterf(i,j)
+      C1(i,j) = _concentration(i,j) + (dt/a)*flux;
     }
   }
     _concentration = C1;
@@ -137,6 +137,11 @@ double diffusion::fluxInterf(int i, int j)
   Da = _damkohler(i);
 
   return(-Da*_concentration(i,j)*l);
+}
+
+double diffusion::aireInterf(int i, int j)
+{
+  return(0);
 }
 
 double diffusion::longueurArete(int i, int j, enum Direction direction)
