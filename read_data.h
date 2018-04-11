@@ -16,7 +16,7 @@ private:
   std::string _dim;
   Eigen::MatrixXd _Da;
   Eigen::MatrixXd _C0;
-  Eigen::MatrixXd _Surface;
+  Eigen::MatrixXd _C_Solide;
 
   bool _if_dx;
   bool _if_dz;
@@ -29,7 +29,7 @@ private:
   bool _if_dim;
   bool _if_Da;
   bool _if_C0;
-  bool _if_Surface;
+  bool _if_C_Solide;
 
 public: // Méthodes et opérateurs de la classe
   read_data(std::string file_name);
@@ -48,7 +48,7 @@ public: // Méthodes et opérateurs de la classe
   std::string Get_dim() const {return _dim;};
   Eigen::MatrixXd Get_Da() const {return _Da;};
   Eigen::MatrixXd Get_C0() const {return _C0;};
-  Eigen::MatrixXd Get_Surface() const {return _Surface;};
+  Eigen::MatrixXd Get_C_Solide() const {return _C_Solide;};
 };
 
 #define _READ_DATA_H
