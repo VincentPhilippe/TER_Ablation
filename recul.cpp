@@ -3,11 +3,12 @@
 using namespace std;
 using namespace Eigen;
 
-recul::recul(read_data &_data, MatrixXd C_solide)
+recul::recul(read_data &_data)
 :_read_data(_data)//, _diff(0)
 {
   //_read_data=&_data;
   //_diff=0;
+  _C_solide=_read_data.Get_Solide();
   _dtmax=_read_data.Get_dt();
   _dt=_dtmax;
   _dx=_read_data.Get_dx();
