@@ -7,11 +7,13 @@
 #include "plic.h"
 #include "diffusion.h"
 #include "read_data.h"
+#include <fstream>
+#include <iostream>
 
 class recul
 {
 public:
-  recul(read_data &read_data, Eigen::MatrixXd C_solide);
+  recul(read_data &read_data);//, Eigen::MatrixXd C_solide);
   //recul(double dt, double dx, double dz, Eigen::MatrixXd C_solide);
   ~recul();
 void update(plic *pplic, diffusion *pdiffusion){_plic=pplic; _diff=pdiffusion;};/////////////////////////////////////////////////////////////////
