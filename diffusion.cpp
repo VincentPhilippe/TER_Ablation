@@ -44,7 +44,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
       flux += fluxDroite(i,j);
       flux += fluxHaut(i,j);
       flux += fluxInterf(i,j);
-      a = aireInterf(i,j)
+      a = aireInterf(i,j);
       C1(i,j) = _concentration(i,j) + (dt/a)*flux;
     }
   }
@@ -124,7 +124,7 @@ double diffusion::fluxHaut(int i, int j)
 
 double diffusion::fluxInterf(int i, int j)
 {
-  double x1, y1, x2, y2;
+  double x1, z1, x2, z2;
   double Da, l;
   int num_cell = (int)(_plic->Get_ninterface()(i,j));
 
@@ -133,7 +133,7 @@ double diffusion::fluxInterf(int i, int j)
   x2 = (_plic->Get_interface())(2,num_cell-1);
   z2 = (_plic->Get_interface())(3,num_cell-1);
 
-  l = sqrt( (x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2) );
+  l = sqrt( (x1 - x2)*(x1 - x2) + (z1 - z2)*(z1 - z2) );
 
   Da = _damkohler(i);
 
