@@ -28,11 +28,14 @@ int main(int argc, char** argv)
   double tfinal = data_file->Get_tfinal();
   string file_name= data_file->Get_file_name();
 
+  int nb_iterations = tfinal/dt;
+
   cout << "------------------- LECTURE DES DONNEES -------------------" << endl;
   cout << "Simulation -- Recul d'une surface composite"                 << endl;
   cout << "Fichier source : " << file_name                              << endl;
   cout << "Pas de temps dt = " << dt                                    << endl;
   cout << "Temps final Tmax = " << tfinal                               << endl;
+  cout << "Nombre d'itérations = " << nb_iterations                     << endl;
 
   // -------------------------- Création du maillage -------------------------------/
   Cartesien2D maillage("Maillage 2D", dx, dz, Lx, Lz);
@@ -43,28 +46,38 @@ int main(int argc, char** argv)
   cout << "Nombre de noeuds = " << maillage.GetNx()*maillage.GetNz() << endl;
 
   // ----------------------------- Initialisation ----------------------------------/
-  diffusion plateau(*data_file, maillage);
+  diffusion* plateau = new diffusion(*data_file, maillage);
 
-// Boucle en temps
+  recul* precul = new recul(*data_file);
+  precul->cpositive();
 
-  /*
-  Résolution équation de diffusion
-  */
+  plic* pplic = new plic();
+  //construction de la première interface
+  pplic->update(precul);
+  pplic->interf();
 
-  /*
-  Calcul de variation de hauteur de la surface
-  */
-
-  /*
-  Reconstruction de la surface
-  */
-
-  /*
-  Sauvegarde de la concentration et de la surface
-  */
-
-// Fin de la boucle
+  // Boucle en temps
+  for (int i = 1; i < nb_iterations; i++)
+  {
+    //sauvergarde de la solution
+    pplic->SaveSol(i);
+    //calcul des nouvelles valeurs de concentrations et de la vitesse de recul
+    plateau->resolution();
+    plateau->vitesse();
+    //mise à jour des données à l'interface, recul de la surface
+    precul->update(pplic, plateau);
+    precul->recul_surface();
+    //reconstruction de l'interface
+    pplic->update(precul);
+    pplic->interf();
+  }
+  // Fin de la boucle
+  // Sauvegarde de la dernière solution
+  pplic->SaveSol(nb_iterations);
 
   delete data_file;
+  delete precul;
+  delete pplic;
+  delete plateau;
   return 0;
 }
