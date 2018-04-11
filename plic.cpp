@@ -1,4 +1,5 @@
 #include "plic.h"
+#include <fstream>
 #include <iostream>
 
 using namespace std;
@@ -422,13 +423,13 @@ void plic::interf()
 
 
 
-/**
+
 // Sauvegarde la solution
 void plic::SaveSol( int n)
 {
-	string name_file ="test";// _results + "/solution_" + std::to_string(n) + ".vtk";
+	string name_file = "Results/solution_" + std::to_string(n) + ".vtk";
 
-  int nb_vert = nbtri*3+nbquad*4+nbpenta*5  //nombre de points
+  int nb_vert = nbtri*3+nbquad*4+nbpenta*5;  //nombre de points
 
   //assert((sol.size() == _triangles.size()) && "The size of the solution vector is not the same than the number of _triangles !");
 
@@ -442,7 +443,7 @@ void plic::SaveSol( int n)
   solution << "DATASET UNSTRUCTURED_GRID" << endl;
 
   solution << "POINTS " << nb_vert << " float " << endl;   //ajouter des points sur l'interface en fonction du type d'interface
-  ///*
+  /*
   for (int i = 0 ; i < lon+1 ; ++i)
   {
       for(int j=0;j<lar+1;j++)
@@ -462,7 +463,7 @@ void plic::SaveSol( int n)
           }
       }
   }
-
+  */
   for (int i=0;i<nbtri*3;++i)
   {
     solution << pttri(i,0)<<" "<<pttri(i,1)<<" "<<pttri(i,2)<<endl;
@@ -511,7 +512,7 @@ void plic::SaveSol( int n)
         }
       }
   }
-  */ /*
+  */
   solution << endl;
 
   solution << "CELL_TYPES " << nbtri+nbquad+nbpenta << endl;
@@ -551,7 +552,7 @@ void plic::SaveSol( int n)
           }
       }
   }
-  */ /*
+  */
   solution << endl;
 
   solution << "CELL_DATA " << nbtri+nbquad+nbpenta << endl;
@@ -589,11 +590,10 @@ void plic::SaveSol( int n)
           }
       }
   }
-  */ /*
+  */
   solution << endl;
 
 	//cout<<sqrt(sum)<<endl;
 	solution.close();
 
 }
-*/
