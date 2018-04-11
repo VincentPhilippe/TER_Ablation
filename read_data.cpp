@@ -10,7 +10,7 @@ using namespace std;
 read_data::read_data(std::string file_name)
 : _file_name(file_name),  _if_dx(false), _if_dz(false), _if_Lx(false),
 _if_Lz(false), _if_dt(false), _if_tfinal(false), _if_Diff(false), _if_flux(false),
-_if_dim(false), _if_Da(false), _if_C0(false), _if_Surface(false)
+_if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
 {}
 
   void read_data::read_datafile()
@@ -345,75 +345,106 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_Surface(false)
         {}
       }
 
-      if (file_line.find("Surface") != std::string::npos)
+      if (file_line.find("C_Solide") != std::string::npos)
       {
-        std::string Surface_string;
-        data_file >> Surface_string; _if_Surface = true;
+        std::string C_Solide_string;
+        data_file >> C_Solide_string; _if_C_Solide = true;
         if (_dim == "2D")
         {
-              if (Surface_string == "uniforme")
+              if (C_Solide_string == "uniforme")
               {
-                double Surface_unif, Nx_temp;
-                data_file >> Surface_unif;
-                _Surface.resize(_Nx+1,2);
-                _Surface(0,0)=_Nx;
-                for (int i=1; i<_Nx+1; i++)
+                double C_Solide_unif;
+                data_file >> C_Solide_unif;
+                _C_Solide.resize(_Nx,_Nz);
+                for (int j=0; j<_Nx; j++)
                 {
-                  _Surface(i,0) = (i-1)*_dx;
-                  _Surface(i,1) = Surface_unif;
+                  int i=0.;
+                  while (i*_dz<C_Solide_unif)
+                  {
+                    _C_Solide(i,j)=1.;
+                  }
+                  _C_Solide(i,j)=0.5;
+                  while (i*_dz<_Nz)
+                  {
+                    _C_Solide(i,j)=0.;
+                  }
+                  i++;
                 }
               }
-              else if (Surface_string == "step")
+              else if (C_Solide_string == "step")
               {
-                double Surface_step1, Surface_step2, Nx_temp;
-                data_file >> Surface_step1 >> Surface_step2;
-                _Surface.resize(_Nx+1,2);
-                _Surface(0,0)=_Nx;
-                for (int i=1; i<=floor(_Nx/3); i++)
+                double C_Solide_step1, C_Solide_step2;
+                data_file >> C_Solide_step1 >> C_Solide_step2;
+                _C_Solide.resize(_Nx,_Nz);
+                for (int j=1; j<=floor(_Nx/3); j++)
                 {
-                  _Surface(i,0) = (i-1)*_dx;
-                  _Surface(i,1) = Surface_step1;
+                  int i=0.;
+                  while (i*_dz<C_Solide_step1)
+                  {
+                    _C_Solide(i,j)=1.;
+                  }
+                  _C_Solide(i,j)=0.5;
+                  while (i*_dz<_Nz)
+                  {
+                    _C_Solide(i,j)=0.;
+                  }
+                  i++;
                 }
-                for (int i=floor(_Nx/3)+1; i<=2*floor(_Nx/3); i++)
+                for (int j=floor(_Nx/3)+1; j<=2*floor(_Nx/3); j++)
                 {
-                  _Surface(i,0) = (i-1)*_dx;
-                  _Surface(i,1) = Surface_step2;
+                  int i=0.;
+                  while (i*_dz<C_Solide_step2)
+                  {
+                    _C_Solide(i,j)=1.;
+                  }
+                  _C_Solide(i,j)=0.5;
+                  while (i*_dz<_Nz)
+                  {
+                    _C_Solide(i,j)=0.;
+                  }
+                  i++;
                 }
-                for (int i=2*floor(_Nx/3)+1; i<_Nx+1; i++)
+                for (int j=2*floor(_Nx/3)+1; j<_Nx+1; j++)
                 {
-                  _Surface(i,0) = (i-1)*_dx;
-                  _Surface(i,1) = Surface_step1;
+                  int i=0.;
+                  while (i*_dz<C_Solide_step1)
+                  {
+                    _C_Solide(i,j)=1.;
+                  }
+                  _C_Solide(i,j)=0.5;
+                  while (i*_dz<_Nz)
+                  {
+                    _C_Solide(i,j)=0.;
+                  }
+                  i++;
                 }
               }
-              else if (Surface_string == "retrieve")
+              else if (C_Solide_string == "retrieve")
               {
-                std::string _Surface_file_name;
-                data_file >> _Surface_file_name;
-                ifstream Surface_file(_Surface_file_name.data());
-                if (!Surface_file.is_open())
+                std::string _C_Solide_file_name;
+                data_file >> _C_Solide_file_name;
+                ifstream C_Solide_file(_C_Solide_file_name.data());
+                if (!C_Solide_file.is_open())
                 {
-                  cout << "Unable to open Surface file " << _Surface_file_name << endl;
+                  cout << "Unable to open C_Solide file " << _C_Solide_file_name << endl;
                   abort();
                 }
                 else
                 {
                   cout << "-------------------------------------------------" << endl;
-                  cout << "Reading Surface data file " << _Surface_file_name << endl;
+                  cout << "Reading C_Solide data file " << _C_Solide_file_name << endl;
                 }
-                int Surface_size(0);
-                double _x, _Surface_x;
-                Surface_file >> Surface_size;
-                _Surface.resize(Surface_size+1,2);
-                _Surface(0,0)=Surface_size;
-                for (int i=1; i<_Nx+1; i++)
+                _C_Solide.resize(_Nx,_Nz);
+                for (int i=0; i<_Nz; i++)
                 {
-                  Surface_file >> _x >> _Surface_x;
-                  _Surface(i,0)=_x;
-                  _Surface(i,1)=_Surface_x;
+                  for (int j=0; j<_Nx; j++)
+                  {
+                    C_Solide_file >> _C_Solide(i,j);
+                  }
                 }
-                cout << "End of reading Surface data file" << endl;
+                cout << "End of reading C_Solide data file" << endl;
                 cout << "-------------------------------------------------" << endl;
-                Surface_file.close();
+                C_Solide_file.close();
               }
               else
               {
