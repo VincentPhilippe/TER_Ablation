@@ -128,10 +128,10 @@ double diffusion::fluxInterf(int i, int j)
   double Da, l;
   int num_cell = (int)(_plic->Get_ninterface()(i,j));
 
-  x1 = (_plic->Get_interface())(0,num_cell-1);
-  z1 = (_plic->Get_interface())(1,num_cell-1);
-  x2 = (_plic->Get_interface())(2,num_cell-1);
-  z2 = (_plic->Get_interface())(3,num_cell-1);
+  x1 = (_plic->Get_interface())(num_cell-1, 0);
+  z1 = (_plic->Get_interface())(num_cell-1, 1);
+  x2 = (_plic->Get_interface())(num_cell-1, 2);
+  z2 = (_plic->Get_interface())(num_cell-1, 3);
 
   l = sqrt( (x1 - x2)*(x1 - x2) + (z1 - z2)*(z1 - z2) );
 
@@ -142,7 +142,29 @@ double diffusion::fluxInterf(int i, int j)
 
 double diffusion::aireInterf(int i, int j)
 {
-  return(0);
+  double c, d, e, f, aire;
+  int num_cell = (int)(_plic->Get_ninterface()(i,j));
+
+  if((_plic->Get_normal())(num_cell-1, 0) >= 0)
+  {
+    c = (_plic->Get_interface())(num_cell-1, 0);
+    d = (_plic->Get_interface())(num_cell-1, 1);
+    e = (_plic->Get_interface())(num_cell-1, 2);
+    f = (_plic->Get_interface())(num_cell-1, 3);
+
+    aire = abs(d*e) + abs((c-e)*d) + abs((f-d)*e) + 0.5*abs((c-e)*(f-d));
+    return(dx*dz - aire);
+  }
+  else
+  {
+    c = (_plic->Get_interface())(num_cell-1, 0);
+    d = (_plic->Get_interface())(num_cell-1, 1);
+    e = (_plic->Get_interface())(num_cell-1, 2);
+    f = (_plic->Get_interface())(num_cell-1, 3);
+
+    aire = 0.5*abs((f-d)*(e-c)) + abs(e-c)*d + abs(dx-e)*d + abs((f-d)*(dx-e));
+    return(dx*dz - aire);
+  }
 }
 
 double diffusion::longueurArete(int i, int j, enum Direction direction)
@@ -165,10 +187,10 @@ double diffusion::longueurArete(int i, int j, enum Direction direction)
 
     default:
 
-      x1 = (_plic->Get_interface())(0,num_cell-1);
-      z1 = (_plic->Get_interface())(1,num_cell-1);
-      x2 = (_plic->Get_interface())(2,num_cell-1);
-      z2 = (_plic->Get_interface())(3,num_cell-1);
+      x1 = (_plic->Get_interface())(num_cell-1, 0);
+      z1 = (_plic->Get_interface())(num_cell-1, 1);
+      x2 = (_plic->Get_interface())(num_cell-1, 2);
+      z2 = (_plic->Get_interface())(num_cell-1, 3);
 
 
       if(direction == LEFT)
@@ -215,7 +237,7 @@ double diffusion::longueurArete(int i, int j, enum Direction direction)
 
 void diffusion::vitesse() // Permet de donner la vitesse normale en chaque point de la surface
 {
-
+  
 }
 
 enum State_Cell diffusion::watchCell(int i, int j) // Regarde l'état de la case (i,j)
@@ -265,11 +287,11 @@ enum State_Interf diffusion::watchInterf(int i, int j, enum Direction direction)
   }
   else
   {
-    point1(0) = (_plic->Get_interface())(0,num_cell-1);
-    point1(1) = (_plic->Get_interface())(1,num_cell-1);
+    point1(0) = (_plic->Get_interface())(num_cell-1, 0);
+    point1(1) = (_plic->Get_interface())(num_cell-1, 1);
 
-    point2(0) = (_plic->Get_interface())(2,num_cell-1);
-    point2(1) = (_plic->Get_interface())(3,num_cell-1);
+    point2(0) = (_plic->Get_interface())(num_cell-1, 2);
+    point2(1) = (_plic->Get_interface())(num_cell-1, 3);
 
     switch(direction)
     {
