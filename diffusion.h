@@ -49,7 +49,8 @@ public:
   double fluxBas(int i, int j);
   double fluxDroite(int i, int j);
   double fluxHaut(int i, int j);
-  double fluxInterf(int i, int j)
+  double fluxInterf(int i, int j);
+  double aireInterf(int i, int j);
   double longueurArete(int k, int l, enum Direction direction);
   enum State_Cell watchCell(int i, int j);
   enum State_Interf watchInterf(int i, int j, enum Direction direction);
