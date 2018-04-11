@@ -11,18 +11,17 @@ diffusion::diffusion(read_data& data, Cartesien2D& maillage)
   dz = _data.Get_dz();
 
   _concentration = _data.Get_C0();
-  _vitesse = VectorXd::Zero(_maillage.GetNx());
   _damkohler = _data.Get_Da();
 }
 
 void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
 {
   double dt = 0.4*(dx+dz), erreur = 10, flux, a;
-  int n=0, i, j;
+  int n=0, j;
   MatrixXd C1;
   C1 = MatrixXd::Zero(_maillage.GetNz(), _maillage.GetNx());
 
-  while(erreur>10e-9)
+  while(erreur>10e-9 && n<10000)
   {
     for(int i = 1; i < _maillage.GetNx(); i++){
       j = 1;
@@ -38,15 +37,21 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
         j++;
       }
       // Condition limite interface : calcul des 4 flux + flux interface~ -Da * C
-      flux = 0;
-      flux += fluxGauche(i,j);
-      flux += fluxBas(i,j);
-      flux += fluxDroite(i,j);
-      flux += fluxHaut(i,j);
-      flux += fluxInterf(i,j);
-      a = aireInterf(i,j);
-      C1(i,j) = _concentration(i,j) + (dt/a)*flux;
+      while(_plic->Get_interface()(i,j+1) != -1 && j <= _maillage.GetNz())
+      {
+        flux = 0;
+        flux += fluxGauche(i,j);
+        flux += fluxBas(i,j);
+        flux += fluxDroite(i,j);
+        flux += fluxHaut(i,j);
+        flux += fluxInterf(i,j);
+        a = aireInterf(i,j);
+        C1(i,j) = _concentration(i,j) + (dt/a)*flux;
+
+        j++;
+      }
     }
+    n++;
   }
     _concentration = C1;
 }
@@ -232,12 +237,12 @@ double diffusion::longueurArete(int i, int j, enum Direction direction)
 
       }
 
-
+      return(0);
 }
 
 void diffusion::vitesse() // Permet de donner la vitesse normale en chaque point de la surface
 {
-  
+
 }
 
 enum State_Cell diffusion::watchCell(int i, int j) // Regarde l'état de la case (i,j)
@@ -335,4 +340,7 @@ enum State_Interf diffusion::watchInterf(int i, int j, enum Direction direction)
           return(S);
     }
   }
+
+return(S);
+
 }
