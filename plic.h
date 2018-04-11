@@ -7,6 +7,7 @@
 #include "Sparse"
 #include "Dense"
 #include "recul.h"
+#include "read_data.h"
 
 class plic {
   public:
@@ -34,7 +35,7 @@ class plic {
   Eigen::MatrixXd _interface; //_interface[k][ax,ay,bx,by], où k est le numéro de la case, les coordonnées sont en locales, 0 en bas à gauche
   Eigen::MatrixXd tri,quad,penta;  //contient les somments pour chaque polygones
   Eigen::MatrixXd pttri,ptquad,ptpenta; //contient les coord des sommets
-  Eigen::MatrixXd trivalcase,quadvalcase,pentvalcase; //0 si fluide, 1 si solide
+  Eigen::VectorXd trivalcase,quadvalcase,pentvalcase; //0 si fluide, 1 si solide
   Eigen::MatrixXd _normal; //renvoie le vecteur unitaire normal à la surface pour la case k; 0-> composante x; 1-> composante y
   // Sauvegarde la solution
 
