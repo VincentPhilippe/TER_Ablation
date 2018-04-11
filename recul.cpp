@@ -13,7 +13,6 @@ recul::recul(read_data &_data)
   _dt=_dtmax;
   _dx=_read_data.Get_dx();
   _dz=_read_data.Get_dz();
-  _C_solide=C_solide;
 }
 
 
@@ -54,10 +53,17 @@ void recul::recul_surface()
         double xa, za, xb, zb, t_alpha, alpha;
 
         //repere local
-        xa = _interface(0,k-1);
-        za = _interface(1,k-1);
-        xb = _interface(2,k-1);
-        zb = _interface(3,k-1);
+        if (_interface(0,k-1)<_interface(2,k-1)) {
+          xa = _interface(0,k-1);
+          za = _interface(1,k-1);
+          xb = _interface(2,k-1);
+          zb = _interface(3,k-1);
+        } else {
+          xb = _interface(0,k-1);
+          zb = _interface(1,k-1);
+          xa = _interface(2,k-1);
+          za = _interface(3,k-1);
+        }
 
         /*xa = -j*_dx + _interface(0,k-1);
         za = (i+1)*_dz - _interface(1,k-1);

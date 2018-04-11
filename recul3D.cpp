@@ -244,10 +244,10 @@ recul3D::~recul3D()
       pte1[0]=ptb2[0]+coeff_a*(pta2[0]-ptb2[0]);
       pte1[1]=0;
       pte1[2]=ptb2[2]+coeff_a*(pta2[2]-ptb2[2]);
-      //F1 intersection B2C2 x=0
-      coeff_a=-ptc2[0]/(ptb2[0]-ptc2[0]);
-      ptf1[0]=0;
-      ptf1[1]=ptc2[1]+coeff_a*(ptb2[1]-ptc2[1]);
+      //F1 intersection B2C2 y=0
+      coeff_a=-ptc2[1]/(ptb2[1]-ptc2[1]);
+      ptf1[0]=ptc2[0]+coeff_a*(ptb2[0]-ptc2[0]);
+      ptf1[1]=0;
       ptf1[2]=ptc2[2]+coeff_a*(ptb2[2]-ptc2[2]);
 
       //pyramide B2D1E1F1 dans cube H(ligne 3 dans repère)
@@ -289,12 +289,90 @@ recul3D::~recul3D()
       int nbar;
       nbar=0;
       //tests arrêtes sortantes
-      if (pta2[1]-pta2[0]*(pta1[1]-pta2[1])/(pta1[0]-pta2[0])<0) {
-        /* code */
-      }
+      if (pta2[1]-pta2[0]*(ptb2[1]-pta2[1])/(ptb2[0]-pta2[0])<0) {nbar+=1}
+      if (pta2[2]-pta2[0]*(ptc2[2]-pta2[2])/(ptc2[0]-pta2[0])<0) {nbar+=1}
+      if (ptb2[2]-ptb2[1]*(ptc2[2]-ptb2[2])/(ptc2[1]-ptb2[1])<0) {nbar+=1}
 
       if (nbar==0) {
         /* code *///cas O arrête sortante
+        vector<double> ptd1, pte1, ptf1;
+        ptd1.resize(3);
+        pte1.resize(3);
+        ptf1.resize(3);
+        double coeff_a;
+        //D1 intersection de B1B2 y=0
+        coeff_a=-ptb2[1]/(ptb1[1]-ptb2[1]);
+        ptd1[0]=ptb2[0]+coeff_a*(ptb1[0]-ptb2[0]);
+        ptd1[1]=0;
+        ptd1[2]=ptb2[2]+coeff_a*(ptb1[2]-ptb2[2]);
+        //E1 intersection A2B2 y=0
+        coeff_a=-ptb2[1]/(pta2[1]-ptb2[1]);
+        pte1[0]=ptb2[0]+coeff_a*(pta2[0]-ptb2[0]);
+        pte1[1]=0;
+        pte1[2]=ptb2[2]+coeff_a*(pta2[2]-ptb2[2]);
+        //F1 intersection B2C2 x=0
+        coeff_a=-ptc2[1]/(ptb2[1]-ptc2[1]);
+        ptf1[0]=ptc2[0]+coeff_a*(ptb2[0]-ptc2[0]);
+        ptf1[1]=0;
+        ptf1[2]=ptc2[2]+coeff_a*(ptb2[2]-ptc2[2]);
+
+        //pyramide B2D1E1F1 dans cube H(ligne 3 dans repère)
+        double vol_h;
+        vol_h = volume_pyramide(ptb2, ptd1, pte1, ptf1);
+        _C_solide[repere(3,0)][repere(3,1)][repere(3,2)]-=vol_h/(_dx*_dy*_dz);
+
+        vector<double> ptd2, pte2, ptf2;
+        ptd2.resize(3);
+        pte2.resize(3);
+        ptf2.resize(3);
+        //D1 intersection de C1C2 y=0
+        coeff_a=-ptb2[2]/(ptb1[2]-ptb2[2]);
+        ptd2[0]=ptc2[0]+coeff_a*(ptc1[0]-ptc2[0]);
+        ptd2[1]=ptc2[1]+coeff_a*(ptc1[1]-ptc2[1]);
+        ptd2[2]=0;
+        //E1 intersection A2C2 y=0
+        coeff_a=-ptc2[2]/(pta2[2]-ptc2[2]);
+        pte2[0]=ptc2[0]+coeff_a*(pta2[0]-ptc2[0]);
+        pte2[1]=ptc2[1]+coeff_a*(pta2[1]-ptc2[1]);
+        pte2[2]=0;
+        //F1 intersection B2C2 x=0
+        coeff_a=-ptc2[2]/(ptb2[2]-ptc2[2]);
+        ptf2[0]=ptc2[0]+coeff_a*(ptb2[0]-ptc2[0]);
+        ptf2[1]=ptc2[1]+coeff_a*(ptb2[1]-ptc2[1]);
+        ptf2[2]=0;
+
+        //pyramide C2D2E2F2 dans cube O(ligne 5 dans repère)
+        double vol_o;
+        vol_o = volume_pyramide(ptc2, ptd2, pte2, ptf2);
+        _C_solide[repere(5,0)][repere(5,1)][repere(5,2)]-=vol_o/(_dx*_dy*_dz);
+
+        vector<double> ptd, pte, ptf;
+        ptd.resize(3);
+        pte.resize(3);
+        ptf.resize(3);
+        //D intersection de A1A2 x=0
+        coeff_a=-pta2[0]/(pta1[0]-pta2[0]);
+        ptd[0]=0;
+        ptd[1]=pta2[1]+coeff_a*(pta1[1]-pta2[1]);
+        ptd[2]=pta2[2]+coeff_a*(pta1[2]-pta2[2]);
+        //E intersection A2B2 x=0
+        coeff_a=-ptb2[0]/(pta1[0]-ptb2[0]);
+        pte[0]=0;
+        pte[1]=ptb2[1]+coeff_a*(pta1[1]-ptb2[1]);
+        pte[2]=ptb2[2]+coeff_a*(pta1[2]-ptb2[2]);
+        //F intersection A2C2 x=0
+        coeff_a=-ptc2[0]/(pta1[0]-ptc2[0]);
+        ptf[0]=0;
+        ptf[1]=ptc2[1]+coeff_a*(pta1[1]-ptc2[1]);
+        ptf[2]=ptc2[2]+coeff_a*(pta1[2]-ptc2[2]);
+
+        //pyramide A2DEF dans cube D(ligne 0 dans repère)
+        double vol_d;
+        vol_d = volume_pyramide(pta2, ptd, pte, ptf);
+        _C_solide[repere(0,0)][repere(0,1)][repere(0,2)]-=vol_d/(_dx*_dy*_dz);
+
+        //reste dans cube E
+        _C_solide[repere(1,0)][repere(1,1)][repere(1,2)]-=(voltot-vol_d-vol_h)/(_dx*_dy*_dz);
 
       } else if (nbar==1) {
         /* code *///cas 1 arrête sortante
