@@ -12,6 +12,7 @@ diffusion::diffusion(read_data& data, Cartesien2D& maillage)
 
   _concentration = _data.Get_C0();
   _vitesse = VectorXd::Zero(_maillage.GetNx());
+  _damkohler = _data.Get_Da();
 }
 
 void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
