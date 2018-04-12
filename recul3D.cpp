@@ -372,7 +372,7 @@ recul3D::~recul3D()
         _C_solide[repere(0,0)][repere(0,1)][repere(0,2)]-=vol_d/(_dx*_dy*_dz);
 
         //reste dans cube E
-        _C_solide[repere(1,0)][repere(1,1)][repere(1,2)]-=(voltot-vol_d-vol_h)/(_dx*_dy*_dz);
+        _C_solide[repere(1,0)][repere(1,1)][repere(1,2)]-=(voltot-vol_d-vol_h-vol_o)/(_dx*_dy*_dz);
 
       } else if (nbar==1) {
         /* code *///cas 1 arrête sortante
