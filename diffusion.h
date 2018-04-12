@@ -43,7 +43,6 @@ public:
   ~diffusion(){};
 
   void resolution();
-  void vitesse();
 
   double fluxGauche(int i, int j);
   double fluxBas(int i, int j);
