@@ -174,7 +174,7 @@ recul3D::~recul3D()
         ptb2=point;
       }
       /* code *///cas 1 coin sortant
-      vector<double> ptd, pte, ptf;
+      /*vector<double> ptd, pte, ptf;
       ptd.resize(3);
       pte.resize(3);
       ptf.resize(3);
@@ -200,7 +200,7 @@ recul3D::~recul3D()
       vol_d = volume_pyramide(pta2, ptd, pte, ptf);
       _C_solide[repere(0,0)][repere(0,1)][repere(0,2)]-=vol_d/(_dx*_dy*_dz);
       //reste dans cube E
-      _C_solide[repere(1,0)][repere(1,1)][repere(1,2)]-=(voltot-vol_d)/(_dx*_dy*_dz);
+      _C_solide[repere(1,0)][repere(1,1)][repere(1,2)]-=(voltot-vol_d)/(_dx*_dy*_dz);*/
 
     } else if (nbpt==2) {
       if (pta2[0]>0) {
@@ -229,7 +229,7 @@ recul3D::~recul3D()
       }
       /* code *///cas 2 coins sortants
 
-      vector<double> ptd1, pte1, ptf1;
+      /*vector<double> ptd1, pte1, ptf1;
       ptd1.resize(3);
       pte1.resize(3);
       ptf1.resize(3);
@@ -281,7 +281,7 @@ recul3D::~recul3D()
       _C_solide[repere(0,0)][repere(0,1)][repere(0,2)]-=vol_d/(_dx*_dy*_dz);
 
       //reste dans cube E
-      _C_solide[repere(1,0)][repere(1,1)][repere(1,2)]-=(voltot-vol_d-vol_h)/(_dx*_dy*_dz);
+      _C_solide[repere(1,0)][repere(1,1)][repere(1,2)]-=(voltot-vol_d-vol_h)/(_dx*_dy*_dz);*/
 
     } else {
       /* code *///cas 3 coins sortants -> séparer les cas
@@ -295,7 +295,7 @@ recul3D::~recul3D()
 
       if (nbar==0) {
         /* code *///cas O arrête sortante
-        vector<double> ptd1, pte1, ptf1;
+        /*vector<double> ptd1, pte1, ptf1;
         ptd1.resize(3);
         pte1.resize(3);
         ptf1.resize(3);
@@ -372,7 +372,7 @@ recul3D::~recul3D()
         _C_solide[repere(0,0)][repere(0,1)][repere(0,2)]-=vol_d/(_dx*_dy*_dz);
 
         //reste dans cube E
-        _C_solide[repere(1,0)][repere(1,1)][repere(1,2)]-=(voltot-vol_d-vol_h)/(_dx*_dy*_dz);
+        _C_solide[repere(1,0)][repere(1,1)][repere(1,2)]-=(voltot-vol_d-vol_h-vol_o)/(_dx*_dy*_dz);*/
 
       } else if (nbar==1) {
         /* code *///cas 1 arrête sortante

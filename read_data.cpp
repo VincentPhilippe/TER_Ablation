@@ -355,28 +355,30 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
               {
                 double C_Solide_unif;
                 data_file >> C_Solide_unif;
-                _C_Solide.resize(_Nx,_Nz);
+                _C_Solide.resize(_Nz,_Nx);
                 for (int j=0; j<_Nx; j++)
                 {
                   int i=0.;
                   while (i*_dz<C_Solide_unif)
                   {
                     _C_Solide(i,j)=1.;
+                    i++;
                   }
                   _C_Solide(i,j)=0.5;
-                  while (i*_dz<_Nz)
+                  i++;
+                  while (i*_dz<_Lz)
                   {
                     _C_Solide(i,j)=0.;
+                    i++;
                   }
-                  i++;
                 }
               }
               else if (C_Solide_string == "step")
               {
                 double C_Solide_step1, C_Solide_step2;
                 data_file >> C_Solide_step1 >> C_Solide_step2;
-                _C_Solide.resize(_Nx,_Nz);
-                for (int j=1; j<=floor(_Nx/3); j++)
+                _C_Solide.resize(_Nz,_Nx);
+                for (int j=1; j<=floor(_Lx/3); j++)
                 {
                   int i=0.;
                   while (i*_dz<C_Solide_step1)
@@ -390,7 +392,7 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
                   }
                   i++;
                 }
-                for (int j=floor(_Nx/3)+1; j<=2*floor(_Nx/3); j++)
+                for (int j=floor(_Lx/3)+1; j<=2*floor(_Lx/3); j++)
                 {
                   int i=0.;
                   while (i*_dz<C_Solide_step2)
@@ -404,7 +406,7 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
                   }
                   i++;
                 }
-                for (int j=2*floor(_Nx/3)+1; j<_Nx+1; j++)
+                for (int j=2*floor(_Lx/3)+1; j<_Lx+1; j++)
                 {
                   int i=0.;
                   while (i*_dz<C_Solide_step1)
@@ -412,7 +414,7 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
                     _C_Solide(i,j)=1.;
                   }
                   _C_Solide(i,j)=0.5;
-                  while (i*_dz<_Nz)
+                  while (i*_dz<_Lz)
                   {
                     _C_Solide(i,j)=0.;
                   }
@@ -434,7 +436,7 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
                   cout << "-------------------------------------------------" << endl;
                   cout << "Reading C_Solide data file " << _C_Solide_file_name << endl;
                 }
-                _C_Solide.resize(_Nx,_Nz);
+                _C_Solide.resize(_Nz,_Nx);
                 for (int i=0; i<_Nz; i++)
                 {
                   for (int j=0; j<_Nx; j++)
