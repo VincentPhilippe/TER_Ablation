@@ -37,6 +37,8 @@ recul3D::~recul3D()
     return sol;
   }
 
+
+
   double recul3D::volume_pyramide(vector<double> pta, vector<double> ptb, vector<double> ptc, vector<double> ptd)//MatrixXd coord)
   {
     VectorXd sol;
@@ -60,6 +62,8 @@ recul3D::~recul3D()
 
   }
 
+
+
   double recul3D::surface_triangle(vector<double> pta, vector<double> ptb, vector<double> ptc)
   {
     double alpha, surface, la, lb, lc;
@@ -71,6 +75,8 @@ recul3D::~recul3D()
 
     return surface;
   }
+
+
 
   //cas 7 coin solide tous reste dans E
   void recul3D::recul3D_1(MatrixXd& repere, vector<vector<double>>& coord, double vrdt)
@@ -145,9 +151,11 @@ recul3D::~recul3D()
       nbpt+=1;
     }
 
+    int nbar;
+
     //détermination du cas
     if (nbpt==0) {
-      _C_solide[il][jl][kl]-=voltot/(_dx*_dy*_dz);
+      //_C_solide[il][jl][kl]-=voltot/(_dx*_dy*_dz);
     } else if (nbpt==1) {
       if (ptb2[1]<0) {
         recul3D::rotationcoin(repere, coord);
@@ -174,33 +182,6 @@ recul3D::~recul3D()
         ptb2=point;
       }
       /* code *///cas 1 coin sortant
-      /*vector<double> ptd, pte, ptf;
-      ptd.resize(3);
-      pte.resize(3);
-      ptf.resize(3);
-      //D intersection de A1A2 x=0
-      double coeff_a;
-      coeff_a=-pta2[0]/(pta1[0]-pta2[0]);
-      ptd[0]=0;
-      ptd[1]=pta2[1]+coeff_a*(pta1[1]-pta2[1]);
-      ptd[2]=pta2[2]+coeff_a*(pta1[2]-pta2[2]);
-      //E intersection A2B2 x=0
-      coeff_a=-ptb2[0]/(pta2[0]-ptb2[0]);
-      pte[0]=0;
-      pte[1]=ptb2[1]+coeff_a*(pta2[1]-ptb2[1]);
-      pte[2]=ptb2[2]+coeff_a*(pta2[2]-ptb2[2]);
-      //F intersection A2C2 x=0
-      coeff_a=-ptc2[0]/(pta2[0]-ptc2[0]);
-      ptf[0]=0;
-      ptf[1]=ptc2[1]+coeff_a*(pta2[1]-ptc2[1]);
-      ptf[2]=ptc2[2]+coeff_a*(pta2[2]-ptc2[2]);
-
-      //pyramide A2DEF dans cube D(ligne 0 dans repère)
-      double vol_d;
-      vol_d = volume_pyramide(pta2, ptd, pte, ptf);
-      _C_solide[repere(0,0)][repere(0,1)][repere(0,2)]-=vol_d/(_dx*_dy*_dz);
-      //reste dans cube E
-      _C_solide[repere(1,0)][repere(1,1)][repere(1,2)]-=(voltot-vol_d)/(_dx*_dy*_dz);*/
 
     } else if (nbpt==2) {
       if (pta2[0]>0) {
@@ -229,77 +210,120 @@ recul3D::~recul3D()
       }
       /* code *///cas 2 coins sortants
 
-      /*vector<double> ptd1, pte1, ptf1;
-      ptd1.resize(3);
-      pte1.resize(3);
-      ptf1.resize(3);
-      double coeff_a;
-      //D1 intersection de B1B2 y=0
-      coeff_a=-ptb2[1]/(ptb1[1]-ptb2[1]);
-      ptd1[0]=ptb2[0]+coeff_a*(ptb1[0]-ptb2[0]);
-      ptd1[1]=0;
-      ptd1[2]=ptb2[2]+coeff_a*(ptb1[2]-ptb2[2]);
-      //E1 intersection A2B2 y=0
-      coeff_a=-ptb2[1]/(pta2[1]-ptb2[1]);
-      pte1[0]=ptb2[0]+coeff_a*(pta2[0]-ptb2[0]);
-      pte1[1]=0;
-      pte1[2]=ptb2[2]+coeff_a*(pta2[2]-ptb2[2]);
-      //F1 intersection B2C2 y=0
-      coeff_a=-ptc2[1]/(ptb2[1]-ptc2[1]);
-      ptf1[0]=ptc2[0]+coeff_a*(ptb2[0]-ptc2[0]);
-      ptf1[1]=0;
-      ptf1[2]=ptc2[2]+coeff_a*(ptb2[2]-ptc2[2]);
-
-      //pyramide B2D1E1F1 dans cube H(ligne 3 dans repère)
-      double vol_h;
-      vol_h = volume_pyramide(ptb2, ptd1, pte1, ptf1);
-      _C_solide[repere(3,0)][repere(3,1)][repere(3,2)]-=vol_h/(_dx*_dy*_dz);
-
-      vector<double> ptd, pte, ptf;
-      ptd.resize(3);
-      pte.resize(3);
-      ptf.resize(3);
-      //D intersection de A1A2 x=0
-      coeff_a=-pta2[0]/(pta1[0]-pta2[0]);
-      ptd[0]=0;
-      ptd[1]=pta2[1]+coeff_a*(pta1[1]-pta2[1]);
-      ptd[2]=pta2[2]+coeff_a*(pta1[2]-pta2[2]);
-      //E intersection A2B2 x=0
-      coeff_a=-ptb2[0]/(pta1[0]-ptb2[0]);
-      pte[0]=0;
-      pte[1]=ptb2[1]+coeff_a*(pta1[1]-ptb2[1]);
-      pte[2]=ptb2[2]+coeff_a*(pta1[2]-ptb2[2]);
-      //F intersection A2C2 x=0
-      coeff_a=-ptc2[0]/(pta1[0]-ptc2[0]);
-      ptf[0]=0;
-      ptf[1]=ptc2[1]+coeff_a*(pta1[1]-ptc2[1]);
-      ptf[2]=ptc2[2]+coeff_a*(pta1[2]-ptc2[2]);
-
-      //pyramide A2DEF dans cube D(ligne 0 dans repère)
-      double vol_d;
-      vol_d = volume_pyramide(pta2, ptd, pte, ptf);
-      _C_solide[repere(0,0)][repere(0,1)][repere(0,2)]-=vol_d/(_dx*_dy*_dz);
-
-      //reste dans cube E
-      _C_solide[repere(1,0)][repere(1,1)][repere(1,2)]-=(voltot-vol_d-vol_h)/(_dx*_dy*_dz);*/
-
     } else {
       /* code *///cas 3 coins sortants -> séparer les cas
       //compter le nb d'arrêtes sortantes
-      int nbar;
+
       nbar=0;
       //tests arrêtes sortantes
-      if (pta2[1]-pta2[0]*(ptb2[1]-pta2[1])/(ptb2[0]-pta2[0])<0) {nbar+=1}
-      if (pta2[2]-pta2[0]*(ptc2[2]-pta2[2])/(ptc2[0]-pta2[0])<0) {nbar+=1}
-      if (ptb2[2]-ptb2[1]*(ptc2[2]-ptb2[2])/(ptc2[1]-ptb2[1])<0) {nbar+=1}
+      if (pta2[1]-pta2[0]*(ptb2[1]-pta2[1])/(ptb2[0]-pta2[0])<0) {nbar+=1;}
+      if (pta2[2]-pta2[0]*(ptc2[2]-pta2[2])/(ptc2[0]-pta2[0])<0) {nbar+=1;}
+      if (ptb2[2]-ptb2[1]*(ptc2[2]-ptb2[2])/(ptc2[1]-ptb2[1])<0) {nbar+=1;}
 
       if (nbar==0) {
         /* code *///cas O arrête sortante
-        /*vector<double> ptd1, pte1, ptf1;
+
+      } else if (nbar==1) {
+        /* code *///cas 1 arrête sortante
+        //attention rotation
+        if (pta2[2]-pta2[0]*(ptc2[2]-pta2[2])/(ptc2[0]-pta2[0])<0) {
+          recul3D::rotationcoin(repere, coord);
+          vector<double> point;
+          point=pta1;
+          pta1=ptc1;
+          ptc1=ptb1;
+          ptb1=point;
+          point=pta2;
+          pta2=ptc2;
+          ptc2=ptb2;
+          ptb2=point;
+        } else if (ptb2[2]-ptb2[1]*(ptc2[2]-ptb2[2])/(ptc2[1]-ptb2[1])<0) {
+          recul3D::rotationcoin(repere, coord);
+          recul3D::rotationcoin(repere, coord);
+          vector<double> point;
+          point=pta1;
+          pta1=ptb1;
+          ptb1=ptc1;
+          ptc1=point;
+          point=pta2;
+          pta2=ptb2;
+          ptb2=ptc2;
+          ptc2=point;
+        }
+      } else if (nbar==2) {
+        /* code *///cas 2 arrête sortante
+        //attention rotation
+        if (ptb2[2]-ptb2[1]*(ptc2[2]-ptb2[2])/(ptc2[1]-ptb2[1])>0) {
+          recul3D::rotationcoin(repere, coord);
+          vector<double> point;
+          point=pta1;
+          pta1=ptc1;
+          ptc1=ptb1;
+          ptb1=point;
+          point=pta2;
+          pta2=ptc2;
+          ptc2=ptb2;
+          ptb2=point;
+        } else if (pta2[1]-pta2[0]*(ptb2[1]-pta2[1])/(ptb2[0]-pta2[0])>0) {
+          recul3D::rotationcoin(repere, coord);
+          recul3D::rotationcoin(repere, coord);
+          vector<double> point;
+          point=pta1;
+          pta1=ptb1;
+          ptb1=ptc1;
+          ptc1=point;
+          point=pta2;
+          pta2=ptb2;
+          ptb2=ptc2;
+          ptc2=point;
+        }
+      }
+    }
+
+
+    double vol_d, vol_g, vol_h, vol_m, vol_o, vol_q, vol_r;
+    vol_d=0;
+    vol_g=0;
+    vol_h=0;
+    vol_m=0;
+    vol_o=0;
+    vol_q=0;
+    vol_r=0;
+
+    if (nbpt>0) {
+      /* code */////////////////////////////////////////////////////////////////////////d
+      vector<double> ptd0, pte0, ptf0;
+      ptd0.resize(3);
+      pte0.resize(3);
+      ptf0.resize(3);
+      //D intersection de A1A2 x=0
+      double coeff_a;
+      coeff_a=-pta2[0]/(pta1[0]-pta2[0]);
+      ptd0[0]=0;
+      ptd0[1]=pta2[1]+coeff_a*(pta1[1]-pta2[1]);
+      ptd0[2]=pta2[2]+coeff_a*(pta1[2]-pta2[2]);
+      //E intersection A2B2 x=0
+      coeff_a=-ptb2[0]/(pta2[0]-ptb2[0]);
+      pte0[0]=0;
+      pte0[1]=ptb2[1]+coeff_a*(pta2[1]-ptb2[1]);
+      pte0[2]=ptb2[2]+coeff_a*(pta2[2]-ptb2[2]);
+      //F intersection A2C2 x=0
+      coeff_a=-ptc2[0]/(pta2[0]-ptc2[0]);
+      ptf0[0]=0;
+      ptf0[1]=ptc2[1]+coeff_a*(pta2[1]-ptc2[1]);
+      ptf0[2]=ptc2[2]+coeff_a*(pta2[2]-ptc2[2]);
+
+      //pyramide A2DEF dans cube D
+      vol_d = volume_pyramide(pta2, ptd0, pte0, ptf0);
+
+
+      if (nbpt>1) {
+        /* code *//////////////////////////////////////////////////////////////////h
+        vector<double> ptd1, pte1, ptf1;
         ptd1.resize(3);
         pte1.resize(3);
         ptf1.resize(3);
-        double coeff_a;
+
         //D1 intersection de B1B2 y=0
         coeff_a=-ptb2[1]/(ptb1[1]-ptb2[1]);
         ptd1[0]=ptb2[0]+coeff_a*(ptb1[0]-ptb2[0]);
@@ -310,82 +334,151 @@ recul3D::~recul3D()
         pte1[0]=ptb2[0]+coeff_a*(pta2[0]-ptb2[0]);
         pte1[1]=0;
         pte1[2]=ptb2[2]+coeff_a*(pta2[2]-ptb2[2]);
-        //F1 intersection B2C2 x=0
+        //F1 intersection B2C2 y=0
         coeff_a=-ptc2[1]/(ptb2[1]-ptc2[1]);
         ptf1[0]=ptc2[0]+coeff_a*(ptb2[0]-ptc2[0]);
         ptf1[1]=0;
         ptf1[2]=ptc2[2]+coeff_a*(ptb2[2]-ptc2[2]);
 
-        //pyramide B2D1E1F1 dans cube H(ligne 3 dans repère)
-        double vol_h;
+        //pyramide B2D1E1F1 dans cube H
         vol_h = volume_pyramide(ptb2, ptd1, pte1, ptf1);
-        _C_solide[repere(3,0)][repere(3,1)][repere(3,2)]-=vol_h/(_dx*_dy*_dz);
 
-        vector<double> ptd2, pte2, ptf2;
-        ptd2.resize(3);
-        pte2.resize(3);
-        ptf2.resize(3);
-        //D1 intersection de C1C2 y=0
-        coeff_a=-ptb2[2]/(ptb1[2]-ptb2[2]);
-        ptd2[0]=ptc2[0]+coeff_a*(ptc1[0]-ptc2[0]);
-        ptd2[1]=ptc2[1]+coeff_a*(ptc1[1]-ptc2[1]);
-        ptd2[2]=0;
-        //E1 intersection A2C2 y=0
-        coeff_a=-ptc2[2]/(pta2[2]-ptc2[2]);
-        pte2[0]=ptc2[0]+coeff_a*(pta2[0]-ptc2[0]);
-        pte2[1]=ptc2[1]+coeff_a*(pta2[1]-ptc2[1]);
-        pte2[2]=0;
-        //F1 intersection B2C2 x=0
-        coeff_a=-ptc2[2]/(ptb2[2]-ptc2[2]);
-        ptf2[0]=ptc2[0]+coeff_a*(ptb2[0]-ptc2[0]);
-        ptf2[1]=ptc2[1]+coeff_a*(ptb2[1]-ptc2[1]);
-        ptf2[2]=0;
 
-        //pyramide C2D2E2F2 dans cube O(ligne 5 dans repère)
-        double vol_o;
-        vol_o = volume_pyramide(ptc2, ptd2, pte2, ptf2);
-        _C_solide[repere(5,0)][repere(5,1)][repere(5,2)]-=vol_o/(_dx*_dy*_dz);
+        if (nbpt>2) {
+          /* code *////////////////////////////////////////////////////////////////o
+          vector<double> ptd2, pte2, ptf2;
+          ptd2.resize(3);
+          pte2.resize(3);
+          ptf2.resize(3);
+          //D1 intersection de C1C2 y=0
+          coeff_a=-ptb2[2]/(ptb1[2]-ptb2[2]);
+          ptd2[0]=ptc2[0]+coeff_a*(ptc1[0]-ptc2[0]);
+          ptd2[1]=ptc2[1]+coeff_a*(ptc1[1]-ptc2[1]);
+          ptd2[2]=0;
+          //E1 intersection A2C2 y=0
+          coeff_a=-ptc2[2]/(pta2[2]-ptc2[2]);
+          pte2[0]=ptc2[0]+coeff_a*(pta2[0]-ptc2[0]);
+          pte2[1]=ptc2[1]+coeff_a*(pta2[1]-ptc2[1]);
+          pte2[2]=0;
+          //F1 intersection B2C2 x=0
+          coeff_a=-ptc2[2]/(ptb2[2]-ptc2[2]);
+          ptf2[0]=ptc2[0]+coeff_a*(ptb2[0]-ptc2[0]);
+          ptf2[1]=ptc2[1]+coeff_a*(ptb2[1]-ptc2[1]);
+          ptf2[2]=0;
 
-        vector<double> ptd, pte, ptf;
-        ptd.resize(3);
-        pte.resize(3);
-        ptf.resize(3);
-        //D intersection de A1A2 x=0
-        coeff_a=-pta2[0]/(pta1[0]-pta2[0]);
-        ptd[0]=0;
-        ptd[1]=pta2[1]+coeff_a*(pta1[1]-pta2[1]);
-        ptd[2]=pta2[2]+coeff_a*(pta1[2]-pta2[2]);
-        //E intersection A2B2 x=0
-        coeff_a=-ptb2[0]/(pta1[0]-ptb2[0]);
-        pte[0]=0;
-        pte[1]=ptb2[1]+coeff_a*(pta1[1]-ptb2[1]);
-        pte[2]=ptb2[2]+coeff_a*(pta1[2]-ptb2[2]);
-        //F intersection A2C2 x=0
-        coeff_a=-ptc2[0]/(pta1[0]-ptc2[0]);
-        ptf[0]=0;
-        ptf[1]=ptc2[1]+coeff_a*(pta1[1]-ptc2[1]);
-        ptf[2]=ptc2[2]+coeff_a*(pta1[2]-ptc2[2]);
+          //pyramide C2D2E2F2 dans cube O
+          vol_o = volume_pyramide(ptc2, ptd2, pte2, ptf2);
 
-        //pyramide A2DEF dans cube D(ligne 0 dans repère)
-        double vol_d;
-        vol_d = volume_pyramide(pta2, ptd, pte, ptf);
-        _C_solide[repere(0,0)][repere(0,1)][repere(0,2)]-=vol_d/(_dx*_dy*_dz);
 
-        //reste dans cube E
-        _C_solide[repere(1,0)][repere(1,1)][repere(1,2)]-=(voltot-vol_d-vol_h-vol_o)/(_dx*_dy*_dz);*/
+          if (nbar>0) {
+            /* code *////////////////////////////////////////////////////////////g
+            vector<double> ptg0, pth0;
+            ptg0.resize(3);
+            pth0.resize(3);
 
-      } else if (nbar==1) {
-        /* code *///cas 1 arrête sortante
-        //attention rotation
-      } else if (nbar==2) {
-        /* code *///cas 2 arrête sortante
-        //attention rotation
-      } else {
-        /* code *///cas 3 arrête sortante -> séparer les cas
+            //G0 intersection de E0F0 y=0
+            coeff_a=-ptf0[1]/(pte0[1]-ptf0[1]);
+            ptg0[0]=0;
+            ptg0[1]=0;
+            ptg0[2]=ptf0[2]+coeff_a*(pte0[2]-ptf0[2]);
+
+            //H0 intersection de E0D0 y=0
+            coeff_a=-ptd0[1]/(pte0[1]-ptd0[1]);
+            pth0[0]=0;
+            pth0[1]=0;
+            pth0[2]=ptd0[2]+coeff_a*(pte0[2]-ptd0[2]);
+
+            //pyramide E0E1G0H0 dans cube G
+            vol_g = volume_pyramide(pte0, pte1, ptg0, pth0);
+
+            vol_d-=vol_g;
+            vol_h-=vol_g;
+            if (nbar>1) {
+              /* code *///////////////////////////////////////////r
+              vector<double> ptg1, pth1;
+              ptg1.resize(3);
+              pth1.resize(3);
+
+              //G1 intersection de E1F1 z=0
+              coeff_a=-ptf1[2]/(pte1[2]-ptf1[2]);
+              ptg1[0]=ptf1[0]+coeff_a*(pte1[0]-ptf1[0]);
+              ptg1[1]=0;
+              ptg1[2]=0;
+
+              //H1 intersection de F1D1 z=0
+              coeff_a=-ptd1[2]/(ptf1[2]-ptd1[2]);
+              pth1[0]=ptd1[0]+coeff_a*(ptf1[0]-ptd1[0]);
+              pth1[1]=0;
+              pth1[2]=0;
+
+              //pyramide F1F2G1H1 dans cube R
+              vol_r = volume_pyramide(ptf1, ptf2, ptg1, pth1);
+
+              vol_h-=vol_r;
+              vol_o-=vol_r;
+
+              if (nbar>2) {
+                /* code *////////////////////////////////////////////////////////////m
+                vector<double> ptg2, pth2;
+                ptg2.resize(3);
+                pth2.resize(3);
+
+                //G2 intersection de E2F2 x=0
+                coeff_a=-ptf2[0]/(pte2[0]-ptf2[0]);
+                ptg2[0]=0;
+                ptg2[1]=ptf2[1]+coeff_a*(pte2[1]-ptf2[1]);
+                ptg2[2]=0;
+
+                //H2 intersection de D2E2 x=0
+                coeff_a=-pte2[0]/(ptd2[0]-pte2[0]);
+                pth2[0]=0;
+                pth2[1]=pte2[1]+coeff_a*(ptd2[1]-pte2[1]);
+                pth2[2]=0;
+
+                //pyramide F0E2G2H2 dans cube R
+                vol_m = volume_pyramide(ptf0, pte2, ptg2, pth2);
+
+                vol_o-=vol_m;
+                vol_d-=vol_m;
+                if (ptg0[2]<0) {
+                  /* code *////////////////////////////////////////////////////////q
+                  vector<double> pto;
+                  pto.resize(3);
+                  pto[0]=0;
+                  pto[1]=0;
+                  pto[2]=0;
+
+                  //pyramide OG0G1G2 dans cube Q
+                  vol_m = volume_pyramide(pto, ptg0, ptg1, ptg2);
+
+                  vol_m-=vol_q;
+                  vol_r-=vol_q;
+                  vol_g-=vol_q;
+                  vol_o+=vol_q;
+                  vol_h+=vol_q;
+                  vol_d+=vol_q;
+                }
+              }
+            }
+          }
+        }
       }
     }
+    voltot-=vol_d+vol_g+vol_h+vol_m+vol_o+vol_q+vol_r;
+
+
+    _C_solide[repere(0,0)][repere(0,1)][repere(0,2)]-=vol_d/(_dx*_dy*_dz);
+    _C_solide[repere(1,0)][repere(1,1)][repere(1,2)]-=voltot/(_dx*_dy*_dz);
+    _C_solide[repere(2,0)][repere(2,1)][repere(2,2)]-=vol_g/(_dx*_dy*_dz);
+    _C_solide[repere(3,0)][repere(3,1)][repere(3,2)]-=vol_h/(_dx*_dy*_dz);
+    _C_solide[repere(4,0)][repere(4,1)][repere(4,2)]-=vol_m/(_dx*_dy*_dz);
+    _C_solide[repere(5,0)][repere(5,1)][repere(5,2)]-=vol_o/(_dx*_dy*_dz);
+    _C_solide[repere(6,0)][repere(6,1)][repere(6,2)]-=vol_q/(_dx*_dy*_dz);
+    _C_solide[repere(7,0)][repere(7,1)][repere(7,2)]-=vol_r/(_dx*_dy*_dz);
 
   }
+
+
 
   MatrixXd recul3D::repereglobal(int i, int j, int k)
   {
@@ -412,6 +505,8 @@ recul3D::~recul3D()
 
     return repere;
   }
+
+
 
   void recul3D::rotationz(MatrixXd& repere_prec, vector<vector<double>>& coord)
   {
@@ -452,6 +547,8 @@ recul3D::~recul3D()
 
   }
 
+
+
   void recul3D::reductionrepere(MatrixXd& repere_prec)
   {
     MatrixXd repere_suiv;
@@ -467,6 +564,8 @@ recul3D::~recul3D()
 
     repere_prec=repere_suiv;
   }
+
+
 
   void recul3D::rotationcoin(MatrixXd& repere_prec, vector<vector<double>>& coord)
   {
