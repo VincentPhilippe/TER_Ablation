@@ -480,15 +480,15 @@ void plic::SaveSol( int n)
 
 
   solution << "CELLS " << nbtri+nbquad+nbpenta << " " << (nbtri*4+nbquad*5+nbpenta*6) << endl; //deuxieme terme kesako ?
-  for (int i;i<nbtri;++i)
+  for (int i=0;i<nbtri;++i)
   {
     solution << 3 << " "<< i*3 <<" "<<i*3 +1<<" "<<i*3 +2<<endl;
   }
-  for (int i;i<nbquad;++i)
+  for (int i=0;i<nbquad;++i)
   {
     solution << 4 << " "<< nbtri+i*4 <<" "<<nbtri+i*4 +1<<" "<<nbtri+i*4 +2<<" "<<nbtri+i*4 +3<<endl;
   }
-  for (int i;i<nbpenta;++i)
+  for (int i=0;i<nbpenta;++i)
   {
     solution << 5 << " "<< nbtri+nbquad+i*5 <<" "<<nbtri+nbquad+i*5 +1<<" "<<nbtri+nbquad+i*5 +2<<" "<<nbtri+nbquad+i*5 +3<<" "<<nbtri+nbquad+i*5 +4<<endl;
   }
@@ -516,15 +516,15 @@ void plic::SaveSol( int n)
   solution << endl;
 
   solution << "CELL_TYPES " << nbtri+nbquad+nbpenta << endl;
-  for (int i;i<nbtri;++i)
+  for (int i=0;i<nbtri;++i)
   {
     solution << 5<<endl;
   }
-  for (int i;i<nbquad;++i)
+  for (int i=0;i<nbquad;++i)
   {
     solution << 9<<endl;
   }
-  for (int i;i<nbpenta;++i)
+  for (int i=0;i<nbpenta;++i)
   {
     solution << 7<<endl;
   }
@@ -559,15 +559,15 @@ void plic::SaveSol( int n)
   solution << "SCALARS sol float 1" << endl;
   solution << "LOOKUP_TABLE default" << endl;
 	//double sum=0;
-  for (int i;i<nbtri;i++)
+  for (int i=0;i<nbtri;i++)
   {
     solution << trivalcase(i)<<endl;
   }
-  for (int i;i<nbquad;i++)
+  for (int i=0;i<nbquad;i++)
   {
     solution << quadvalcase(i)<<endl;
   }
-  for (int i;i<nbpenta;i++)
+  for (int i=0;i<nbpenta;i++)
   {
     solution << pentvalcase(i)<<endl;
   }

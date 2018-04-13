@@ -199,7 +199,7 @@ void recul::recul_surface()
             if (zc<0) {
               if (zd<0) {
                 //recul11(i, j, alpha, vrdt, coord);
-                double Stot, S1, S2, S3, S4;
+                double Stot, S1, S2;
                 Stot=vrdt*l;
                 S1=-zc*l;
                 S2=Stot-S1;

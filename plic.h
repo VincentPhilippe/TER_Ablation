@@ -27,7 +27,8 @@ class plic {
   read_data *_read_data;
   Eigen::MatrixXd _phi;
   double p,nx,nxx,ny;
-  int _pointsupl,lon,lar,num,k,l;
+  int _pointsupl,lon,lar,k;
+  //int num, l; // not used
   int nbtri,nbquad,nbpenta;
   double dx,dz;
   //std::vector<std::vector<int> > _interface;   //_inteface[i][j,ax,ay,bx,by]
