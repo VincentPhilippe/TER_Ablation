@@ -480,6 +480,211 @@ recul3D::~recul3D()
 
 
 
+  void recul3D::recul3D_2(MatrixXd& repere, vector<vector<double>>& coord, double vrdt)
+  {
+    double il, jl, kl;
+    //attention repère reduit à D, E, G, H, M, O, Q, R
+    il=repere(1,0);//attention pas la bonne ligne
+    jl=repere(1,1);
+    kl=repere(1,2);
+
+    //détermination des points
+    vector<double> pta1,ptb1,ptc1,pta2,ptb2,ptc2;
+    if ((coord[0][2]>coord[1][2]) && (coord[0][2]>coord[2][2])) {
+      pta1=coord[0];
+      pta2=coord[3];
+      if (coord[1][0]>coord[2][0]) {
+        ptb1=coord[1];
+        ptb2=coord[4];
+        ptc1=coord[2];
+        ptc2=coord[5];
+      } else {
+        ptb1=coord[2];
+        ptb2=coord[5];
+        ptc1=coord[1];
+        ptc2=coord[4];
+      }
+    } else if (coord[1][2]>coord[2][2]) {
+      pta1=coord[1];
+      pta2=coord[4];
+      if (coord[0][0]>coord[2][0]) {
+        ptb1=coord[0];
+        ptb2=coord[3];
+        ptc1=coord[2];
+        ptc2=coord[5];
+      } else {
+        ptb1=coord[2];
+        ptb2=coord[5];
+        ptc1=coord[0];
+        ptc2=coord[3];
+      }
+    } else {
+      pta1=coord[2];
+      pta2=coord[5];
+      if (coord[0][0]>coord[1][0]) {
+        ptb1=coord[0];
+        ptb2=coord[3];
+        ptc1=coord[1];
+        ptc2=coord[4];
+      } else {
+        ptb1=coord[1];
+        ptb2=coord[4];
+        ptc1=coord[0];
+        ptc2=coord[3];
+      }
+    }
+
+
+    double surf, voltot;
+    surf=surface_triangle(pta1,ptb1,ptc1);
+    voltot=surf*vrdt;
+
+    double vol_d, vol_e, vol_g, vol_h, vol_m, vol_o, vol_q, vol_r;
+    vol_d=0;
+    vol_e=0;
+    vol_g=0;
+    vol_h=0;
+    vol_m=0;
+    vol_o=0;
+    vol_q=0;
+    vol_r=0;
+
+    vector<double> ptd1, ptd2, ptd3, pte1, pte2, pte3, ptf1, ptf2, ptf3;
+    ptd1.resize(3);
+    ptd2.resize(3);
+    ptd3.resize(3);
+    pte1.resize(3);
+    pte2.resize(3);
+    pte3.resize(3);
+    ptf1.resize(3);
+    ptf2.resize(3);
+    ptf3.resize(3);
+    double coeff_a;
+
+    //D1 intersection de A1A2 z=0
+    coeff_a=-pta2[2]/(pta1[2]-pta2[2]);
+    ptd1[0]=pta2[0]+coeff_a*(pta1[0]-pta2[0]);
+    ptd1[1]=pta2[1]+coeff_a*(pta1[1]-pta2[1]);
+    ptd1[2]=0;
+    //D2 intersection B1B2 x=0
+    coeff_a=-ptb2[0]/(ptb1[0]-ptb2[0]);
+    ptd2[0]=0;
+    ptd2[1]=ptb2[1]+coeff_a*(ptb1[1]-ptb2[1]);
+    ptd2[2]=ptb2[2]+coeff_a*(ptb1[2]-ptb2[2]);
+    //D3 intersection C1C2 y=0
+    coeff_a=-ptc2[1]/(ptc1[1]-ptc2[1]);
+    ptd3[0]=ptc2[0]+coeff_a*(ptc1[0]-ptc2[0]);
+    ptd3[1]=0;
+    ptd3[2]=ptc2[2]+coeff_a*(ptc1[2]-ptc2[2]);
+    //E1 intersection A2B2 x=0
+    coeff_a=-ptb2[0]/(pta2[0]-ptb2[0]);
+    pte1[0]=0;
+    pte1[1]=ptb2[1]+coeff_a*(pta2[1]-ptb2[1]);
+    pte1[2]=ptb2[2]+coeff_a*(pta2[2]-ptb2[2]);
+    //E2 intersection C2B2 x=0
+    coeff_a=-ptb2[0]/(ptc2[0]-ptb2[0]);
+    pte2[0]=0;
+    pte2[1]=ptb2[1]+coeff_a*(ptc2[1]-ptb2[1]);
+    pte2[2]=ptb2[2]+coeff_a*(ptc2[2]-ptb2[2]);
+    //F2 intersection B2C2 y=0
+    coeff_a=-ptc2[1]/(ptb2[1]-ptc2[1]);
+    ptf2[0]=ptc2[0]+coeff_a*(ptb2[0]-ptc2[0]);
+    ptf2[1]=0;
+    ptf2[2]=ptc2[2]+coeff_a*(ptb2[2]-ptc2[2]);
+    //E3 intersection A2C2 y=0
+    coeff_a=-ptc2[1]/(pta2[1]-ptc2[1]);
+    pte3[0]=ptc2[0]+coeff_a*(pta2[0]-ptc2[0]);
+    pte3[1]=0;
+    pte3[2]=ptc2[2]+coeff_a*(pta2[2]-ptc2[2]);
+    //F1 intersection de B2A2 z=0
+    coeff_a=-pta2[2]/(ptb2[2]-pta2[2]);
+    ptf1[0]=pta2[0]+coeff_a*(ptb2[0]-pta2[0]);
+    ptf1[1]=pta2[1]+coeff_a*(ptb2[1]-pta2[1]);
+    ptf1[2]=0;
+    //F3 intersection de C2A2 z=0
+    coeff_a=-pta2[2]/(ptc2[2]-pta2[2]);
+    ptf3[0]=pta2[0]+coeff_a*(ptc2[0]-pta2[0]);
+    ptf3[1]=pta2[1]+coeff_a*(ptc2[1]-pta2[1]);
+    ptf3[2]=0;
+
+    double vol_dgmq, vol_ghqr, vol_moqr;
+    vol_dgmq=0;
+    vol_ghqr=0;
+    vol_moqr=0;
+
+    if (ptb2[0]>0) {
+      vol_dgmq+=volume_pyramide(pta1, pta2, ptc2, pte1);
+      vol_dgmq+=volume_pyramide(pta1, ptc1, ptc2, pte2);
+      vol_dgmq+=volume_pyramide(pta1, ptc2, pte1, pte2);
+    } else {
+      vol_dgmq+=volume_pyramide(pta1, pta2, ptc2, ptb2);
+      vol_dgmq+=volume_pyramide(pta1, ptd2, ptb2, ptc2);
+      vol_dgmq+=volume_pyramide(pta1, ptc1, ptc2, ptd2);
+    }
+
+    if (ptc2[1]>0) {
+      vol_ghqr+=volume_pyramide(ptb1, ptb2, pta2, ptf2);
+      vol_ghqr+=volume_pyramide(ptb1, pta1, pta2, pte3);
+      vol_ghqr+=volume_pyramide(ptb1, pta2, ptf2, pte3);
+    } else {
+      vol_ghqr+=volume_pyramide(ptb1, ptb2, pta2, ptc2);
+      vol_ghqr+=volume_pyramide(ptb1, ptd3, ptc2, pta2);
+      vol_ghqr+=volume_pyramide(ptb1, pta1, pta2, ptd3);
+    }
+
+    if (pta2[2]>0) {
+      vol_moqr+=volume_pyramide(ptc1, ptc2, ptb2, ptf3);
+      vol_moqr+=volume_pyramide(ptc1, ptb1, ptb2, ptf1);
+      vol_moqr+=volume_pyramide(ptc1, ptb2, ptf3, ptf1);
+    } else {
+      vol_ghqr+=volume_pyramide(ptc1, ptc2, ptb2, pta2);
+      vol_ghqr+=volume_pyramide(ptc1, ptd1, pta2, ptb2);
+      vol_ghqr+=volume_pyramide(ptc1, ptb1, ptb2, ptd1);
+    }
+
+    vector<double> ptg1, ptg2, ptg3;
+    ptg1.resize(3);
+    ptg2.resize(3);
+    ptg3.resize(3);
+
+    //G2 intersection B1D1 x=0
+    coeff_a=-ptd1[0]/(ptb1[0]-ptd1[0]);
+    ptg2[0]=0;
+    ptg2[1]=ptd1[1]+coeff_a*(ptb1[1]-ptd1[1]);
+    ptg2[2]=0;
+    //G3 intersection C1D1 y=0
+    coeff_a=-ptd1[1]/(ptc1[1]-ptd1[1]);
+    ptg3[0]=ptd1[0]+coeff_a*(ptc1[0]-ptd1[0]);
+    ptg3[1]=0;
+    ptg3[2]=0;
+    //G1 intersection C1D2 y=0
+    coeff_a=-ptd2[1]/(ptc1[1]-ptd2[1]);
+    ptg1[0]=0;
+    ptg1[1]=0;
+    ptg1[2]=ptd2[2]+coeff_a*(ptc1[2]-ptd2[2]);
+
+    vol_d=abs(pta1[2]*ptc1[1]*ptg3[0]/6);
+    vol_h=abs(pta1[2]*ptb1[0]*ptg2[1]/6);
+    vol_o=abs(ptb1[0]*ptc1[1]*ptg1[2]/6);
+
+
+
+
+
+
+    _C_solide[repere(0,0)][repere(0,1)][repere(0,2)]-=vol_d/(_dx*_dy*_dz);
+    _C_solide[repere(1,0)][repere(1,1)][repere(1,2)]-=voltot/(_dx*_dy*_dz);
+    _C_solide[repere(2,0)][repere(2,1)][repere(2,2)]-=vol_g/(_dx*_dy*_dz);
+    _C_solide[repere(3,0)][repere(3,1)][repere(3,2)]-=vol_h/(_dx*_dy*_dz);
+    _C_solide[repere(4,0)][repere(4,1)][repere(4,2)]-=vol_m/(_dx*_dy*_dz);
+    _C_solide[repere(5,0)][repere(5,1)][repere(5,2)]-=vol_o/(_dx*_dy*_dz);
+    _C_solide[repere(6,0)][repere(6,1)][repere(6,2)]-=vol_q/(_dx*_dy*_dz);
+    _C_solide[repere(7,0)][repere(7,1)][repere(7,2)]-=vol_r/(_dx*_dy*_dz);
+
+  }
+
+
+
   MatrixXd recul3D::repereglobal(int i, int j, int k)
   {
     MatrixXd repere;

@@ -21,6 +21,7 @@ public:
   double volume_pyramide(std::vector<double> pta, std::vector<double> ptb, std::vector<double> ptc, std::vector<double> ptd);//Eigen::MatrixXd coord);
   double surface_triangle(std::vector<double> pta, std::vector<double> ptb, std::vector<double> ptc);
   void recul3D_1(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
+  void recul3D_2(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
   Eigen::MatrixXd repereglobal(int i, int j, int k);
   void rotationz(Eigen::MatrixXd& repere_prec, std::vector<std::vector<double>>& coord);
   void reductionrepere(Eigen::MatrixXd& repere_prec);
