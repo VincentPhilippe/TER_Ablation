@@ -666,14 +666,72 @@ recul3D::~recul3D()
     vol_d=abs(pta1[2]*ptc1[1]*ptg3[0]/6);
     vol_h=abs(pta1[2]*ptb1[0]*ptg2[1]/6);
     vol_o=abs(ptb1[0]*ptc1[1]*ptg1[2]/6);
+    vol_e=abs(ptb1[0]*ptc1[1]*pta1[2]/6);
 
+    vector<double> pth1, pth2, pth3;
+    pth1.resize(3);
+    pth2.resize(3);
+    pth3.resize(3);
 
+    //G2 intersection B1D1 x=0
+    coeff_a=-ptd1[0]/(ptb1[0]-ptd1[0]);
+    ptg2[0]=0;
+    ptg2[1]=ptd1[1]+coeff_a*(ptb1[1]-ptd1[1]);
+    ptg2[2]=0;
+    //G3 intersection C1D1 y=0
+    coeff_a=-ptd1[1]/(ptc1[1]-ptd1[1]);
+    ptg3[0]=ptd1[0]+coeff_a*(ptc1[0]-ptd1[0]);
+    ptg3[1]=0;
+    ptg3[2]=0;
+    //G1 intersection C1D2 y=0
+    coeff_a=-ptd2[1]/(ptc1[1]-ptd2[1]);
+    ptg1[0]=0;
+    ptg1[1]=0;
+    ptg1[2]=ptd2[2]+coeff_a*(ptc1[2]-ptd2[2]);
 
+    if (pte3[2]>0) {
+      //H3 intersection F3F1 y=0
+      coeff_a=-ptf1[1]/(ptf3[1]-ptf1[1]);
+      pth3[0]=ptf1[0]+coeff_a*(ptf3[0]-ptf1[0]);
+      pth3[1]=0;
+      pth3[2]=0;
 
+      vol_d-=volume_pyramide(pte3, ptf3, ptg3, pth3);
 
+      if (pth3[0]>0) {
+        vol_d+=abs(pth3[0]*pth2[1]*pth1[2]/6);
+        vol_h+=abs(pth3[0]*pth2[1]*pth1[2]/6);
+        vol_o+=abs(pth3[0]*pth2[1]*pth1[2]/6);
+      }
+    }
+
+    if (pte1[2]>0) {
+      //H2 intersection E1E2 z=0
+      coeff_a=-pte2[2]/(pte1[2]-pte2[2]);
+      pth2[0]=0;
+      pth2[1]=pte2[1]+coeff_a*(pte1[1]-pte2[1]);
+      pth2[2]=0;
+
+      vol_h-=volume_pyramide(pte1, ptf1, ptg2, pth2);
+    }
+
+    if (ptf2[0]>0) {
+      //H1 intersection E1E2 y=0
+      coeff_a=-pte2[1]/(pte1[1]-pte2[1]);
+      pth1[0]=0;
+      pth1[1]=0;
+      pth1[2]=pte2[2]+coeff_a*(pte1[2]-pte2[2]);
+
+      vol_o-=volume_pyramide(pte2, ptf2, ptg1, pth1);
+    }
+
+    vol_g=voltot-vol_moqr-vol_d-vol_e-vol_h;
+    vol_m=voltot-vol_ghqr-vol_d-vol_e-vol_o;
+    vol_r=voltot-vol_dgmq-vol_e-vol_h-vol_o;
+    vol_q=vol_dgmq-vol_d-vol_g-vol_m;
 
     _C_solide[repere(0,0)][repere(0,1)][repere(0,2)]-=vol_d/(_dx*_dy*_dz);
-    _C_solide[repere(1,0)][repere(1,1)][repere(1,2)]-=voltot/(_dx*_dy*_dz);
+    _C_solide[repere(1,0)][repere(1,1)][repere(1,2)]-=vol_e/(_dx*_dy*_dz);
     _C_solide[repere(2,0)][repere(2,1)][repere(2,2)]-=vol_g/(_dx*_dy*_dz);
     _C_solide[repere(3,0)][repere(3,1)][repere(3,2)]-=vol_h/(_dx*_dy*_dz);
     _C_solide[repere(4,0)][repere(4,1)][repere(4,2)]-=vol_m/(_dx*_dy*_dz);
