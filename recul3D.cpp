@@ -702,6 +702,7 @@ recul3D::~recul3D()
         vol_d+=abs(pth3[0]*pth2[1]*pth1[2]/6);
         vol_h+=abs(pth3[0]*pth2[1]*pth1[2]/6);
         vol_o+=abs(pth3[0]*pth2[1]*pth1[2]/6);
+        vol_e-=abs(pth3[0]*pth2[1]*pth1[2]/6);
       }
     }
 
