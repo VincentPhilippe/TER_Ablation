@@ -91,13 +91,14 @@ void plic::interf()
     //ifinterf.resize(_squares.size());  //ifinterf(i)=1 si _squares(i) interface, 0 sinon
     _interface.resize(k,4) ;
     */
-    k=0;
+    k=-1;
     _pointsupl=0;
     for (int i=1;i<lon;i++)
      {
         for (int j=1;j<lar;j++)
         {
             p=_phi(i,j);
+            //cout <<"je suis ici"<<endl;
             if ((p>0.) && (p<1.))   //si on est sur l'interface
             {
                 k++;
@@ -106,13 +107,16 @@ void plic::interf()
                 nx=grad_x(i,j)/sqrt(grad_x(i,j)*grad_x(i,j)+grad_y(i,j)*grad_y(i,j));
                 ny=grad_y(i,j)/sqrt(grad_x(i,j)*grad_x(i,j)+grad_y(i,j)*grad_y(i,j));
                 nxx=abs(nx);
-
+                cout <<_normal<<endl;
                 _normal(k,0)=nx;
+                //cout << "je suis là"<<endl;
                 _normal(k,1)=ny;
 
 
                 //interface
                 //_pointsupl+=2;
+
+
                 if (p<=ny/(2*nxx))
                 {
                     //typinterf(i,j)=3;  //triangle vers la droite
@@ -188,9 +192,10 @@ void plic::interf()
                         cout<<"point sur un angle"<<endl;
                     }
                 }
+
                 else if (p>=1-ny/(2*nxx))
                 {
-                    typinterf(i,j)=5;  //pentagone vers la droite
+                    //typinterf(i,j)=5;  //pentagone vers la droite
 
                     _interface(k,1)=dx*1;
                     _interface(k,2)=dz*(1-sqrt(2*(1-p)*nxx/ny));
@@ -263,7 +268,7 @@ void plic::interf()
                 {
                     if (nxx<ny)
                     {
-                        typinterf(i,j)=4; //quadrillatère vers le haut
+                        //typinterf(i,j)=4; //quadrillatère vers le haut
 
                         _interface(k,1)=dx*1;
                         _interface(k,2)=dz*(p-nxx/(2*ny));
@@ -320,7 +325,7 @@ void plic::interf()
                     }
                     else
                     {
-                        typinterf(i,j)=-4; //quadrillatère vers la droite
+                        //typinterf(i,j)=-4; //quadrillatère vers la droite
 
                         _interface(k,1)=dx*(p+ny/(2*nxx));
                         _interface(k,2)=0;
@@ -384,20 +389,21 @@ void plic::interf()
                 {
                     if (typinterf(i,j)==-4)
                     {
-                        typinterf(i,j)-=10;
+                        //typinterf(i,j)-=10;
                     }
                     else
                     {
-                        typinterf(i,j)+=10;  //vers la gauche
+                        //typinterf(i,j)+=10;  //vers la gauche
                     }
 
                     _interface(k,2)=dx-_interface(k,2);
                     _interface(k,4)=dz-_interface(k,4);
                 }
             }
-            else
+            else  // si pas sur l'interface
             {
-              typinterf(i,j)=0;
+              //cout <<"coucou"<<endl;
+              //typinterf(i,j)=0;
               ptquad(nbquad*4,0)=(i+1)*dx;
               ptquad(nbquad*4,1)=(j+1)*dz;
               ptquad(nbquad*4,2)=0.0;
