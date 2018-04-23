@@ -22,6 +22,13 @@ public:
   double surface_triangle(std::vector<double> pta, std::vector<double> ptb, std::vector<double> ptc);
   void recul3D_1(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
   void recul3D_2(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
+  void recul3D_3(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
+  void recul3D_4(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
+  void recul3D_5(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
+  void recul3D_6(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
+  void recul3D_7(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
+  void recul3D_8(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
+
   Eigen::MatrixXd repereglobal(int i, int j, int k);
   void rotationz(Eigen::MatrixXd& repere_prec, std::vector<std::vector<double>>& coord);
   void reductionrepere(Eigen::MatrixXd& repere_prec);

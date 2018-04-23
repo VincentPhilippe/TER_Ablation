@@ -46,14 +46,20 @@ int main(int argc, char** argv)
 
   // ----------------------------- Initialisation ----------------------------------/
   diffusion* plateau = new diffusion(*data_file, maillage);
+  cout << "diffusion" << endl;
 
   recul* precul = new recul(*data_file);
+  cout << "recul" << endl;
   precul->cpositive();
+  cout << "cpositive" << endl;
 
   plic* pplic = new plic();
+  cout << "plic" << endl;
   //construction de la première interface
   pplic->update(precul);
+  cout << "update" << endl;
   pplic->interf();
+  cout << "interf" << endl;
 
   // Boucle en temps
   for (int i = 1; i < nb_iterations; i++)

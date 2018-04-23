@@ -744,6 +744,48 @@ recul3D::~recul3D()
 
 
 
+  void recul3D::recul3D_3(MatrixXd& repere, vector<vector<double>>& coord, double vrdt)
+  {
+
+  }
+
+
+
+  void recul3D::recul3D_4(MatrixXd& repere, vector<vector<double>>& coord, double vrdt)
+  {
+
+  }
+
+
+
+  void recul3D::recul3D_5(MatrixXd& repere, vector<vector<double>>& coord, double vrdt)
+  {
+
+  }
+
+
+
+  void recul3D::recul3D_6(MatrixXd& repere, vector<vector<double>>& coord, double vrdt)
+  {
+
+  }
+
+
+
+  void recul3D::recul3D_7(MatrixXd& repere, vector<vector<double>>& coord, double vrdt)
+  {
+
+  }
+
+
+
+  void recul3D::recul3D_8(MatrixXd& repere, vector<vector<double>>& coord, double vrdt)
+  {
+
+  }
+
+
+
   MatrixXd recul3D::repereglobal(int i, int j, int k)
   {
     MatrixXd repere;
