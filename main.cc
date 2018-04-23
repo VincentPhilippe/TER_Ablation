@@ -23,7 +23,6 @@ int main(int argc, char** argv)
   double dz = data_file->Get_dz(); //une petite fonction pour get dy serait pas mal dans le cas 3D :3
   double Lx = data_file->Get_Lx();
   double Lz = data_file->Get_Lz();
-  double Nx = data_file->Get_Nx();
   double dt = data_file->Get_dt();
   double tfinal = data_file->Get_tfinal();
   string file_name= data_file->Get_file_name();
@@ -63,7 +62,7 @@ int main(int argc, char** argv)
     pplic->SaveSol(i);
     //calcul des nouvelles valeurs de concentrations et de la vitesse de recul
     plateau->resolution();
-    plateau->vitesse();
+    //plateau->vitesse();
     //mise à jour des données à l'interface, recul de la surface
     precul->update(pplic, plateau);
     precul->recul_surface();

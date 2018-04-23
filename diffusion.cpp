@@ -51,7 +51,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
         a = aireInterf(i,j);
         C1(i,j) = _concentration(i,j) + (dt/a)*flux;
 
-        vitesse(num_cell-1) = C1(i,j);
+        _vitesse(num_cell-1) = C1(i,j);
 
         j++;
       }

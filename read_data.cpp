@@ -68,7 +68,7 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
         {
           if (Da_string == "uniforme")
           {
-            double Da_unif, Nx_temp;
+            double Da_unif;
             data_file >> Da_unif;
             _Da.resize(_Nx+1,2);
             _Da(0,0)=_Nx;
@@ -80,7 +80,7 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
           }
           else if (Da_string == "step")
           {
-            double Da_step1, Da_step2, Nx_temp;
+            double Da_step1, Da_step2;
             data_file >> Da_step1 >> Da_step2;
             _Da.resize(_Nx+1,2);
             _Da(0,0)=_Nx;
@@ -273,7 +273,7 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
         {
             if (C0_string == "uniforme")
             {
-              double C0_unif, Nx_temp;
+              double C0_unif;
               data_file >> C0_unif;
               _C0.resize(_Nx+1,2);
               _C0(0,0)=_Nx;
@@ -285,7 +285,7 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
             }
             else if (C0_string == "step")
             {
-              double C0_step1, C0_step2, Nx_temp;
+              double C0_step1, C0_step2;
               data_file >> C0_step1 >> C0_step2;
               _C0.resize(_Nx+1,2);
               _C0(0,0)=_Nx;

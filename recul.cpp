@@ -32,7 +32,7 @@ void recul::recul_surface()
 
   double maxvr;
   maxvr=_vitesse.maxCoeff();
-  if (maxvr*_dtmax<_dx & maxvr*_dtmax<_dz) {
+  if ((maxvr*_dtmax<_dx) & (maxvr*_dtmax<_dz)) {
     _dt=_dtmax;
   } else {
     _dt=min(_dx,_dz)/maxvr;
@@ -199,7 +199,7 @@ void recul::recul_surface()
             if (zc<0) {
               if (zd<0) {
                 //recul11(i, j, alpha, vrdt, coord);
-                double Stot, S1, S2, S3, S4;
+                double Stot, S1, S2;
                 Stot=vrdt*l;
                 S1=-zc*l;
                 S2=Stot-S1;
