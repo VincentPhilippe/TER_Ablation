@@ -20,19 +20,19 @@ public:
   Eigen::VectorXd eqplan(std::vector<double> pta, std::vector<double> ptb, std::vector<double> ptc);
   double volume_pyramide(std::vector<double> pta, std::vector<double> ptb, std::vector<double> ptc, std::vector<double> ptd);//Eigen::MatrixXd coord);
   double surface_triangle(std::vector<double> pta, std::vector<double> ptb, std::vector<double> ptc);
-  void recul3D_1(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
-  void recul3D_2(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
-  void recul3D_3(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
-  void recul3D_4(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
-  void recul3D_5(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
-  void recul3D_6(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
-  void recul3D_7(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
-  void recul3D_8(Eigen::MatrixXd& repere, std::vector<std::vector<double>>& coord, double vrdt);
+  void recul3D_1(std::vector<std::vector<int>>& repere, std::vector<std::vector<double>>& coord, double vrdt);
+  void recul3D_2(std::vector<std::vector<int>>& repere, std::vector<std::vector<double>>& coord, double vrdt);
+  void recul3D_3(std::vector<std::vector<int>>& repere, std::vector<std::vector<double>>& coord, double vrdt);
+  void recul3D_4(std::vector<std::vector<int>>& repere, std::vector<std::vector<double>>& coord, double vrdt);
+  void recul3D_5(std::vector<std::vector<int>>& repere, std::vector<std::vector<double>>& coord, double vrdt);
+  void recul3D_6(std::vector<std::vector<int>>& repere, std::vector<std::vector<double>>& coord, double vrdt);
+  void recul3D_7(std::vector<std::vector<int>>& repere, std::vector<std::vector<double>>& coord, double vrdt);
+  void recul3D_8(std::vector<std::vector<int>>& repere, std::vector<std::vector<double>>& coord, double vrdt);
 
-  Eigen::MatrixXd repereglobal(int i, int j, int k);
-  void rotationz(Eigen::MatrixXd& repere_prec, std::vector<std::vector<double>>& coord);
-  void reductionrepere(Eigen::MatrixXd& repere_prec);
-  void rotationcoin(Eigen::MatrixXd& repere_prec, std::vector<std::vector<double>>& coord);
+  std::vector<std::vector<int>> repereglobal(int i, int j, int k);
+  void rotationz(std::vector<std::vector<int>>& repere_prec, std::vector<std::vector<double>>& coord);
+  void reductionrepere(std::vector<std::vector<int>>& repere_prec);
+  void rotationcoin(std::vector<std::vector<int>>& repere_prec, std::vector<std::vector<double>>& coord);
 
   inline std::vector<std::vector<std::vector<double> > > Get_C_solide(){return _C_solide;};
   inline std::vector<std::vector<std::vector<double> > > Get_ninterf(){return _ninterf;};
