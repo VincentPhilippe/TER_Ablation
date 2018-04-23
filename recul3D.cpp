@@ -815,19 +815,72 @@ void recul3D::recul3D_3(vector<vector<int>>& repere, vector<vector<double>>& coo
 
 
   double surf, voltot;
-  surf=surface_triangle(pta1,ptb1,ptc1);
+  surf=2*surface_triangle(pta1,ptb1,ptc1);
   voltot=surf*vrdt;
 
   double vol_d(0), vol_e(0), vol_g(0), vol_h(0), vol_m(0), vol_o(0), vol_q(0), vol_r(0);
 
-  vector<double> pte1(3), pte2(3), pte3(3), ptf1(3), ptf2(3), ptf3(3);
+  vector<double> pta3(3), ptb3(3), ptc3(3), ptd3(3);
+  vector<double> pte1(3), pte2(3), pte3(3), pte4(3), ptf1(3), ptf2(3), ptg1(3), ptg2(3), pth1(3);
+  vector<double> pti1(3), pti2(3), pti3(3), pti4(3), ptj1(3), ptj2(3), ptj3(3), ptj4(3);
   double coeff_a;
 
+  //A3 intersection A1A2 z=0
+
+  //B3 intersection B1B2 z=0
+
+  //C3 intersection C1C2 z=0
+
+  //D3 intersection D1D2 z=0
+
+  //E1 intersection A2B2 z=0
+
+  //E2 intersection B2C2 z=0
+
+  //E3 intersection C2D2 z=0
+
+  //E4 intersection D2A2 z=0
+
+  //F1 intersection A2D2 y=0
+
+  //F2 intersection B2C2 y=0
+
+  //G1 intersection A2B2 x=0
+
+  //G2 intersection D2C2 x=0
+
+  //H1 intersection F1F2 x=0
+
+  //J1 intersection F1F2 z=0
+
+  //J2 intersection F2E1 z=0
+
+  //J3 intersection A3D3 y=0
+
+  //J4 intersection B3C3 y=0
+
+  //I1 intersection G1G2 z=0
+
+  //I2 intersection G2E4 z=0
+
+  //I3 intersection A3B3 x=0
+
+  //I4 intersection D3C3 x=0
 
 
 
 
 
+  //calcul des volumes
+  vol_e=_dx*_dy*(pta1[2]+ptc1[2])/2;
+
+  double vol_degh(0), vol_moqr(0), vol_ghqr(0), vol_dgmq(0), vol_gq(0), vol_qr(0), vol_gh(0), vol_mq(0), vol_dg(0);
+
+
+
+
+
+  
 
 
   if (repere[0][2]<_nz) {_C_solide[(repere[0][0]+_nx)%_nx][(repere[0][1]+_ny)%_ny][repere[0][2]]-=vol_d/(_dx*_dy*_dz);}
