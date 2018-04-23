@@ -83,7 +83,7 @@ recul3D::~recul3D()
   {
     double il, jl, kl;
     //attention repère reduit à D, E, G, H, M, O, Q, R
-    il=repere(1,0);//attention pas la bonne ligne
+    il=repere(1,0);
     jl=repere(1,1);
     kl=repere(1,2);
 
@@ -466,15 +466,14 @@ recul3D::~recul3D()
     }
     voltot-=vol_d+vol_g+vol_h+vol_m+vol_o+vol_q+vol_r;
 
-
-    _C_solide[repere(0,0)][repere(0,1)][repere(0,2)]-=vol_d/(_dx*_dy*_dz);
-    _C_solide[repere(1,0)][repere(1,1)][repere(1,2)]-=voltot/(_dx*_dy*_dz);
-    _C_solide[repere(2,0)][repere(2,1)][repere(2,2)]-=vol_g/(_dx*_dy*_dz);
-    _C_solide[repere(3,0)][repere(3,1)][repere(3,2)]-=vol_h/(_dx*_dy*_dz);
-    _C_solide[repere(4,0)][repere(4,1)][repere(4,2)]-=vol_m/(_dx*_dy*_dz);
-    _C_solide[repere(5,0)][repere(5,1)][repere(5,2)]-=vol_o/(_dx*_dy*_dz);
-    _C_solide[repere(6,0)][repere(6,1)][repere(6,2)]-=vol_q/(_dx*_dy*_dz);
-    _C_solide[repere(7,0)][repere(7,1)][repere(7,2)]-=vol_r/(_dx*_dy*_dz);
+    if (repere(0,2)<_nz) {_C_solide[(repere(0,0)+_nx)%_nx][(repere(0,1)+_ny)%_ny][repere(0,2)]-=vol_d/(_dx*_dy*_dz);}
+    if (repere(1,2)<_nz) {_C_solide[(repere(1,0)+_nx)%_nx][(repere(1,1)+_ny)%_ny][repere(1,2)]-=voltot/(_dx*_dy*_dz);}
+    if (repere(2,2)<_nz) {_C_solide[(repere(2,0)+_nx)%_nx][(repere(2,1)+_ny)%_ny][repere(2,2)]-=vol_g/(_dx*_dy*_dz);}
+    if (repere(3,2)<_nz) {_C_solide[(repere(3,0)+_nx)%_nx][(repere(3,1)+_ny)%_ny][repere(3,2)]-=vol_h/(_dx*_dy*_dz);}
+    if (repere(4,2)<_nz) {_C_solide[(repere(4,0)+_nx)%_nx][(repere(4,1)+_ny)%_ny][repere(4,2)]-=vol_m/(_dx*_dy*_dz);}
+    if (repere(5,2)<_nz) {_C_solide[(repere(5,0)+_nx)%_nx][(repere(5,1)+_ny)%_ny][repere(5,2)]-=vol_o/(_dx*_dy*_dz);}
+    if (repere(6,2)<_nz) {_C_solide[(repere(6,0)+_nx)%_nx][(repere(6,1)+_ny)%_ny][repere(6,2)]-=vol_q/(_dx*_dy*_dz);}
+    if (repere(7,2)<_nz) {_C_solide[(repere(7,0)+_nx)%_nx][(repere(7,1)+_ny)%_ny][repere(7,2)]-=vol_r/(_dx*_dy*_dz);}
 
   }
 
@@ -484,7 +483,7 @@ recul3D::~recul3D()
   {
     double il, jl, kl;
     //attention repère reduit à D, E, G, H, M, O, Q, R
-    il=repere(1,0);//attention pas la bonne ligne
+    il=repere(1,0);
     jl=repere(1,1);
     kl=repere(1,2);
 
@@ -730,15 +729,15 @@ recul3D::~recul3D()
     vol_m=voltot-vol_ghqr-vol_d-vol_e-vol_o;
     vol_r=voltot-vol_dgmq-vol_e-vol_h-vol_o;
     vol_q=vol_dgmq-vol_d-vol_g-vol_m;
-
-    _C_solide[repere(0,0)][repere(0,1)][repere(0,2)]-=vol_d/(_dx*_dy*_dz);
-    _C_solide[repere(1,0)][repere(1,1)][repere(1,2)]-=vol_e/(_dx*_dy*_dz);
-    _C_solide[repere(2,0)][repere(2,1)][repere(2,2)]-=vol_g/(_dx*_dy*_dz);
-    _C_solide[repere(3,0)][repere(3,1)][repere(3,2)]-=vol_h/(_dx*_dy*_dz);
-    _C_solide[repere(4,0)][repere(4,1)][repere(4,2)]-=vol_m/(_dx*_dy*_dz);
-    _C_solide[repere(5,0)][repere(5,1)][repere(5,2)]-=vol_o/(_dx*_dy*_dz);
-    _C_solide[repere(6,0)][repere(6,1)][repere(6,2)]-=vol_q/(_dx*_dy*_dz);
-    _C_solide[repere(7,0)][repere(7,1)][repere(7,2)]-=vol_r/(_dx*_dy*_dz);
+if (repere(0,2)<_nz) {_C_solide[(repere(0,0)+_nx)%_nx][(repere(0,1)+_ny)%_ny][repere(0,2)]-=vol_d/(_dx*_dy*_dz);}
+    if (repere(0,2)<_nz) {_C_solide[repere(0,0)][repere(0,1)][repere(0,2)]-=vol_d/(_dx*_dy*_dz);
+    if (repere(0,2)<_nz) {_C_solide[repere(1,0)][repere(1,1)][repere(1,2)]-=vol_e/(_dx*_dy*_dz);
+    if (repere(0,2)<_nz) {_C_solide[repere(2,0)][repere(2,1)][repere(2,2)]-=vol_g/(_dx*_dy*_dz);
+    if (repere(0,2)<_nz) {_C_solide[repere(3,0)][repere(3,1)][repere(3,2)]-=vol_h/(_dx*_dy*_dz);
+    if (repere(0,2)<_nz) {_C_solide[repere(4,0)][repere(4,1)][repere(4,2)]-=vol_m/(_dx*_dy*_dz);
+    if (repere(0,2)<_nz) {_C_solide[repere(5,0)][repere(5,1)][repere(5,2)]-=vol_o/(_dx*_dy*_dz);
+    if (repere(0,2)<_nz) {_C_solide[repere(6,0)][repere(6,1)][repere(6,2)]-=vol_q/(_dx*_dy*_dz);
+    if (repere(0,2)<_nz) {_C_solide[repere(7,0)][repere(7,1)][repere(7,2)]-=vol_r/(_dx*_dy*_dz);
 
   }
 

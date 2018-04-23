@@ -9,10 +9,14 @@ recul::recul(read_data &_data)
   //_read_data=&_data;
   //_diff=0;
   _C_solide=_read_data.Get_C_Solide();
+  cout << _C_solide << endl << endl;
   _dtmax=_read_data.Get_dt();
   _dt=_dtmax;
   _dx=_read_data.Get_dx();
   _dz=_read_data.Get_dz();
+  _nx = _C_solide.cols();
+  _nz = _C_solide.rows();
+  _ninterf.resize(_nz,_nx);
 }
 
 
@@ -25,10 +29,6 @@ void recul::recul_surface()
   //_ninterf=_plic->Get_ninterf();
   _interface=_plic->Get_interface();
   _vitesse=_diff->GetVitesse();
-
-  //N_surface, Nx, Ny
-  _nx = _ninterf.cols();
-  _nz = _ninterf.rows();
 
   double maxvr;
   maxvr=_vitesse.maxCoeff();
