@@ -56,6 +56,7 @@ void plic::interf()
     int lon=_phi.cols();
     int lar=_phi.rows();
     int _kmax=_recul->Get_nbinterface();
+    cout <<"kmax"<<_kmax<<endl;
     _interface.resize(_kmax,4);
     _normal.resize(_kmax,2);
     tri.resize(3*lon,3); //arbitraire pour le moment, assez grand pour contenir tous les triangles
@@ -98,7 +99,7 @@ void plic::interf()
         for (int j=1;j<lar;j++)
         {
             p=_phi(i,j);
-            //cout <<"je suis ici"<<endl;
+            cout <<"je suis ici"<<endl;
             if ((p>0.) && (p<1.))   //si on est sur l'interface
             {
                 k++;
@@ -109,7 +110,7 @@ void plic::interf()
                 nxx=abs(nx);
                 cout <<_normal<<endl;
                 _normal(k,0)=nx;
-                //cout << "je suis là"<<endl;
+                cout << "je suis là"<<endl;
                 _normal(k,1)=ny;
 
 
