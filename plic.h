@@ -14,8 +14,8 @@ class plic {
   plic();
   ~plic();
   void update(recul *recul){_recul=recul;};
-  double grad_x(const int i, const int j);
-  double grad_y(const int i, const int j);
+  double grad_x(const int i, const int j,int const lon);
+  double grad_y(const int i, const int j,int const lar);
   void interf();
   void SaveSol(int n);
   const Eigen::MatrixXd Get_interface() const {return _interface;};
