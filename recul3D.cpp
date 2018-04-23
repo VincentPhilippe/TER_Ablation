@@ -820,7 +820,7 @@ void recul3D::recul3D_3(vector<vector<int>>& repere, vector<vector<double>>& coo
 
   double vol_d(0), vol_e(0), vol_g(0), vol_h(0), vol_m(0), vol_o(0), vol_q(0), vol_r(0);
 
-  vector<double> ptd1(3), ptd2(3), ptd3(3), pte1(3), pte2(3), pte3(3), ptf1(3), ptf2(3), ptf3(3);
+  vector<double> pte1(3), pte2(3), pte3(3), ptf1(3), ptf2(3), ptf3(3);
   double coeff_a;
 
 

@@ -64,16 +64,23 @@ int main(int argc, char** argv)
   // Boucle en temps
   for (int i = 1; i < nb_iterations; i++)
   {
+    cout << "i " << i << endl;
     //sauvergarde de la solution
+    cout << "SaveSol" << endl;
     pplic->SaveSol(i);
     //calcul des nouvelles valeurs de concentrations et de la vitesse de recul
+    cout << "resolution" << endl;
     plateau->resolution();
     //plateau->vitesse();
     //mise à jour des données à l'interface, recul de la surface
+    cout << "update recul" << endl;
     precul->update(pplic, plateau);
+    cout << "recul_surface" << endl;
     precul->recul_surface();
     //reconstruction de l'interface
+    cout << "update plic" << endl;
     pplic->update(precul);
+    cout << "interf" << endl;
     pplic->interf();
   }
   // Fin de la boucle
