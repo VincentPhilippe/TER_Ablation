@@ -23,7 +23,6 @@ int main(int argc, char** argv)
   double dz = data_file->Get_dz(); //une petite fonction pour get dy serait pas mal dans le cas 3D :3
   double Lx = data_file->Get_Lx();
   double Lz = data_file->Get_Lz();
-  double Nx = data_file->Get_Nx();
   double dt = data_file->Get_dt();
   double tfinal = data_file->Get_tfinal();
   string file_name= data_file->Get_file_name();
@@ -47,28 +46,41 @@ int main(int argc, char** argv)
 
   // ----------------------------- Initialisation ----------------------------------/
   diffusion* plateau = new diffusion(*data_file, maillage);
+  cout << "diffusion" << endl;
 
   recul* precul = new recul(*data_file);
+  cout << "recul" << endl;
   precul->cpositive();
+  cout << "cpositive" << endl;
 
   plic* pplic = new plic();
+  cout << "plic" << endl;
   //construction de la première interface
   pplic->update(precul);
+  cout << "update" << endl;
   pplic->interf();
+  cout << "interf" << endl;
 
   // Boucle en temps
   for (int i = 1; i < nb_iterations; i++)
   {
+    cout << "i " << i << endl;
     //sauvergarde de la solution
+    cout << "SaveSol" << endl;
     pplic->SaveSol(i);
     //calcul des nouvelles valeurs de concentrations et de la vitesse de recul
+    cout << "resolution" << endl;
     plateau->resolution();
-    plateau->vitesse();
+    //plateau->vitesse();
     //mise à jour des données à l'interface, recul de la surface
+    cout << "update recul" << endl;
     precul->update(pplic, plateau);
+    cout << "recul_surface" << endl;
     precul->recul_surface();
     //reconstruction de l'interface
+    cout << "update plic" << endl;
     pplic->update(precul);
+    cout << "interf" << endl;
     pplic->interf();
   }
   // Fin de la boucle

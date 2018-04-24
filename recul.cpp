@@ -13,6 +13,9 @@ recul::recul(read_data &_data)
   _dt=_dtmax;
   _dx=_read_data.Get_dx();
   _dz=_read_data.Get_dz();
+  _nx = _C_solide.cols();
+  _nz = _C_solide.rows();
+  _ninterf.resize(_nz,_nx);
 }
 
 
@@ -26,13 +29,9 @@ void recul::recul_surface()
   _interface=_plic->Get_interface();
   _vitesse=_diff->GetVitesse();
 
-  //N_surface, Nx, Ny
-  _nx = _ninterf.cols();
-  _nz = _ninterf.rows();
-
   double maxvr;
   maxvr=_vitesse.maxCoeff();
-  if (maxvr*_dtmax<_dx & maxvr*_dtmax<_dz) {
+  if ((maxvr*_dtmax<_dx) & (maxvr*_dtmax<_dz)) {
     _dt=_dtmax;
   } else {
     _dt=min(_dx,_dz)/maxvr;
@@ -199,7 +198,7 @@ void recul::recul_surface()
             if (zc<0) {
               if (zd<0) {
                 //recul11(i, j, alpha, vrdt, coord);
-                double Stot, S1, S2, S3, S4;
+                double Stot, S1, S2;
                 Stot=vrdt*l;
                 S1=-zc*l;
                 S2=Stot-S1;

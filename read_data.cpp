@@ -68,36 +68,30 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
         {
           if (Da_string == "uniforme")
           {
-            double Da_unif, Nx_temp;
+            double Da_unif;
             data_file >> Da_unif;
-            _Da.resize(_Nx+1,2);
-            _Da(0,0)=_Nx;
-            for (int i=1; i<_Nx+1; i++)
+            _Da.resize(_Nx);
+            for (int i=0; i<_Nx; i++)
             {
-              _Da(i,0) = (i-1)*_dx;
-              _Da(i,1) = Da_unif;
+              _Da(i) = Da_unif;
             }
           }
           else if (Da_string == "step")
           {
-            double Da_step1, Da_step2, Nx_temp;
+            double Da_step1, Da_step2;
             data_file >> Da_step1 >> Da_step2;
-            _Da.resize(_Nx+1,2);
-            _Da(0,0)=_Nx;
-            for (int i=1; i<=floor(_Nx/3); i++)
+            _Da.resize(_Nx);
+            for (int i=0; i<=floor(_Nx/3); i++)
             {
-              _Da(i,0) = (i-1)*_dx;
-              _Da(i,1) = Da_step1;
+              _Da(i) = Da_step1;
             }
             for (int i=floor(_Nx/3)+1; i<=2*floor(_Nx/3); i++)
             {
-              _Da(i,0) = (i-1)*_dx;
-              _Da(i,1) = Da_step2;
+              _Da(i) = Da_step2;
             }
-            for (int i=2*floor(_Nx/3)+1; i<_Nx+1; i++)
+            for (int i=2*floor(_Nx/3)+1; i<_Nx; i++)
             {
-              _Da(i,0) = (i-1)*_dx;
-              _Da(i,1) = Da_step1;
+              _Da(i) = Da_step1;
             }
           }
           else if (Da_string == "retrieve")
@@ -115,16 +109,12 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
               cout << "-------------------------------------------------" << endl;
               cout << "Reading Da data file " << _Da_file_name << endl;
             }
-            int Da_size(0);
-            double _x, _Da_x;
-            Da_file >> Da_size;
-            _Da.resize(Da_size+1,2);
-            _Da(0,0)=Da_size;
-            for (int i=1; i<_Nx+1; i++)
+            double _Da_x;
+            _Da.resize(_Nx);
+            for (int i=0; i<_Nx; i++)
             {
-              Da_file >> _x >> _Da_x;
-              _Da(i,0)=_x;
-              _Da(i,1)=_Da_x;
+              Da_file >> _Da_x;
+              _Da(i)=_Da_x;
             }
             cout << "End of reading Da data file" << endl;
             cout << "-------------------------------------------------" << endl;
@@ -138,6 +128,7 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
         }
         else if (_dim == "3D")
         {
+          /*
           if (Da_string == "uniforme")
           {
             double Da_unif;
@@ -262,6 +253,7 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
             cout << "Try again." << endl;
             abort();
           }
+          */
         }
       }
 
@@ -273,36 +265,30 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
         {
             if (C0_string == "uniforme")
             {
-              double C0_unif, Nx_temp;
+              double C0_unif;
               data_file >> C0_unif;
-              _C0.resize(_Nx+1,2);
-              _C0(0,0)=_Nx;
-              for (int i=1; i<_Nx+1; i++)
+              _C0.resize(_Nx);
+              for (int i=0; i<_Nx; i++)
               {
-                _C0(i,0) = (i-1)*_dx;
-                _C0(i,1) = C0_unif;
+                _C0(i) = C0_unif;
               }
             }
             else if (C0_string == "step")
             {
-              double C0_step1, C0_step2, Nx_temp;
+              double C0_step1, C0_step2;
               data_file >> C0_step1 >> C0_step2;
-              _C0.resize(_Nx+1,2);
-              _C0(0,0)=_Nx;
-              for (int i=1; i<=floor(_Nx/3); i++)
+              _C0.resize(_Nx);
+              for (int i=0; i<=floor(_Nx/3); i++)
               {
-                _C0(i,0) = (i-1)*_dx;
-                _C0(i,1) = C0_step1;
+                _C0(i) = C0_step1;
               }
               for (int i=floor(_Nx/3)+1; i<=2*floor(_Nx/3); i++)
               {
-                _C0(i,0) = (i-1)*_dx;
-                _C0(i,1) = C0_step2;
+                _C0(i) = C0_step2;
               }
-              for (int i=2*floor(_Nx/3)+1; i<_Nx+1; i++)
+              for (int i=2*floor(_Nx/3)+1; i<_Nx; i++)
               {
-                _C0(i,0) = (i-1)*_dx;
-                _C0(i,1) = C0_step1;
+                _C0(i) = C0_step1;
               }
             }
             else if (C0_string == "retrieve")
@@ -320,16 +306,12 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
                 cout << "-------------------------------------------------" << endl;
                 cout << "Reading C0 data file " << _C0_file_name << endl;
               }
-              int C0_size(0);
-              double _x, _C0_x;
-              C0_file >> C0_size;
-              _C0.resize(C0_size+1,2);
-              _C0(0,0)=C0_size;
-              for (int i=1; i<_Nx+1; i++)
+              double _C0_x;
+              _C0.resize(_Nx);
+              for (int i=0; i<_Nx; i++)
               {
-                C0_file >> _x >> _C0_x;
-                _C0(i,0)=_x;
-                _C0(i,1)=_C0_x;
+                C0_file >> _C0_x;
+                _C0(i)=_C0_x;
               }
               cout << "End of reading C0 data file" << endl;
               cout << "-------------------------------------------------" << endl;

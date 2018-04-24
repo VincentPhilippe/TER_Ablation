@@ -43,7 +43,6 @@ public:
   ~diffusion(){};
 
   void resolution();
-  void vitesse();
 
   double fluxGauche(int i, int j);
   double fluxBas(int i, int j);
@@ -55,6 +54,7 @@ public:
   enum State_Cell watchCell(int i, int j);
   enum State_Interf watchInterf(int i, int j, enum Direction direction);
   void update(plic *plic){ _plic = plic; }
+
   Eigen::MatrixXd GetConcentration() { return _concentration; }
   Eigen::MatrixXd GetVitesse() { return _vitesse; }
 };
