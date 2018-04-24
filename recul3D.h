@@ -20,6 +20,7 @@ public:
   Eigen::VectorXd eqplan(std::vector<double> pta, std::vector<double> ptb, std::vector<double> ptc);
   double volume_pyramide(std::vector<double> pta, std::vector<double> ptb, std::vector<double> ptc, std::vector<double> ptd);//Eigen::MatrixXd coord);
   double surface_triangle(std::vector<double> pta, std::vector<double> ptb, std::vector<double> ptc);
+  double volume6pt(std::vector<double> ptx1, std::vector<double> ptx2, std::vector<double> pty1, std::vector<double> pty2, std::vector<double> ptz1, std::vector<double> ptz2);
   void recul3D_1(std::vector<std::vector<int>>& repere, std::vector<std::vector<double>>& coord, double vrdt);
   void recul3D_2(std::vector<std::vector<int>>& repere, std::vector<std::vector<double>>& coord, double vrdt);
   void recul3D_3(std::vector<std::vector<int>>& repere, std::vector<std::vector<double>>& coord, double vrdt);

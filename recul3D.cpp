@@ -80,6 +80,17 @@ double recul3D::surface_triangle(vector<double> pta, vector<double> ptb, vector<
 
 
 
+double recul3D::volume6pt(vector<double> ptx1, vector<double> ptx2, vector<double> pty1, vector<double> pty2, vector<double> ptz1, vector<double> ptz2)
+{
+  double vol=0;
+  vol+=volume_pyramide(ptx1, ptx2, pty1, ptz1);
+  vol+=volume_pyramide(ptz1, pty1, ptx2, ptz2);
+  vol+=volume_pyramide(pty1, pty2, ptz2, ptx2);
+  return vol;
+}
+
+
+
 //cas 7 coin solide tous reste dans E
 void recul3D::recul3D_1(vector<vector<int>>& repere, vector<vector<double>>& coord, double vrdt)
 {
@@ -818,7 +829,7 @@ void recul3D::recul3D_3(vector<vector<int>>& repere, vector<vector<double>>& coo
   surf=2*surface_triangle(pta1,ptb1,ptc1);
   voltot=surf*vrdt;
 
-  double vol_d(0), vol_e(0), vol_g(0), vol_h(0), vol_m(0), vol_o(0), vol_q(0), vol_r(0);
+  double vol_d=0, vol_e=0, vol_g=0, vol_h=0, vol_m=0, vol_o=0, vol_q=0, vol_r=0;
 
   vector<double> pta3(3), ptb3(3), ptc3(3), ptd3(3);
   vector<double> pte1(3), pte2(3), pte3(3), pte4(3), ptf1(3), ptf2(3), ptg1(3), ptg2(3), pth1(3);
@@ -874,13 +885,13 @@ void recul3D::recul3D_3(vector<vector<int>>& repere, vector<vector<double>>& coo
   //calcul des volumes
   vol_e=_dx*_dy*(pta1[2]+ptc1[2])/2;
 
-  double vol_degh(0), vol_moqr(0), vol_ghqr(0), vol_dgmq(0), vol_gq(0), vol_qr(0), vol_gh(0), vol_mq(0), vol_dg(0);
+  double vol_degh=0, vol_moqr=0, vol_ghqr=0, vol_dgmq=0, vol_gq=0, vol_qr=0, vol_gh=0, vol_mq=0, vol_dg=0;
 
 
 
 
 
-  
+
 
 
   if (repere[0][2]<_nz) {_C_solide[(repere[0][0]+_nx)%_nx][(repere[0][1]+_ny)%_ny][repere[0][2]]-=vol_d/(_dx*_dy*_dz);}
