@@ -9,7 +9,7 @@ plic::plic(read_data &_data)
 :_read_data(_data)
   {
     _interface.resize(1,4);
-    Eigen::MatrixXd pttri,ptquad,ptpenta; //contient les coord des sommets
+    Eigen::MatrixXd pttribis,ptquadbis,ptpentabis; //contient les coord des sommets
     Eigen::VectorXd trivalcase,quadvalcase,pentvalcase; //0 si fluide, 1 si solide
 
     int nbtri=0;
@@ -65,17 +65,17 @@ void plic::interf()
     int _kmax=_recul->Get_nbinterface();
 
     pttri.resize(30*lon,3);
-    ptpenta.resize(30*lon,5);
+    ptpenta.resize(30*lon,3);
     trivalcase.resize(30*lon);
     quadvalcase.resize(30*lon);
     pentvalcase.resize(30*lon);
-    ptquad.resize(50*lon,4);
+    ptquad.resize(50*lon,3);
     _interface.resize(_kmax,4);
     _normal.resize(_kmax,2);
     //tri.resize(10*lon,3); //arbitraire pour le moment, assez grand pour contenir tous les triangles
     //quad.resize(30*lon,4);
     //penta.resize(10*lon,5);
-    int num=0;
+    //int num=0;
     /*
     for (int i=1;i<lon;i++)
      {
@@ -97,7 +97,7 @@ void plic::interf()
     _interface.resize(k,4) ;
     */
     k=-1;
-    _pointsupl=0;
+    //_pointsupl=0;
     for (int i=0;i<lon+1;i++)
      {
         for (int j=0;j<lar+1;j++)
@@ -124,7 +124,7 @@ void plic::interf()
                 {
                     //cout<<"heey"<<endl;
                     //typinterf(i,j)=3;  //triangle vers la droite
-                    num+=2;
+                    //num+=2;
                     _interface(k,0)=dx*sqrt(2*p*ny/nxx);
                     _interface(k,1)=0;
                     _interface(k,2)=0;
@@ -344,10 +344,10 @@ void plic::interf()
                     {
                         //typinterf(i,j)=-4; //quadrillatère vers la droite
                         //cout <<"ou la"<<endl;
-                        _interface(k,1)=dx*(p+ny/(2*nxx));
-                        _interface(k,2)=0;
-                        _interface(k,3)=dx*(p-ny/(2*nxx));
-                        _interface(k,4)=dz*1;
+                        _interface(k,0)=dx*(p+ny/(2*nxx));
+                        _interface(k,1)=0;
+                        _interface(k,2)=dx*(p-ny/(2*nxx));
+                        _interface(k,3)=dz*1;
 
                         //on rentre les coordonnées des sommets
                         if (nx>0)
@@ -428,24 +428,50 @@ void plic::interf()
               //cout <<"je suis ici"<<endl;
               ptquad(nbquad*4,1)=(j+1)*dz;
               ptquad(nbquad*4,2)=0.0;
+              //cout<<"je me ça"<<ptquad(nbquad*4,0)<<" "<<ptquad(nbquad*4,1)<<" "<<ptquad(nbquad*4,2)<<endl;
               ptquad(nbquad*4+1,0)=(i+1)*dx;
               ptquad(nbquad*4+1,1)=(j)*dz;
               ptquad(nbquad*4+1,2)=0.0;
+              //cout<<"je me ça"<<ptquad(nbquad*4+1,0)<<" "<<ptquad(nbquad*4+1,1)<<" "<<ptquad(nbquad*4+1,2)<<endl;
               ptquad(nbquad*4+2,0)=(i)*dx;
               ptquad(nbquad*4+2,1)=(j)*dz;
               ptquad(nbquad*4+2,2)=0.0;
+              //cout<<"je me ça"<<ptquad(nbquad*4+2,0)<<" "<<ptquad(nbquad*4+2,1)<<" "<<ptquad(nbquad*4+2,2)<<endl;
               ptquad(nbquad*4+3,0)=(i)*dx;
               ptquad(nbquad*4+3,1)=(j+1)*dz;
               ptquad(nbquad*4+3,2)=0.0;
+              //cout<<"je me ça"<<ptquad(nbquad*4+3,0)<<" "<<ptquad(nbquad*4+3,1)<<" "<<ptquad(nbquad*4+3,2)<<endl;
+
+              //cout<<"je me ça"<<ptquad(nbquad*4,2)<<" "<<ptquad(nbquad*4+1,2)<<" "<<ptquad(nbquad*4+2,2)<<endl;
               quadvalcase(nbquad)=0;
               nbquad++;
               //cout <<"coucou"<<endl;
             }
           }
         }
-        pttri.resize(nbtri*3,3);
-        ptquad.resize(nbquad*4,3);
-        ptpenta.resize(nbpenta*5,3);
+        ///resize
+        pttribis.resize(nbtri*3,3);
+        ptquadbis.resize(nbquad*4,3);
+        ptpentabis.resize(nbpenta*5,3);
+        int maxi=max(nbtri*3,nbquad*4);
+        for (int i=0;i<max(maxi,nbpenta*5);i++)
+        {
+          for (int j=0;j<3;j++)
+          {
+            if (i<nbtri*3)
+            {
+              pttribis(i,j)=pttri(i,j);
+            }
+            if (i<nbquad*4)
+            {
+              ptquadbis(i,j)=ptquad(i,j);
+            }
+            if (i<nbpenta*5)
+            {
+              ptpentabis(i,j)=ptpenta(i,j);
+            }
+          }
+        }
         //cout<<"fin plic::interf"<<endl;
 }
 
@@ -493,16 +519,19 @@ void plic::SaveSol( int n)
   */
   for (int i=0;i<nbtri*3;++i)
   {
-    solution << pttri(i,0)<<" "<<pttri(i,1)<<" "<<pttri(i,2)<<endl;
+    solution << pttribis(i,0)<<" "<<pttribis(i,1)<<" "<<pttribis(i,2)<<endl;
   }
+
   for (int i=0;i<nbquad*4;++i)
   {
-    solution << ptquad(i,0)<<" "<<ptquad(i,1)<<" "<<ptquad(i,2)<<endl;
+    solution << ptquadbis(i,0)<<" "<<ptquadbis(i,1)<<" "<<ptquadbis(i,2)<<endl;
   }
+
   for (int i=0;i<nbpenta*4;++i)
   {
-    solution << ptpenta(i,0)<<" "<<ptpenta(i,1)<<" "<<ptpenta(i,2)<<endl;
+    solution << ptpentabis(i,0)<<" "<<ptpentabis(i,1)<<" "<<ptpentabis(i,2)<<endl;
   }
+
   solution << endl;
 
 
