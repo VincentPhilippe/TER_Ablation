@@ -34,7 +34,7 @@ uniforme 1.0
 #step 1.0 2.0
 
 C_Solide
-uniforme 0.8
+step 0.2 0.6
 #uniforme 0.8
 #retrieve retrieve_file
 #step 0.8 0.6
