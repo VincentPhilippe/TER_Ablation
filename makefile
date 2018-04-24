@@ -7,8 +7,8 @@ run : main.cc read_data.cpp maillage.cpp diffusion.cpp plic.cpp
 all : main.o diffusion.o maillage.o plic.o read_data.o recul.o
 	g++ -std=c++11 -I EigenLibrary/Eigen -o run build/main.o build/diffusion.o build/maillage.o build/plic.o build/read_data.o build/recul.o
 
-main.o : main.cc -I EigenLibrary/Eigen -c -o build/main.o main.cc
-	g++ -std=c++11 -I EigenLibrary/Eigen -c -o main.o main.cpp
+main.o : main.cc
+	g++ -std=c++11 -I EigenLibrary/Eigen -c -o build/main.o main.cc
 
 diffusion.o : diffusion.cpp diffusion.h
 	g++ -std=c++11 -I EigenLibrary/Eigen -c -o build/diffusion.o diffusion.cpp
