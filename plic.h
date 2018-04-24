@@ -11,7 +11,7 @@
 
 class plic {
   public:
-  plic();
+  plic(read_data &read_data);
   ~plic();
   void update(recul *recul){_recul=recul;};
   double grad_x(const int i, const int j,int const lon);
@@ -24,7 +24,7 @@ class plic {
 
   private:
   recul *_recul;
-  read_data *_read_data;
+  read_data& _read_data;
   Eigen::MatrixXd _phi;
   double p,nx,nxx,ny;
   int _pointsupl,lon,lar,k;

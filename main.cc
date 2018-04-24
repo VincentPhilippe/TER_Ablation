@@ -53,7 +53,7 @@ int main(int argc, char** argv)
   precul->cpositive();
   cout << "cpositive" << endl;
 
-  plic* pplic = new plic();
+  plic* pplic = new plic(*data_file);
   cout << "plic" << endl;
   //construction de la première interface
   pplic->update(precul);
@@ -84,7 +84,7 @@ int main(int argc, char** argv)
     pplic->interf();
   }
   // Fin de la boucle
-  
+
   // Sauvegarde de la dernière solution
   pplic->SaveSol(nb_iterations);
 

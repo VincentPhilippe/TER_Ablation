@@ -5,7 +5,8 @@
 using namespace std;
 
 //constructeur
-plic::plic()
+plic::plic(read_data &_data)
+:_read_data(_data)
   {
     _interface.resize(1,4);
   }
@@ -49,8 +50,8 @@ double plic::grad_y(const int i,const int j,const int lar)
 
 void plic::interf()
 {
-    dx=_read_data->Get_dx();
-    dz=_read_data->Get_dz();
+    dx=_read_data.Get_dx();
+    dz=_read_data.Get_dz();
     _ninterf=_recul->Get_ninterf();
     _phi=_recul->Get_C_solide();
     int lar=_phi.cols()-1;
