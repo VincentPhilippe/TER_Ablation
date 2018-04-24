@@ -7,15 +7,11 @@ using namespace Eigen;
 diffusion::diffusion(read_data& data, Cartesien2D& maillage)
  : _data(data), _maillage(maillage)
 {
-  cout << "coucou" << endl;
   dx = _data.Get_dx();
   dz = _data.Get_dz();
-  cout << "coucou" << endl;
 
   _concentration = _data.Get_C0();
-  cout << "coucou" << endl;
   _damkohler = _data.Get_Da();
-  cout << "coucou" << endl;
 }
 
 void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
@@ -26,6 +22,8 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
   MatrixXd C1;
   C1 = MatrixXd::Zero(_maillage.GetNz(), _maillage.GetNx());
   _vitesse = VectorXd::Zero(interf.maxCoeff());
+
+  cout << "ok" << endl;
 
   while(erreur>10e-9 && n<10000)
   {
