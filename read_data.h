@@ -15,7 +15,7 @@ private:
   std::string _flux;
   std::string _dim;
   Eigen::VectorXd _Da;
-  Eigen::VectorXd _C0;
+  Eigen::MatrixXd _C0;
   Eigen::MatrixXd _C_Solide;
 
   bool _if_dx;
@@ -47,7 +47,7 @@ public: // Méthodes et opérateurs de la classe
   std::string Get_flux() const {return _flux;};
   std::string Get_dim() const {return _dim;};
   Eigen::VectorXd Get_Da() const {return _Da;};
-  Eigen::VectorXd Get_C0() const {return _C0;};
+  Eigen::MatrixXd Get_C0() const {return _C0;};
   Eigen::MatrixXd Get_C_Solide() const {return _C_Solide;};
 };
 
