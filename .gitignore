@@ -4,9 +4,13 @@ Maillage/.DS_Store
 build
 *.o
 run
+<<<<<<< HEAD
 run
 run
 run
 run
 Results/~$lution_1.vtk
 *.vtk
+=======
+Results
+>>>>>>> 7fba6311b80f261c25a88e9d4f51f1c38e48217d
