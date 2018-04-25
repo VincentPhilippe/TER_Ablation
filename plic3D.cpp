@@ -7,17 +7,17 @@ using namespace std;
 //constructeur
 plic::plic()
   {
-    _interface.resize(1,4);
+    _interface.resize(1,9);
   }
 
   plic::~plic()
   {}
 
-double plic::grad_x(const int i,const int j)
+double plic::grad_x(const int i,const int j, const int k)
 {
   if (i==0)
   {
-    return _phi(i+1,j)/2;
+    return _phi(i+1,jpp)/2;
   }
   if (i==lon)
   {
