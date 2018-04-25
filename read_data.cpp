@@ -343,14 +343,14 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
                   int i=0.;
                   while (i*_dz<C_Solide_unif)
                   {
-                    _C_Solide(i,j)=1.;
+                    _C_Solide(i,j)=0.;
                     i++;
                   }
                   _C_Solide(i,j)=0.5;
                   i++;
                   while (i*_dz<_Lz)
                   {
-                    _C_Solide(i,j)=0.;
+                    _C_Solide(i,j)=1.;
                     i++;
                   }
                 }
@@ -365,12 +365,12 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
                   int i=0.;
                   while (i*_dz<C_Solide_step1)
                   {
-                    _C_Solide(i,j)=1.;
+                    _C_Solide(i,j)=0.;
                   }
                   _C_Solide(i,j)=0.5;
                   while (i*_dz<_Nz)
                   {
-                    _C_Solide(i,j)=0.;
+                    _C_Solide(i,j)=1.;
                   }
                   i++;
                 }
@@ -379,12 +379,12 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
                   int i=0.;
                   while (i*_dz<C_Solide_step2)
                   {
-                    _C_Solide(i,j)=1.;
+                    _C_Solide(i,j)=0.;
                   }
                   _C_Solide(i,j)=0.5;
                   while (i*_dz<_Nz)
                   {
-                    _C_Solide(i,j)=0.;
+                    _C_Solide(i,j)=1.;
                   }
                   i++;
                 }
@@ -393,12 +393,12 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
                   int i=0.;
                   while (i*_dz<C_Solide_step1)
                   {
-                    _C_Solide(i,j)=1.;
+                    _C_Solide(i,j)=0.;
                   }
                   _C_Solide(i,j)=0.5;
                   while (i*_dz<_Lz)
                   {
-                    _C_Solide(i,j)=0.;
+                    _C_Solide(i,j)=1.;
                   }
                   i++;
                 }

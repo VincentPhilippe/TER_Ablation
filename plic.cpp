@@ -9,6 +9,12 @@ plic::plic(read_data &_data)
 :_read_data(_data)
   {
     _interface.resize(1,4);
+    Eigen::MatrixXd pttri,ptquad,ptpenta; //contient les coord des sommets
+    Eigen::VectorXd trivalcase,quadvalcase,pentvalcase; //0 si fluide, 1 si solide
+
+    int nbtri=0;
+    int nbquad=0;
+    int nbpenta=0;
   }
 
   plic::~plic()
@@ -57,21 +63,19 @@ void plic::interf()
     int lar=_phi.cols()-1;
     int lon=_phi.rows()-1;
     int _kmax=_recul->Get_nbinterface();
-    _interface.resize(_kmax,4);
-    _normal.resize(_kmax,2);
-    tri.resize(10*lon,3); //arbitraire pour le moment, assez grand pour contenir tous les triangles
-    quad.resize(30*lon,4);
-    penta.resize(10*lon,5);
+
     pttri.resize(30*lon,3);
-    ptquad.resize(50*lon,4);
     ptpenta.resize(30*lon,5);
     trivalcase.resize(30*lon);
     quadvalcase.resize(30*lon);
     pentvalcase.resize(30*lon);
+    ptquad.resize(50*lon,4);
+    _interface.resize(_kmax,4);
+    _normal.resize(_kmax,2);
+    //tri.resize(10*lon,3); //arbitraire pour le moment, assez grand pour contenir tous les triangles
+    //quad.resize(30*lon,4);
+    //penta.resize(10*lon,5);
     int num=0;
-    int nbtri=0;
-    int nbquad=0;
-    int nbpenta=0;
     /*
     for (int i=1;i<lon;i++)
      {
@@ -418,10 +422,10 @@ void plic::interf()
 
             else  // si pas sur l'interface
             {
-
+              //cout<<"je suis là "<<nbquad<<endl;
               //typinterf(i,j)=0;
               ptquad(nbquad*4,0)=(i+1)*dx;
-
+              //cout <<"je suis ici"<<endl;
               ptquad(nbquad*4,1)=(j+1)*dz;
               ptquad(nbquad*4,2)=0.0;
               ptquad(nbquad*4+1,0)=(i+1)*dx;
@@ -452,7 +456,6 @@ void plic::interf()
 void plic::SaveSol( int n)
 {
 	string name_file = "Results/solution_" + std::to_string(n) + ".vtk";
-
   int nb_vert = nbtri*3+nbquad*4+nbpenta*5;  //nombre de points
 
   //assert((sol.size() == _triangles.size()) && "The size of the solution vector is not the same than the number of _triangles !");

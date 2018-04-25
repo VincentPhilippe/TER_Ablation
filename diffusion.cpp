@@ -17,6 +17,7 @@ diffusion::diffusion(read_data& data, Cartesien2D& maillage)
 void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
 {
 
+
   MatrixXd interf = _plic->Get_ninterface();
   double dt = 0.4*(dx+dz), erreur = 10, flux, a;
   int n=0, j, num_cell;
