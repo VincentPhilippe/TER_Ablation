@@ -3,9 +3,7 @@ Maillage/.DS_Store
 .DS_Store
 build
 *.o
-run
+./run
 Results/~$lution_1.vtk
 *.vtk
 Results
-run
-run
