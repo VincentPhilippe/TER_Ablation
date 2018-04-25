@@ -16,21 +16,26 @@ diffusion::diffusion(read_data& data, Cartesien2D& maillage)
 
 void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
 {
+
+
   MatrixXd interf = _plic->Get_ninterface();
   double dt = 0.4*(dx+dz), erreur = 10, flux, a;
   int n=0, j, num_cell;
   MatrixXd C1;
   C1 = MatrixXd::Zero(_maillage.GetNz(), _maillage.GetNx());
+
   _vitesse = VectorXd::Zero(interf.maxCoeff());
 
-  cout << "ok" << endl;
+
 
   while(erreur>10e-9 && n<10000)
   {
-    for(int i = 1; i < _maillage.GetNx(); i++){
-      j = 1;
+    for(int i = 0; i < _maillage.GetNx(); i++){
+
+      j = 0;
+      cout << (_plic->Get_ninterface())(i,j) << endl;
       flux = 0;
-      while(_plic->Get_interface()(i,j) == 0){
+      while((_plic->Get_ninterface())(i,j) == 0){
         flux += fluxGauche(i,j);
         flux += fluxBas(i,j);
         flux += fluxDroite(i,j);
@@ -41,7 +46,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
         j++;
       }
       // Condition limite interface : calcul des 4 flux + flux interface~ -Da * C
-      while(_plic->Get_interface()(i,j+1) != -1 && j <= _maillage.GetNz())
+      while(_plic->Get_ninterface()(i,j+1) != -1 && j <= _maillage.GetNz())
       {
         num_cell = (int)(_plic->Get_ninterface()(i,j));
         flux = 0;
@@ -53,7 +58,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
         a = aireInterf(i,j);
         C1(i,j) = _concentration(i,j) + (dt/a)*flux;
 
-        _vitesse(num_cell-1) = C1(i,j);
+        //_vitesse(num_cell-1) = C1(i,j);
 
         j++;
       }

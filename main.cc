@@ -69,6 +69,8 @@ int main(int argc, char** argv)
     cout << "SaveSol" << endl;
     pplic->SaveSol(i);
     //calcul des nouvelles valeurs de concentrations et de la vitesse de recul
+    cout << "update resolution" << endl;
+    plateau->update(pplic);
     cout << "resolution" << endl;
     plateau->resolution();
     //plateau->vitesse();
