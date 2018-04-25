@@ -20,36 +20,36 @@ plic::plic(read_data &_data)
   plic::~plic()
   {}
 
-double plic::grad_x(const int i,const int j,const int lon)
+double plic::grad_x(const int i,const int j,const int lar)
 {
   if (i==0)
   {
-    return _phi(i+1,j)/2;
+    return _phi(j,i+1)-_phi(j,lar);
   }
-  if (i==lon)
+  if (i==lar)
   {
-    return _phi(i-1,j)/2;
+    return _phi(j,0)-_phi(j,i-1);
   }
   else
   {
-    return (_phi(i+1,j)+_phi(i-1,j))/2;
+    return (_phi(j,i+1)-_phi(j,i-1));
   }
 }
 
-double plic::grad_y(const int i,const int j,const int lar)
+double plic::grad_y(const int i,const int j,const int lon)
 {
   {
     if (j==0)
     {
-      return _phi(i,j+1)/2;
+      return _phi(j+1,i)-_phi(lon,i);
     }
-    if (j==lar)
+    if (j==lon)
     {
-      return _phi(i,j-1)/2;
+      return _phi(0,i)-_phi(j-1,i);
     }
     else
     {
-      return (_phi(i,j+1)+_phi(i,j-1))/2;
+      return (_phi(j+1,i)-_phi(j-1,i));
     }
   }
 }
@@ -61,7 +61,9 @@ void plic::interf()
     _ninterf=_recul->Get_ninterf();
     _phi=_recul->Get_C_solide();
     int lar=_phi.cols()-1;
+    cout <<"lar "<<lar<<endl;
     int lon=_phi.rows()-1;
+    cout <<"lon "<<lon<<endl;
     int _kmax=_recul->Get_nbinterface();
 
     pttri.resize(30*lon,3);
@@ -69,7 +71,7 @@ void plic::interf()
     trivalcase.resize(30*lon);
     quadvalcase.resize(30*lon);
     pentvalcase.resize(30*lon);
-    ptquad.resize(50*lon,3);
+    ptquad.resize(100*lon,3);
     _interface.resize(_kmax,4);
     _normal.resize(_kmax,2);
     //tri.resize(10*lon,3); //arbitraire pour le moment, assez grand pour contenir tous les triangles
@@ -98,38 +100,38 @@ void plic::interf()
     */
     k=-1;
     //_pointsupl=0;
-    for (int i=0;i<lon+1;i++)
+    for (int j=0;j<lon+1;j++)
      {
-        for (int j=0;j<lar+1;j++)
+        for (int i=0;i<lar+1;i++)
         {
-            //cout <<i<<" "<<j<<endl;
-            p=_phi(i,j);
+            cout <<i<<" "<<j<<endl;
+            p=_phi(j,i);
             //cout <<p<<endl;
-            //cout <<"je suis ici"<<endl;
+            cout <<"je suis ici"<<endl;
             if ((p>0.) && (p<1.))   //si on est sur l'interface
             {
                 k++;
 
                 //Calcul du gradient
-                //cout<<grad_y(i,j,lar)<<endl;
-                nx=grad_x(i,j,lon)/sqrt(grad_x(i,j,lon)*grad_x(i,j,lon)+grad_y(i,j,lar)*grad_y(i,j,lar));
-                ny=grad_y(i,j,lar)/sqrt(grad_x(i,j,lon)*grad_x(i,j,lon)+grad_y(i,j,lar)*grad_y(i,j,lar));
+                nx=grad_x(i,j,lar)/sqrt(grad_x(i,j,lar)*grad_x(i,j,lar)+grad_y(i,j,lon)*grad_y(i,j,lon));
+                ny=grad_y(i,j,lon)/sqrt(grad_x(i,j,lar)*grad_x(i,j,lar)+grad_y(i,j,lon)*grad_y(i,j,lon));
                 nxx=abs(nx);
                 _normal(k,0)=nx;
                 _normal(k,1)=ny;
+                cout <<"nxx "<<nxx<<" ny "<<ny<<endl;
                 //cout <<"je suis ici"<<p<<endl;
                 //interface
                 //_pointsupl+=2;
-                if (p<=ny/(2*nxx))
+                if (p<=nxx/(2*ny))//ny/(2*nxx))
                 {
-                    //cout<<"heey"<<endl;
+                    cout<<"heey"<<endl;
                     //typinterf(i,j)=3;  //triangle vers la droite
                     //num+=2;
                     _interface(k,0)=dx*sqrt(2*p*ny/nxx);
                     _interface(k,1)=0;
                     _interface(k,2)=0;
                     _interface(k,3)=dz*2*p/_interface(k,0);
-
+                    cout<<2*p/_interface(k,0)<<endl;
                     //on rentre les coordonnées des sommets du triangles
 
 
@@ -153,6 +155,7 @@ void plic::interf()
                     pttri(nbtri*3+1,1)=(j+1)*dz;
                     pttri(nbtri*3+1,2)=0.0;
                     pttri(nbtri*3+2,1)=(j+1)*dz-_interface(k,3);
+                    //cout <<(j+1)*dz<<" "<<_interface(k,3)<<endl;
                     pttri(nbtri*3+2,2)=0.0;
 
 
@@ -205,9 +208,9 @@ void plic::interf()
 
                 }
 
-                else if (p>=1-ny/(2*nxx))
+                else if (p>=1-nxx/(2*ny))//ny/(2*nxx))
                 {
-                    //cout<<"youy"<<endl;
+                    cout<<"youy"<<endl;
                     //typinterf(i,j)=5;  //pentagone vers la droite
 
                     _interface(k,0)=dx*1;
@@ -280,10 +283,10 @@ void plic::interf()
                 else
                 {
 
-                    if (nxx>ny)
+                    if (nxx<ny)
                     {
 
-                        //cout <<"je suis là"<<endl;
+                        cout <<"je suis là"<<endl;
 
                         //typinterf(i,j)=4; //quadrillatère vers le haut
 
@@ -315,6 +318,10 @@ void plic::interf()
                         ptquad(nbquad*4+3,1)=(j+1)*dz-_interface(k,3);
                         ptquad(nbquad*4+3,2)=0.0;
 
+                        cout<< ptquad(nbquad*4+2,1)<<" "<<ptquad(nbquad*4+3,1)<<endl;
+
+                        quadvalcase(nbquad)=1;
+                        nbquad++;
                         //case opposée
                         if (nx>0)
                         {
@@ -343,7 +350,7 @@ void plic::interf()
                     else
                     {
                         //typinterf(i,j)=-4; //quadrillatère vers la droite
-                        //cout <<"ou la"<<endl;
+                        cout <<"ou la"<<endl;
                         _interface(k,0)=dx*(p+ny/(2*nxx));
                         _interface(k,1)=0;
                         _interface(k,2)=dx*(p-ny/(2*nxx));
@@ -373,6 +380,8 @@ void plic::interf()
                         ptquad(nbquad*4+3,1)=(j)*dz;
                         ptquad(nbquad*4+3,2)=0.0;
 
+                        quadvalcase(nbquad)=1;
+                        nbquad++;
                         //case opposée
                         if (nx>0)
                         {
@@ -397,8 +406,6 @@ void plic::interf()
                         ptquad(nbquad*4+3,1)=(j)*dz;
                         ptquad(nbquad*4+3,2)=0.0;
                     }
-                    quadvalcase(nbquad)=1;
-                    nbquad++;
                     quadvalcase(nbquad)=0;
                     nbquad++;
                 }
@@ -422,8 +429,9 @@ void plic::interf()
 
             else  // si pas sur l'interface
             {
-              //cout<<"je suis là "<<nbquad<<endl;
+              //cout<<"je suis là "<<nbquad*4<<endl;
               //typinterf(i,j)=0;
+              //cout << "size"<<ptquad.rows()<<" "<<ptquad.cols()<<endl;
               ptquad(nbquad*4,0)=(i+1)*dx;
               //cout <<"je suis ici"<<endl;
               ptquad(nbquad*4,1)=(j+1)*dz;
@@ -443,7 +451,14 @@ void plic::interf()
               //cout<<"je me ça"<<ptquad(nbquad*4+3,0)<<" "<<ptquad(nbquad*4+3,1)<<" "<<ptquad(nbquad*4+3,2)<<endl;
 
               //cout<<"je me ça"<<ptquad(nbquad*4,2)<<" "<<ptquad(nbquad*4+1,2)<<" "<<ptquad(nbquad*4+2,2)<<endl;
-              quadvalcase(nbquad)=0;
+              if (_phi(j,i)==0)
+              {
+                quadvalcase(nbquad)=0;
+              }
+              else
+              {
+                quadvalcase(nbquad)=1;
+              }
               nbquad++;
               //cout <<"coucou"<<endl;
             }
@@ -482,7 +497,7 @@ void plic::interf()
 void plic::SaveSol( int n)
 {
 	string name_file = "Results/solution_" + std::to_string(n) + ".vtk";
-  int nb_vert = nbtri*3+nbquad*4+nbpenta*5;  //nombre de points
+  int nb_vert = (nbtri)*3+(nbquad)*4+(nbpenta)*5;  //nombre de points
 
   //assert((sol.size() == _triangles.size()) && "The size of the solution vector is not the same than the number of _triangles !");
 
