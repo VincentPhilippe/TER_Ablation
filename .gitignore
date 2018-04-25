@@ -4,5 +4,8 @@ Maillage/.DS_Store
 build
 *.o
 run
+run
+Results/~$lution_1.vtk
+*.vtk
 Results
 *.vtk
