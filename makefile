@@ -27,3 +27,7 @@ recul.o : recul.cpp recul.h
 
 recul3D.o : recul3D.cpp recul3D.h
 	g++ -std=c++11 -I EigenLibrary/Eigen -c -o build/recul3D.o recul3D.cpp
+
+clean:
+	rm -rf build/*
+	rm run

@@ -275,7 +275,7 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
                   _C0(i,j) = C0_unif;
                 }
               }
-            }/*
+            }
             else if (C0_string == "retrieve")
             {
               std::string _C0_file_name;
@@ -292,17 +292,19 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
                 cout << "Reading C0 data file " << _C0_file_name << endl;
               }
               double _C0_x;
-              _C0.resize(_Nx-1);
-              for (int i=0; i<_Nx-1; i++)
+              _C0.resize(_Nz-1,_Nx-1);
+              for (int i=0; i<_Nz-1; i++)
               {
-                C0_file >> _C0_x;
-                _C0(i)=_C0_x;
+                for (int j=0; j<_Nx-1; j++)
+                {
+                  C0_file >> _C0_x;
+                  _C0(i,j)=_C0_x;
+                }
               }
               cout << "End of reading C0 data file" << endl;
               cout << "-------------------------------------------------" << endl;
               C0_file.close();
             }
-            */
             else
             {
               cout << "Try again." << endl;
