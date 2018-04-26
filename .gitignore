@@ -7,3 +7,5 @@ Results/~$lution_1.vtk
 *.vtk
 Results
 run
+Results/solution_1.vtk
+run
