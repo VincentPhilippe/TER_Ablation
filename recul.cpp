@@ -30,6 +30,11 @@ void recul::recul_surface()
   _interface=_plic->Get_interface();
   _vitesse=_diff->GetVitesse();
 
+  cout << "_C_solide" << endl << _C_solide << endl;
+  cout << "_ninterf" << endl << _ninterf << endl;
+  cout << "_interface" << endl << _interface << endl;
+  cout << "_vitesse" << endl << _vitesse << endl;
+
   double maxvr;
   maxvr=_vitesse.maxCoeff();
   if ((maxvr*_dtmax<_dx) & (maxvr*_dtmax<_dz)) {
@@ -43,28 +48,29 @@ void recul::recul_surface()
   {
     for(int j=0; j<_nx; j++)
     {
+      cout << "i " << i << " j " << j << endl;
       double k;
 
       k = _ninterf(i,j);
 
       if (k>0) {
-
+        cout << "k " << k << endl;
         //calcul de l'angle alpha
         double xa, za, xb, zb, t_alpha, alpha;
 
         //repere local
-        if (_interface(0,k-1)<_interface(2,k-1)) {
-          xa = _interface(0,k-1);
-          za = _interface(1,k-1);
-          xb = _interface(2,k-1);
-          zb = _interface(3,k-1);
+        if (_interface(k-1,0)<_interface(k-1,2)) {
+          xa = _interface(k-1,0);
+          za = _interface(k-1,1);
+          xb = _interface(k-1,2);
+          zb = _interface(k-1,3);
         } else {
-          xb = _interface(0,k-1);
-          zb = _interface(1,k-1);
-          xa = _interface(2,k-1);
-          za = _interface(3,k-1);
+          xb = _interface(k-1,0);
+          zb = _interface(k-1,1);
+          xa = _interface(k-1,2);
+          za = _interface(k-1,3);
         }
-
+        cout << " xa " << xa << " za " << za << " xb " << xb << " zb " << zb << endl;
         /*xa = -j*_dx + _interface(0,k-1);
         za = (i+1)*_dz - _interface(1,k-1);
         xb = -j*_dx + _interface(2,k-1);
@@ -102,6 +108,7 @@ void recul::recul_surface()
           if (xd<0) {
             if (zc<0) {//yd forcément négatif
               //recul3(i, j, alpha, vrdt, coord);
+              cout << "cas3" << endl;
               double Stot, S1, S2, S3, S4;
               Stot=vrdt*l;
               S1 = za*za*tan(alpha)/2;
@@ -117,6 +124,7 @@ void recul::recul_surface()
             } else {//yc>0
               if (zd<0) {
                 //recul2(i, j, alpha, vrdt, coord);
+                cout << "cas2" << endl;
                 double Stot, S1, S2, S3, S4;
                 Stot=vrdt*l;
                 S3 = xb*xb/(2*tan(alpha));
@@ -131,6 +139,7 @@ void recul::recul_surface()
                 }
               } else {//yd>0
                 //recul1(i, j, alpha, vrdt, coord);
+                cout << "cas1" << endl;
                 double Stot, S1, S2, l1, l2;
                 Stot=vrdt*l;
                 l1 = -xc*sin(alpha);
@@ -144,6 +153,7 @@ void recul::recul_surface()
           } else {//0<xd<dx
             if (zc<0) {//yd forcémentnégatif
               //recul9(i, j, alpha, vrdt, coord);
+              cout << "cas9" << endl;
               double Stot, S1, S2, S3, S4;
               Stot=vrdt*l;
               S1 = za*za*tan(alpha)/2;
@@ -161,6 +171,7 @@ void recul::recul_surface()
               if (zd<0) {
                 if (zc-xc*(zd-zc)/(xd-xc)>0) {
                   //recul7(i, j, alpha, vrdt, coord);
+                  cout << "cas7" << endl;
                   double S1, S2;
 
                   S1=xc*xc*(1/tan(alpha)+tan(alpha))/2;
@@ -172,6 +183,7 @@ void recul::recul_surface()
                   _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S1-S2)/(_dx*_dz);
                 } else {
                   //recul8(i, j, alpha, vrdt, coord);
+                  cout << "cas8" << endl;
                   double S1,S2,S3;
                   S1=xc*xc*(1/tan(alpha)+tan(alpha))/2;
                   S2=zd*zd*(1/tan(alpha)+tan(alpha))/2;
@@ -186,6 +198,7 @@ void recul::recul_surface()
                 }
               } else {//yd>0
                 //recul4(i, j, alpha, vrdt, coord);
+                cout << "cas4" << endl;
                 double S1;
 
                 S1=xc*xc*(1/tan(alpha)+tan(alpha))/2;
@@ -199,6 +212,7 @@ void recul::recul_surface()
             if (zc<0) {
               if (zd<0) {
                 //recul11(i, j, alpha, vrdt, coord);
+                cout << "cas11" << endl;
                 double Stot, S1, S2;
                 Stot=vrdt*l;
                 S1=-zc*l;
@@ -210,6 +224,7 @@ void recul::recul_surface()
                 }
               } else {
                 //recul6(i, j, alpha, vrdt, coord);
+                cout << "cas6" << endl;
                 double S2;
 
                 S2=zc*zc*(1/tan(alpha)+tan(alpha))/2;
@@ -221,6 +236,7 @@ void recul::recul_surface()
             } else {
               if (zd<0) {
                 //recul10(i, j, alpha, vrdt, coord);
+                cout << "cas10" << endl;
                 double S2;
 
                 S2=zd*zd*(1/tan(alpha)+tan(alpha))/2;
@@ -230,6 +246,7 @@ void recul::recul_surface()
                 _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S2)/(_dx*_dz);
               } else {
                 //recul5(i, j, alpha, vrdt, coord);
+                cout << "cas5" << endl;
                 _C_solide(i,j)=_C_solide(i,j)-l*vrdt/(_dx*_dz);
               }
             }
@@ -237,6 +254,7 @@ void recul::recul_surface()
             if (zc<0) {
               if (zd<0) {
                 //recul17(i, j, alpha, vrdt, coord);
+                cout << "cas17" << endl;
                 double xa1,za1,xb1,zb1,xc1,zc1,xd1,zd1;
                 xb1=_dx-xa;
                 zb1=za;
@@ -271,6 +289,7 @@ void recul::recul_surface()
               } else {
                 if (zc+(_dx-xc)*(zd-zc)/(xd-xc)>0) {
                   //recul13(i, j, alpha, vrdt, coord);
+                  cout << "cas13" << endl;
                   double xa1,za1,xb1,zb1,xc1,zc1,xd1,zd1;
                   xb1=_dx-xa;
                   zb1=za;
@@ -299,6 +318,7 @@ void recul::recul_surface()
                   _C_solide(i,j)=_C_solide(i,j)-(l*vrdt-S1-S2)/(_dx*_dz);
                 } else {
                   //recul14(i, j, alpha, vrdt, coord);
+                  cout << "cas14" << endl;
                   double xa1,za1,xb1,zb1,xc1,zc1,xd1,zd1;
                   xb1=_dx-xa;
                   zb1=za;
@@ -332,6 +352,7 @@ void recul::recul_surface()
               }
             } else {
               //recul12(i, j, alpha, vrdt, coord);
+              cout << "cas12" << endl;
               double xa1,za1,xb1,zb1,xc1,zc1,xd1,zd1;
               xb1=_dx-xa;
               zb1=za;
@@ -360,6 +381,7 @@ void recul::recul_surface()
           if (zc<0) {
             if (zd<0) {
               //recul18(i, j, alpha, vrdt, coord);
+              cout << "cas18" << endl;
               double xa1,za1,xb1,zb1,xc1,zc1,xd1,zd1;
               xb1=_dx-xa;
               zb1=za;
@@ -392,6 +414,7 @@ void recul::recul_surface()
               }
             } else {
               //recul16(i, j, alpha, vrdt, coord);
+              cout << "cas16" << endl;
               double xa1,za1,xb1,zb1,xc1,zc1,xd1,zd1;
               xb1=_dx-xa;
               zb1=za;
@@ -425,6 +448,7 @@ void recul::recul_surface()
             }
           } else {
             //recul15(i, j, alpha, vrdt, coord);
+            cout << "cas15" << endl;
             double xa1,za1,xb1,zb1,xc1,zc1,xd1,zd1;
             xb1=_dx-xa;
             zb1=za;
