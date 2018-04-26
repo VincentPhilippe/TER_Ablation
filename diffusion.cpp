@@ -18,41 +18,38 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
 {
 
   MatrixXd interf = _plic->Get_ninterface();
-  double dt = 0.4*(dx+dz), erreur = 10, flux, a;
+  double dt = 0.0001*(dx+dz), e = 10, flux, a;
   int n=0, i, num_cell;
-  MatrixXd C1;
-  C1 = MatrixXd::Zero( _maillage.GetNz(), _maillage.GetNx());
+  MatrixXd C1, erreur;
+  C1 = MatrixXd::Ones( _maillage.GetNz(), _maillage.GetNx());
 
 
   _vitesse = VectorXd::Zero(interf.maxCoeff());
 
 
 
-  while(erreur>10e-9 && n<10000)
+  while(e>10e-9 && n<10000)
   {
-    erreur = 0;
     for(int j = 0; j < _maillage.GetNx(); j++){
 
       i = 1;
       flux = 0;
       while((_plic->Get_ninterface())(i,j) == 0){
-      cout<<"I="<<i<<" J="<<j<<endl;
-        cout<<"etat cell "<<(_plic->Get_ninterface())(i,j)<<endl;
+
         flux += fluxGauche(i,j);
         flux += fluxBas(i,j);
         flux += fluxDroite(i,j);
         flux += fluxHaut(i,j);
-
         C1(i,j) = _concentration(i,j) + (dt/dx*dz)*flux;
-        erreur += abs(C1(i,j) - _concentration(i,j));
+
+
         i++;
       }
+
 
       // Condition limite interface : calcul des 4 flux + flux interface~ -Da * C
       while(_plic->Get_ninterface()(i,j) != -1 && i <= _maillage.GetNz())
       {
-      cout<<"I="<<i<<" J="<<j<<endl;
-        cout<<"etat cell limite "<<(_plic->Get_ninterface())(i,j)<<endl;
         num_cell = (int)(_plic->Get_ninterface()(i,j));
         flux = 0;
         flux += fluxGauche(i,j);
@@ -63,18 +60,20 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
         a = aireInterf(i,j);
         C1(i,j) = _concentration(i,j) + (dt/a)*flux;
 
+
         _vitesse(num_cell-1) = C1(i,j);
-        erreur += abs(C1(i,j) - _concentration(i,j));
-        cout<<"vitesse"<<_vitesse<<endl;
 
         i++;
       }
     }
-    cout<<"ERREUR="<<erreur<<endl;
+    erreur = (C1-_concentration).cwiseAbs();
+    e = erreur.maxCoeff();
     n++;
     _concentration = C1;
+
   }
-    _concentration = C1;
+  _vitesse = VectorXd::Ones(interf.maxCoeff());
+  cout << "vitesse=" << endl << _vitesse << endl;
 }
 
 double diffusion::fluxGauche(int i, int j)
@@ -85,17 +84,17 @@ double diffusion::fluxGauche(int i, int j)
   {
 
     case BORD_GAUCHE:
-      flux = -(_concentration(i,_maillage.GetNx()-1)-_concentration(i,j))/dx;
+      flux = (_concentration(i,j)-_concentration(i,_maillage.GetNx()-1))/dx;
       flux *= longueurArete(i,j,LEFT);
       break;
 
     default :
-      flux = -(_concentration(i,j-1)-_concentration(i,j))/dx;
+      flux = (_concentration(i,j)-_concentration(i,j-1))/dx;
       flux *= longueurArete(i,j,LEFT);
       break;
     break;
   }
-  return(flux);
+  return(-flux);
 }
 
 double diffusion::fluxBas(int i, int j)
@@ -108,11 +107,11 @@ double diffusion::fluxBas(int i, int j)
       break;
 
     default :
-      flux = -(_concentration(i+1,j)-_concentration(i,j))/dz;
+      flux = (_concentration(i+1,j)-_concentration(i,j))/dz;
       flux *= longueurArete(i,j,DOWN);
       break;
   }
-  return(flux);
+  return(-flux);
 }
 
 double diffusion::fluxDroite(int i, int j)
@@ -121,12 +120,12 @@ double diffusion::fluxDroite(int i, int j)
   switch(watchCell(i,j))
   {
     case BORD_DROIT:
-      flux = -(_concentration(i,0)-_concentration(i,j))/dx;
+      flux = (_concentration(i,0)-_concentration(i,j))/dx;
       flux *= longueurArete(i,j,RIGHT);
       break;
 
     default :
-      flux = -(_concentration(i,j+1)-_concentration(i,j))/dx;
+      flux = (_concentration(i,j+1)-_concentration(i,j))/dx;
       flux *= longueurArete(i,j,RIGHT);
       break;
   }
@@ -139,12 +138,12 @@ double diffusion::fluxHaut(int i, int j)
   switch(watchCell(i,j))
   {
     case BORD_HAUT:
-      flux = -(1-_concentration(i,j))/dz;
+      flux = (_concentration(i,j) - 1)/dz;
       flux *= longueurArete(i,j,UP);
       break;
 
     default :
-      flux = -(_concentration(i-1,j)-_concentration(i,j))/dz;
+      flux = (_concentration(i,j)-_concentration(i-1,j))/dz;
       flux *= longueurArete(i,j,UP);
       break;
   }
@@ -161,10 +160,9 @@ double diffusion::fluxInterf(int i, int j)
   z1 = (_plic->Get_interface())(num_cell-1, 1);
   x2 = (_plic->Get_interface())(num_cell-1, 2);
   z2 = (_plic->Get_interface())(num_cell-1, 3);
-
   l = sqrt( (x1 - x2)*(x1 - x2) + (z1 - z2)*(z1 - z2) );
 
-  Da = _damkohler(i);
+  Da = _damkohler(j);
 
   return(-Da*_concentration(i,j)*l);
 }
