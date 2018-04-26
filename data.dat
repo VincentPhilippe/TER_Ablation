@@ -28,12 +28,12 @@ uniforme 1.0
 #retrieve retrieve_file
 
 C0
-uniforme 0.0
+uniforme 1.0
 #uniforme 1.0
 #retrieve retrieve_file
 
 C_Solide
-uniforme 0.6
+uniforme 0.2
 #uniforme 0.8
 #retrieve retrieve_file
 #step 0.8 0.6

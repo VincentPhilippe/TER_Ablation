@@ -32,8 +32,7 @@ void recul::recul_surface()
   int affichage;
   affichage=0;
 
-  cout << "_C_solide" << endl << _C_solide << endl;
-  cout <<endl<< "_ninterf" << endl << _ninterf << endl;
+  //cout << "_C_solide" << endl << _C_solide << endl;
   if (affichage==1) {
     cout << "_ninterf" << endl << _ninterf << endl;
     cout << "_interface" << endl << _interface << endl;
@@ -1104,7 +1103,7 @@ void recul::cpositive()
   _nbinterface=0;
   for (int i=0; i<_nz; i++) {
     for (int j = 0; j <_nx; j++) {
-      if (_C_solide(i,j)<=0) {
+      if (_C_solide(i,j)<=0.00000000001) {
         _C_solide(i,j)=0;
         _ninterf(i,j)=0;
       } else if (_C_solide(i,j)>=1) {

@@ -73,13 +73,11 @@ int main(int argc, char** argv)
     plateau->update(pplic);
     cout << "resolution" << endl;
     plateau->resolution();
-    //plateau->vitesse();
     //mise à jour des données à l'interface, recul de la surface
     cout << "update recul" << endl;
     precul->update(pplic, plateau);
     cout << "recul_surface" << endl;
     precul->recul_surface();
-    cout<<"c_solide"<<endl<< precul->Get_C_solide()<< endl;
     //reconstruction de l'interface
     cout << "update plic" << endl;
     pplic->update(precul);

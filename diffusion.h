@@ -53,7 +53,7 @@ public:
   double longueurArete(int k, int l, enum Direction direction);
   enum State_Cell watchCell(int i, int j);
   enum State_Interf watchInterf(int i, int j, enum Direction direction);
-  void update(plic *plic){ _plic = plic; }
+  void update(plic *plic);
 
   Eigen::MatrixXd GetConcentration() { return _concentration; }
   Eigen::MatrixXd GetVitesse() { return _vitesse; }

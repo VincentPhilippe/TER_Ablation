@@ -30,5 +30,5 @@ recul3D.o : recul3D.cpp recul3D.h
 
 clean:
 	rm -rf build/*
-	rm -rf result/*
+	rm -rf Results/*
 	rm run
