@@ -42,6 +42,7 @@ void cpositive();
 inline Eigen::MatrixXd Get_C_solide(){return _C_solide;};
 inline Eigen::MatrixXd Get_ninterf(){return _ninterf;};
 inline int Get_nbinterface(){return _nbinterface;};
+inline double Get_dt(){return _dt;};
 
 private:
   Eigen::MatrixXd _ninterf;
