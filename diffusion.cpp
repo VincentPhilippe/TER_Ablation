@@ -76,10 +76,10 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
     n++;
     _concentration = C1;
 
-    cout<<_concentration<<endl<<endl;
+    //cout<<_concentration<<endl<<endl;
   }
 
-  cout << "vitesse=" << endl << _vitesse << endl;
+  //cout << "vitesse=" << endl << _vitesse << endl;
 }
 
 double diffusion::fluxGauche(int i, int j)

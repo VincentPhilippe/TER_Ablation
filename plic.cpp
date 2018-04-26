@@ -56,6 +56,9 @@ double plic::grad_y(const int i,const int j,const int lon)
 
 void plic::interf()
 {
+    nbtri=0;
+    nbquad=0;
+    nbpenta=0;
     dx=_read_data.Get_dx();
     dz=_read_data.Get_dz();
     _ninterf=_recul->Get_ninterf();
@@ -107,7 +110,7 @@ void plic::interf()
             //cout <<i<<" "<<j<<endl;
             p=_phi(j,i);
             //cout <<p<<endl;
-            //cout <<"je suis ici"<<endl;
+            //cout <<"je suis ici"<<p<<endl;
             if ((p>0.) && (p<1.))   //si on est sur l'interface
             {
                 k++;
