@@ -64,7 +64,7 @@ int main(int argc, char** argv)
   // Boucle en temps
   for (int i = 1; i < nb_iterations; i++)
   {
-    cout << "i " << i << endl;
+    cout << endl << "--------------I= " << i << "----------------" <<endl << endl;
     //sauvergarde de la solution
     cout << "SaveSol" << endl;
     pplic->SaveSol(i);
@@ -79,6 +79,7 @@ int main(int argc, char** argv)
     precul->update(pplic, plateau);
     cout << "recul_surface" << endl;
     precul->recul_surface();
+    cout<<"c_solide"<<endl<< precul->Get_C_solide()<< endl;
     //reconstruction de l'interface
     cout << "update plic" << endl;
     pplic->update(precul);

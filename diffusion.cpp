@@ -12,6 +12,12 @@ diffusion::diffusion(read_data& data, Cartesien2D& maillage)
 
   _concentration = _data.Get_C0();
   _damkohler = _data.Get_Da();
+
+  for (int j=0; j<_maillage.GetNx(); j++){
+    _concentration(0,j) = 1;
+  }
+
+  cout<<"concentration initiale"<<endl<<_concentration<<endl;
 }
 
 void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
@@ -21,19 +27,20 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
   double dt = 0.4*(dx*dx+dz*dz), e = 10, flux, a;
   int n=0, i, num_cell;
   MatrixXd C1, erreur;
-  C1 = MatrixXd::Ones( _maillage.GetNz(), _maillage.GetNx());
+  C1 = _concentration;
 
 
   _vitesse = VectorXd::Zero(interf.maxCoeff());
+  cout<<"n_interf="<<endl<<_plic->Get_ninterface()<<endl;
 
-
-
-  while(e>10e-9 && n<10000)
+  while(e>10e-5 && n<10000)
   {
     for(int j = 0; j < _maillage.GetNx(); j++){
 
       i = 1;
       flux = 0;
+
+
       while((_plic->Get_ninterface())(i,j) == 0){
 
         flux += fluxGauche(i,j);
@@ -43,13 +50,17 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
         C1(i,j) = _concentration(i,j) + (dt/dx*dz)*flux;
 
 
+
         i++;
       }
 
 
       // Condition limite interface : calcul des 4 flux + flux interface~ -Da * C
-      while(_plic->Get_ninterface()(i,j) != -1 && i <= _maillage.GetNz() && C1(i,j)>0)
+      while(_plic->Get_ninterface()(i,j) != -1 && i <= _maillage.GetNz() )
       {
+
+        //cout<<"I="<<i<<" J="<<j<<"numero de l'interface"<<_plic->Get_ninterface()(i,j)<<endl;
+
         num_cell = (int)(_plic->Get_ninterface()(i,j));
         flux = 0;
         flux += fluxGauche(i,j);
@@ -59,12 +70,6 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
         flux += fluxInterf(i,j);
         a = aireInterf(i,j);
         C1(i,j) = _concentration(i,j) + (dt/a)*flux;
-        /*
-        if (C1(i,j)<0) {
-          C1(i,j) = 0;
-
-        }
-*/
 
         _vitesse(num_cell-1) = C1(i,j);
 
@@ -73,10 +78,15 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
     }
     erreur = (C1-_concentration).cwiseAbs();
     e = erreur.maxCoeff();
+    if(e>100)
+      exit(0);
     n++;
     _concentration = C1;
 
-    //cout<<_concentration<<endl<<endl;
+
+
+
+
   }
 
   //cout << "vitesse=" << endl << _vitesse << endl;
