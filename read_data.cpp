@@ -413,7 +413,7 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
                   cout << "Reading C_Solide data file " << _C_Solide_file_name << endl;
                 }
                 _C_Solide.resize(_Nz-1,_Nx-1);
-                for (int i=0; i<_Nz; i++)
+                for (int i=0; i<_Nz-1; i++)
                 {
                   for (int j=0; j<_Nx-1; j++)
                   {

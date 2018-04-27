@@ -45,7 +45,7 @@ double plic::grad_y(const int i,const int j,const int lon)
     }
     if (j==lon)
     {
-      return _phi(0,i)-_phi(j-1,i);
+      return 1-_phi(j-1,i);
     }
     else
     {
@@ -107,7 +107,7 @@ void plic::interf()
      {
         for (int i=0;i<lar+1;i++)
         {
-            //cout <<i<<" "<<j<<endl;
+            cout <<i<<" "<<j<<endl;
             p=_phi(j,i);
             //cout <<p<<endl;
             //cout <<"je suis ici"<<p<<endl;
@@ -121,7 +121,7 @@ void plic::interf()
                 nxx=abs(nx);
                 _normal(k,0)=nx;
                 _normal(k,1)=ny;
-                //cout <<"nxx "<<nxx<<" ny "<<ny<<endl;
+                cout <<"nxx "<<nxx<<" ny "<<ny<<endl;
                 //cout <<"je suis ici"<<p<<endl;
                 //interface
                 //_pointsupl+=2;
@@ -490,6 +490,7 @@ void plic::interf()
             }
           }
         }
+        cout << _interface<<endl;
         //cout<<"fin plic::interf"<<endl;
 }
 
