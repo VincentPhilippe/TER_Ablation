@@ -532,14 +532,10 @@ void recul::recul_surface()
   ofstream mon_flux;
   string name_file("C_solide.dat");
   mon_flux.open(name_file, ios::out);
+  mon_flux.precision(7);
   if(mon_flux)
   {
-    mon_flux << _C_solide << endl;
-    /*for (int i = 0; i < _nz; i++) {
-      for (int j = 0; j < _nx; j++) {
-        mon_flux <<  << endl;
-      }
-    }*/
+    mon_flux << _C_solide << '\n';
   }
   else
   {
