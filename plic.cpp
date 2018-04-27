@@ -45,7 +45,7 @@ double plic::grad_y(const int i,const int j,const int lon)
     }
     if (j==lon)
     {
-      return _phi(0,i)-_phi(j-1,i);
+      return 1-_phi(j-1,i);
     }
     else
     {
@@ -490,6 +490,7 @@ void plic::interf()
             }
           }
         }
+        //cout << _interface<<endl;
         //cout<<"fin plic::interf"<<endl;
 }
 

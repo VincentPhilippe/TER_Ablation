@@ -41,7 +41,6 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
   _vitesse = VectorXd::Zero(interf.maxCoeff());
 
 
-
   while(e>10e-5 && n<10000)
   {
     for(int j = 0; j < _maillage.GetNx(); j++){
@@ -93,12 +92,14 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
   }
   if(n >= 10000)
     cout<<"SORTIE CAR TROP D'ITERATION"<<endl;
+
+  saveCFluid();
+
 }
 
 double diffusion::fluxGauche(int i, int j)
 {
   double flux = 0;
-  enum State_Cell state = watchCell(i,j);
   if(j == 0)
   {
       flux = (_concentration(i,j)-_concentration(i,_maillage.GetNx()-1))/dx;
@@ -272,37 +273,6 @@ double diffusion::longueurArete(int i, int j, enum Direction direction)
       return(0);
 }
 
-enum State_Cell diffusion::watchCell(int i, int j) // Regarde l'état de la case (i,j)
-{
-  if(i == 0){
-    return(BORD_HAUT);
-  }
-
-  if(i == _maillage.GetNz()-1){
-    return(BORD_BAS);
-  }
-
-  if(j == 0){
-    return(BORD_GAUCHE);
-  }
-
-  if (j == _maillage.GetNx()-1){
-    return(BORD_DROIT);
-  }
-
-  if((_plic->Get_ninterface())(i,j) > 0){
-    return(INTERFACE);
-  }
-  if((_plic->Get_ninterface())(i,j) == -1){
-    return(SOLIDE);
-  }
-
-
-  return(AIR);
-
-
-}
-
 enum State_Interf diffusion::watchInterf(int i, int j, enum Direction direction)
 {
   VectorXd point1, point2;
@@ -373,7 +343,14 @@ enum State_Interf diffusion::watchInterf(int i, int j, enum Direction direction)
 
 }
 
-void diffusion::update(plic *plic)
+void diffusion::saveCFluid()
 {
-   _plic = plic;
+
+  string name_file = "CFluid.dat";
+  ofstream concentration;
+	concentration.open(name_file, ios::out);
+	concentration.precision(7);
+  concentration << _concentration<<'\n';
+  concentration.close();
+
 }
