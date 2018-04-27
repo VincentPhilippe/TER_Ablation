@@ -490,7 +490,7 @@ void plic::interf()
             }
           }
         }
-        cout << _interface<<endl;
+        //cout << _interface<<endl;
         //cout<<"fin plic::interf"<<endl;
 }
 
