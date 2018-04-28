@@ -22,9 +22,9 @@ Dim
 #2D, 3D
 
 Da
-step 0.0 3.0
+step 10.0 5.0
 #uniforme 0.5
-#uniforme 1.0
+#step 10.0 5.0
 #retrieve retrieve_file
 
 C0
@@ -33,7 +33,7 @@ uniforme 1.0
 #retrieve CFluid.dat
 
 C_Solide
-uniforme 0.2
+uniforme 0.6
 #uniforme 0.2
 #retrieve C_solide.dat
 #step 0.8 0.6
