@@ -69,20 +69,24 @@ int main(int argc, char** argv)
     cout << "SaveSol" << endl;
     pplic->SaveSol(i);
     //calcul des nouvelles valeurs de concentrations et de la vitesse de recul
-    cout << "update resolution" << endl;
+    //cout << "update resolution" << endl;
     plateau->update(pplic);
     cout << "resolution" << endl;
     plateau->resolution();
+    //cout << "vitesse" << endl << plateau->GetVitesse() << endl;
     //mise à jour des données à l'interface, recul de la surface
-    cout << "update recul" << endl;
+    //cout << "update recul" << endl;
     precul->update(pplic, plateau);
     cout << "recul_surface" << endl;
     precul->recul_surface();
+    //cout << "C_solide" << endl << precul->Get_C_solide() << endl;
+    //cout << "ninterf" << endl << precul->Get_ninterf() << endl;
     //reconstruction de l'interface
-    cout << "update plic" << endl;
+    //cout << "update plic" << endl;
     pplic->update(precul);
     cout << "interf" << endl;
     pplic->interf();
+    //cout << "interface" << endl << pplic->Get_interface() << endl;
   }
   // Fin de la boucle
 

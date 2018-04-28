@@ -61,7 +61,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
 
 
       // Condition limite interface : calcul des 4 flux + flux interface~ -Da * C
-      while(_plic->Get_ninterface()(i,j) != -1 && i <= _maillage.GetNz() )
+      while(_plic->Get_ninterface()(i,j) != -1 && i <= _maillage.GetNz() && i<_maillage.GetNz()-1 )
       {
 
         num_cell = (int)(_plic->Get_ninterface()(i,j));
@@ -92,6 +92,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
   }
   if(n >= 10000)
     cout<<"SORTIE CAR TROP D'ITERATION"<<endl;
+
 
   saveCFluid();
 
