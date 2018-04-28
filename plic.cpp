@@ -107,7 +107,7 @@ void plic::interf()
      {
         for (int i=0;i<lar+1;i++)
         {
-            //cout <<i<<" "<<j<<endl;
+            cout <<i<<" "<<j<<endl;
             p=_phi(j,i);
             //cout <<p<<endl;
             //cout <<"je suis ici"<<p<<endl;
@@ -127,7 +127,7 @@ void plic::interf()
                 //_pointsupl+=2;
                 if (p<=nxx/(2*ny))//ny/(2*nxx))
                 {
-                    //cout<<"heey"<<endl;
+                    //cout<<"triangle"<<endl;
                     //typinterf(i,j)=3;  //triangle vers la droite
                     //num+=2;
                     _interface(k,0)=dx*sqrt(2*p*ny/nxx);
@@ -213,7 +213,7 @@ void plic::interf()
 
                 else if (p>=1-nxx/(2*ny))//ny/(2*nxx))
                 {
-                    //cout<<"youy"<<endl;
+                    //cout<<"pentagone"<<endl;
                     //typinterf(i,j)=5;  //pentagone vers la droite
 
                     _interface(k,0)=dx*1;
@@ -289,7 +289,7 @@ void plic::interf()
                     if (nxx<ny)
                     {
 
-                        //cout <<"je suis là"<<endl;
+                        //cout <<"quadhaut"<<endl;
 
                         //typinterf(i,j)=4; //quadrillatère vers le haut
 
@@ -348,12 +348,11 @@ void plic::interf()
                         ptquad(nbquad*4+2,2)=0.0;
                         ptquad(nbquad*4+3,1)=(j+1)*dz-_interface(k,3);
                         ptquad(nbquad*4+3,2)=0.0;
-
                     }
                     else
                     {
                         //typinterf(i,j)=-4; //quadrillatère vers la droite
-                        //cout <<"ou la"<<endl;
+                        //cout <<"quaddroite"<<endl;
                         _interface(k,0)=dx*(p+ny/(2*nxx));
                         _interface(k,1)=0;
                         _interface(k,2)=dx*(p-ny/(2*nxx));
@@ -423,8 +422,9 @@ void plic::interf()
                         //typinterf(i,j)+=10;  //vers la gauche
                     //}
 
-                    _interface(k,2)=dx-_interface(k,1);
-                    _interface(k,4)=dz-_interface(k,3);
+
+                    _interface(k,1)=dx-_interface(k,1);
+                    _interface(k,3)=dz-_interface(k,3);
                 }
             }
 
@@ -432,7 +432,7 @@ void plic::interf()
 
             else  // si pas sur l'interface
             {
-              //cout<<"je suis là "<<nbquad*4<<endl;
+              //cout<<"pasinterf"<<endl;
               //typinterf(i,j)=0;
               //cout << "size"<<ptquad.rows()<<" "<<ptquad.cols()<<endl;
               ptquad(nbquad*4,0)=(i+1)*dx;
@@ -467,6 +467,7 @@ void plic::interf()
             }
           }
         }
+
         ///resize
         pttribis.resize(nbtri*3,3);
         ptquadbis.resize(nbquad*4,3);
