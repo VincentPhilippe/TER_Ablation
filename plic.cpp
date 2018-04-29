@@ -109,7 +109,7 @@ void plic::interf()
         {
             cout <<i<<" "<<j<<endl;
             p=_phi(j,i);
-            //cout <<p<<endl;
+            cout <<p<<endl;
             //cout <<"je suis ici"<<p<<endl;
             if ((p>0.) && (p<1.))   //si on est sur l'interface
             {
@@ -121,7 +121,7 @@ void plic::interf()
                 nxx=abs(nx);
                 _normal(k,0)=nx;
                 _normal(k,1)=ny;
-                //cout <<"nxx "<<nxx<<" ny "<<ny<<endl;
+                cout <<"nx "<<nx<<" ny "<<ny<<endl;
                 //cout <<"je suis ici"<<p<<endl;
                 //interface
                 //_pointsupl+=2;
