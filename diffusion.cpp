@@ -110,7 +110,13 @@ double diffusion::fluxGauche(int i, int j)
       flux *= longueurArete(i,j,LEFT);
       return(-flux);
   }
-  flux = (_concentration(i,j)-_concentration(i,j-1))/dx;
+  if(_plic->Get_ninterface()(i,j-1) > 0 && _plic->Get_ninterface()(i,j) == 0)
+  {
+    flux = -_damkohler(j-1)*_concentration(i,j);
+    flux *= dz - longueurArete(i,j,LEFT);
+  }
+
+  flux += (_concentration(i,j)-_concentration(i,j-1))/dx;
   flux *= longueurArete(i,j,LEFT);
 
   return(-flux);
@@ -139,8 +145,13 @@ double diffusion::fluxDroite(int i, int j)
       flux *= longueurArete(i,j,RIGHT);
       return(flux);
   }
+  if(_plic->Get_ninterface()(i,j+1) > 0 && _plic->Get_ninterface()(i,j) == 0)
+  {
+    flux = -_damkohler(j+1)*_concentration(i,j);
+    flux *= dz - longueurArete(i,j,RIGHT);
+  }
 
-  flux = (_concentration(i,j+1)-_concentration(i,j))/dx;
+  flux += (_concentration(i,j+1)-_concentration(i,j))/dx;
   flux *= longueurArete(i,j,RIGHT);
 
   return(flux);
