@@ -27,15 +27,17 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
 
   C1 = _concentration;
 
+  cout<<"CONCENTRATION AVANT"<<endl<<_concentration<<endl;
+
   for(int i=0; i< _maillage.GetNz(); i++){
     for(int j=0; j< _maillage.GetNx(); j++){
       if(_plic->Get_ninterface()(i,j) > 0)
         aire(_plic->Get_ninterface()(i,j)-1) = aireInterf(i,j);
     }
   }
-  cfl = aire.minCoeff();
+  cfl = 0.4;
 
-  dt = cfl*(dx*dx+dz*dz);
+  dt = cfl*aire.minCoeff();
 
 
   _vitesse = VectorXd::Zero(interf.maxCoeff());
@@ -58,7 +60,6 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
 
         i++;
       }
-
 
       // Condition limite interface : calcul des 4 flux + flux interface~ -Da * C
       while(_plic->Get_ninterface()(i,j) != -1 && i <= _maillage.GetNz() && i<_maillage.GetNz()-1 )
@@ -83,6 +84,8 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
     erreur = (C1-_concentration).cwiseAbs();
     e = erreur.maxCoeff();
 
+    cout<<"~~~~~~ERREUR= "<<e<<"~~~~~~~~~~"<<endl;
+
     _concentration = C1;
     if(e>100){
       cout<<"ERREUR TROP GRANDE"<<endl;
@@ -94,8 +97,8 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
     cout<<"SORTIE CAR TROP D'ITERATION"<<endl;
 
 
+  cout<<"CONCENTRATION APRES"<<endl<<_concentration<<endl;
   saveCFluid();
-
 }
 
 double diffusion::fluxGauche(int i, int j)
@@ -180,27 +183,29 @@ double diffusion::fluxInterf(int i, int j)
 
 double diffusion::aireInterf(int i, int j)
 {
-  double c, d, e, f, aire;
+  double Mx, Mz, Nx, Nz, aire;
   int num_cell = (int)(_plic->Get_ninterface()(i,j));
 
   if((_plic->Get_normal())(num_cell-1, 0) >= 0)
   {
-    c = (_plic->Get_interface())(num_cell-1, 0);
-    d = (_plic->Get_interface())(num_cell-1, 1);
-    e = (_plic->Get_interface())(num_cell-1, 2);
-    f = (_plic->Get_interface())(num_cell-1, 3);
+    Mx = (_plic->Get_interface())(num_cell-1, 0);
+    Mz = (_plic->Get_interface())(num_cell-1, 1);
+    Nx = (_plic->Get_interface())(num_cell-1, 2);
+    Nz = (_plic->Get_interface())(num_cell-1, 3);
 
-    aire = abs(d*e) + abs((c-e)*d) + abs((f-d)*e) + 0.5*abs((c-e)*(f-d));
+
+    aire = abs(Mz*Nx) + abs((Mx-Nx)*Mz) + abs((Nz-Mz)*Nx) + 0.5*abs((Mx-Nx)*(Nz-Mz));
     return(dx*dz - aire);
   }
   else
   {
-    c = (_plic->Get_interface())(num_cell-1, 0);
-    d = (_plic->Get_interface())(num_cell-1, 1);
-    e = (_plic->Get_interface())(num_cell-1, 2);
-    f = (_plic->Get_interface())(num_cell-1, 3);
 
-    aire = 0.5*abs((f-d)*(e-c)) + abs(e-c)*d + abs(dx-e)*d + abs((f-d)*(dx-e));
+    Mx = (_plic->Get_interface())(num_cell-1, 0);
+    Mz = (_plic->Get_interface())(num_cell-1, 1);
+    Nx = (_plic->Get_interface())(num_cell-1, 2);
+    Nz = (_plic->Get_interface())(num_cell-1, 3);
+
+    aire = 0.5*abs((Mz-Nz)*(Mx-Nx)) + abs(Nz*Mx) + abs(Nz*(dx-Mx)) + abs((Mz-Nz)*(dx-Mx));
     return(dx*dz - aire);
   }
 }
