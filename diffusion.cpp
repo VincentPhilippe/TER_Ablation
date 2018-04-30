@@ -84,7 +84,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
     erreur = (C1-_concentration).cwiseAbs();
     e = erreur.maxCoeff();
 
-    cout<<"~~~~~~ERREUR= "<<e<<"~~~~~~~~~~"<<endl;
+    //cout<<"~~~~~~ERREUR= "<<e<<"~~~~~~~~~~"<<endl;
 
     _concentration = C1;
     if(e>100){
