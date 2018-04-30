@@ -107,9 +107,9 @@ void plic::interf()
      {
         for (int i=0;i<lar+1;i++)
         {
-            cout <<i<<" "<<j<<endl;
+            //cout <<i<<" "<<j<<endl;
             p=_phi(j,i);
-            cout <<p<<endl;
+            //cout <<p<<endl;
             //cout <<"je suis ici"<<p<<endl;
             if ((p>0.) && (p<1.))   //si on est sur l'interface
             {
@@ -127,29 +127,27 @@ void plic::interf()
                 //_pointsupl+=2;
                 if (p<=nxx/(2*ny))//ny/(2*nxx))
                 {
-                    //cout<<"triangle"<<endl;
+                    //cout<<"triangle "<<k<<endl;
                     //typinterf(i,j)=3;  //triangle vers la droite
                     //num+=2;
                     _interface(k,0)=dx*sqrt(2*p*ny/nxx);
                     _interface(k,1)=0;
                     _interface(k,2)=0;
-                    _interface(k,3)=dz*2*p/_interface(k,0);
+                    _interface(k,3)=dz*2*p/sqrt(2*p*ny/nxx);
                     //cout<<2*p/_interface(k,0)<<endl;
                     //on rentre les coordonnées des sommets du triangles
-
 
                     if (nx>0)
                     {
                       pttri(nbtri*3,0)=i*dx;
                       pttri(nbtri*3+1,0)=i*dx+_interface(k,0);
                       pttri(nbtri*3+2,0)=i*dx;
-
                     }
 
                     else //si orienté vers la gauche
                     {
                       pttri(nbtri*3,0)=(i+1)*dx;
-                      pttri(nbtri*3+1,0)=i*dx+dx-_interface(k,0);
+                      pttri(nbtri*3+1,0)=(i+1)*dx-_interface(k,0);
                       pttri(nbtri*3+2,0)=(i+1)*dx;
                     }
 
@@ -175,8 +173,8 @@ void plic::interf()
                     }
                     else //si orienté vers la gauche
                     {
-                      ptpenta(nbpenta*5,0)=(i+1)*dx;
-                      ptpenta(nbpenta*5+1,0)=i*dx+dx-_interface(k,0);
+                      ptpenta(nbpenta*5,0)=(i)*dx;
+                      ptpenta(nbpenta*5+1,0)=(i+1)*dx-_interface(k,0);
                       ptpenta(nbpenta*5+2,0)=(i+1)*dx;
                       ptpenta(nbpenta*5+3,0)=(i+1)*dx;
                       ptpenta(nbpenta*5+4,0)=(i)*dx;
@@ -213,7 +211,7 @@ void plic::interf()
 
                 else if (p>=1-nxx/(2*ny))//ny/(2*nxx))
                 {
-                    //cout<<"pentagone"<<endl;
+                    //cout<<"pentagone "<<k<<endl;
                     //typinterf(i,j)=5;  //pentagone vers la droite
 
                     _interface(k,0)=dx*1;
@@ -289,7 +287,7 @@ void plic::interf()
                     if (nxx<ny)
                     {
 
-                        //cout <<"quadhaut"<<endl;
+                        //cout <<"quadhaut "<<k<<endl;
 
                         //typinterf(i,j)=4; //quadrillatère vers le haut
 
@@ -297,6 +295,7 @@ void plic::interf()
                         _interface(k,1)=dz*(p-nxx/(2*ny));
                         _interface(k,2)=0;
                         _interface(k,3)=dz*(p+nxx/(2*ny));
+
                         //on rentre les coordonnées des sommets
                         if (nx>0)
                         {
@@ -322,7 +321,11 @@ void plic::interf()
                         ptquad(nbquad*4+3,2)=0.0;
 
                         //cout<< ptquad(nbquad*4+2,1)<<" "<<ptquad(nbquad*4+3,1)<<endl;
-
+                        //cout<<"quad"<<endl;
+                        //cout << ptquad(nbquad*4,0) <<" "<<ptquad(nbquad*4,1) <<" "<<ptquad(nbquad*4,2) <<endl;
+                        //cout << ptquad(nbquad*4+1,0) <<" "<<ptquad(nbquad*4+1,1) <<" "<<ptquad(nbquad*4+1,2) <<endl;
+                        //cout << ptquad(nbquad*4+2,0) <<" "<<ptquad(nbquad*4+2,1) <<" "<<ptquad(nbquad*4+2,2) <<endl;
+                        //cout << ptquad(nbquad*4+3,0) <<" "<<ptquad(nbquad*4+3,1) <<" "<<ptquad(nbquad*4+3,2) <<endl;
                         quadvalcase(nbquad)=1;
                         nbquad++;
                         //case opposée
@@ -352,7 +355,7 @@ void plic::interf()
                     else
                     {
                         //typinterf(i,j)=-4; //quadrillatère vers la droite
-                        //cout <<"quaddroite"<<endl;
+                        //cout <<"quaddroite "<<k<<endl;
                         _interface(k,0)=dx*(p+ny/(2*nxx));
                         _interface(k,1)=0;
                         _interface(k,2)=dx*(p-ny/(2*nxx));
@@ -408,6 +411,8 @@ void plic::interf()
                         ptquad(nbquad*4+3,1)=(j)*dz;
                         ptquad(nbquad*4+3,2)=0.0;
                     }
+
+
                     quadvalcase(nbquad)=0;
                     nbquad++;
                 }
@@ -421,11 +426,12 @@ void plic::interf()
                     //{
                         //typinterf(i,j)+=10;  //vers la gauche
                     //}
-
-
+                    //cout <<"ici"<<endl;
                     _interface(k,1)=dx-_interface(k,1);
                     _interface(k,3)=dz-_interface(k,3);
                 }
+
+                //cout<<"_interface(k) "<<_interface(k,0)<<" "<<_interface(k,1)<<" "<<_interface(k,2)<<" "<<_interface(k,3)<<endl;
             }
 
 
@@ -492,7 +498,11 @@ void plic::interf()
           }
         }
         //cout << _interface<<endl;
-        //cout<<"fin plic::interf"<<endl;
+        //cout<<"pttri"<<endl;
+        //cout<<pttribis<<endl;
+        //cout<<"ptpent"<<endl;
+        //cout<<ptpentabis<<endl;
+         //cout<<"fin plic::interf"<<endl;
 }
 
 
@@ -503,6 +513,10 @@ void plic::SaveSol( int n)
 {
 	string name_file = "Results/solution_" + std::to_string(n) + ".vtk";
   int nb_vert = (nbtri)*3+(nbquad)*4+(nbpenta)*5;  //nombre de points
+  //cout<<"nb_vert "<<nb_vert<<endl;
+  //cout<<"nb_tri "<<nbtri<<endl;
+  //cout<<"nquad "<<nbquad<<endl;
+  //cout<<"nbpent "<<nbpenta<<endl;
 
   //assert((sol.size() == _triangles.size()) && "The size of the solution vector is not the same than the number of _triangles !");
 
@@ -547,7 +561,7 @@ void plic::SaveSol( int n)
     solution << ptquadbis(i,0)<<" "<<ptquadbis(i,1)<<" "<<ptquadbis(i,2)<<endl;
   }
 
-  for (int i=0;i<nbpenta*4;++i)
+  for (int i=0;i<nbpenta*5;++i)
   {
     solution << ptpentabis(i,0)<<" "<<ptpentabis(i,1)<<" "<<ptpentabis(i,2)<<endl;
   }
@@ -562,11 +576,11 @@ void plic::SaveSol( int n)
   }
   for (int i=0;i<nbquad;++i)
   {
-    solution << 4 << " "<< nbtri+i*4 <<" "<<nbtri+i*4 +1<<" "<<nbtri+i*4 +2<<" "<<nbtri+i*4 +3<<endl;
+    solution << 4 << " "<< nbtri*3+i*4 <<" "<<nbtri*3+i*4 +1<<" "<<nbtri*3+i*4 +2<<" "<<nbtri*3+i*4 +3<<endl;
   }
   for (int i=0;i<nbpenta;++i)
   {
-    solution << 5 << " "<< nbtri+nbquad+i*5 <<" "<<nbtri+nbquad+i*5 +1<<" "<<nbtri+nbquad+i*5 +2<<" "<<nbtri+nbquad+i*5 +3<<" "<<nbtri+nbquad+i*5 +4<<endl;
+    solution << 5 << " "<< nbtri*3+nbquad*4+i*5 <<" "<<nbtri*3+nbquad*4+i*5 +1<<" "<<nbtri*3+nbquad*4+i*5 +2<<" "<<nbtri*3+nbquad*4+i*5 +3<<" "<<nbtri*3+nbquad*4+i*5 +4<<endl;
   }
 
 /*
