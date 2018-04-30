@@ -89,7 +89,12 @@ int main(int argc, char** argv)
     cout<<"N_INTERFACE APRES:"<<endl<<precul->Get_ninterf()<<endl;
     cout<<"C_SOLIDE APRES;"<<endl<<precul->Get_C_solide()<<endl;
     //cout << "interface" << endl << pplic->Get_interface() << endl;
+<<<<<<< HEAD
 
+=======
+    if(i==9)
+      exit(0);
+>>>>>>> 6e9b5a3659a301b41a63af679230d247c0b1c8c0
   }
   // Fin de la boucle
 
