@@ -30,9 +30,9 @@ void recul::recul_surface()
   _interface=_plic->Get_interface();
   _vitesse=_diff->GetVitesse();
   int affichage;
-  affichage=1;
+  affichage=0;
 
-  cout << "_C_solide" << endl << _C_solide << endl;
+  //cout << "_C_solide" << endl << _C_solide << endl;
   if (affichage==1) {
     cout << "_ninterf" << endl << _ninterf << endl;
     cout << "_interface" << endl << _interface << endl;
