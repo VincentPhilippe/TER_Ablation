@@ -86,7 +86,10 @@ int main(int argc, char** argv)
     pplic->update(precul);
     cout << "interf" << endl;
     pplic->interf();
+    cout<<"N_INTERFACE APRES:"<<endl<<precul->Get_ninterf()<<endl;
+    cout<<"C_SOLIDE APRES;"<<endl<<precul->Get_C_solide()<<endl;
     //cout << "interface" << endl << pplic->Get_interface() << endl;
+
   }
   // Fin de la boucle
 
