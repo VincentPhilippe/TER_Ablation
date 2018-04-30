@@ -110,32 +110,45 @@ void plic::interf()
         {
             //cout <<i<<" "<<j<<endl;
             p=_phi(j,i);
-            //cout <<p<<endl;
+            //cout <<"p "<<p<<endl;
             //cout <<"je suis ici"<<p<<endl;
             if ((p>0.) && (p<1.))   //si on est sur l'interface
             {
                 k++;
 
                 //Calcul du gradient
-                nx=grad_x(i,j,lar)/sqrt(grad_x(i,j,lar)*grad_x(i,j,lar)+grad_y(i,j,lon)*grad_y(i,j,lon));
-                ny=grad_y(i,j,lon)/sqrt(grad_x(i,j,lar)*grad_x(i,j,lar)+grad_y(i,j,lon)*grad_y(i,j,lon));
+                //if (_phi(j-1,i)>0.)
+                //{
+                //  nx=grad_x(i,j-1,lar)/sqrt(grad_x(i,j-1,lar)*grad_x(i,j-1,lar)+grad_y(i,j-1,lon)*grad_y(i,j-1,lon));
+                //  ny=grad_y(i,j-1,lon)/sqrt(grad_x(i,j-1,lar)*grad_x(i,j-1,lar)+grad_y(i,j-1,lon)*grad_y(i,j-1,lon));
+                //}
+                //else
+                //{
+                  nx=grad_x(i,j,lar)/sqrt(grad_x(i,j,lar)*grad_x(i,j,lar)+grad_y(i,j,lon)*grad_y(i,j,lon));
+                  ny=grad_y(i,j,lon)/sqrt(grad_x(i,j,lar)*grad_x(i,j,lar)+grad_y(i,j,lon)*grad_y(i,j,lon));
+              //  }
+
                 nxx=abs(nx);
                 _normal(k,0)=nx;
                 _normal(k,1)=ny;
                 //cout <<"nx "<<nx<<" ny "<<ny<<endl;
+                //cout <<"grad_x "<<grad_x(i,j,lar)<<" grad_y "<< grad_y(i,j,lon)<<endl;
+                //cout <<"_phi(j+1,i) "<<_phi(j+1,i)<<" _phi(j-1,i) "<<_phi(j-1,i)<<endl;
                 //cout <<"je suis ici"<<p<<endl;
                 //interface
                 //_pointsupl+=2;
-                if (p<=nxx/(2*ny))//ny/(2*nxx))
+                nmax=max(nxx,ny);
+                nmin=min(nxx,ny);
+                if (p<=nmin/(2*nmax))//nxx/(2*ny))//ny/(2*nxx))
                 {
-                    //cout<<"triangle "<<k<<endl;
+                    cout<<"triangle "<<k<<endl;
                     //typinterf(i,j)=3;  //triangle vers la droite
                     //num+=2;
                     _interface(k,0)=dx*sqrt(2*p*ny/nxx);
                     _interface(k,1)=0;
                     _interface(k,2)=0;
                     _interface(k,3)=dz*2*p/sqrt(2*p*ny/nxx);
-                    //cout<<2*p/_interface(k,0)<<endl;
+                    cout<<2*p/sqrt(2*p*ny/nxx)<<endl;
                     //on rentre les coordonnées des sommets du triangles
 
                     if (nx>0)
@@ -210,7 +223,7 @@ void plic::interf()
 
                 }
 
-                else if (p>=1-nxx/(2*ny))//ny/(2*nxx))
+                else if (p>=1-nmin/(2*nmax))//nxx/(2*ny))//ny/(2*nxx))
                 {
                     //cout<<"pentagone "<<k<<endl;
                     //typinterf(i,j)=5;  //pentagone vers la droite
@@ -288,7 +301,7 @@ void plic::interf()
                     if (nxx<ny)
                     {
 
-                        //cout <<"quadhaut "<<k<<endl;
+                        cout <<"quadhaut "<<k<<endl;
 
                         //typinterf(i,j)=4; //quadrillatère vers le haut
 
@@ -428,8 +441,10 @@ void plic::interf()
                         //typinterf(i,j)+=10;  //vers la gauche
                     //}
                     //cout <<"ici"<<endl;
-                    _interface(k,1)=dx-_interface(k,1);
-                    _interface(k,3)=dz-_interface(k,3);
+                    //cout <<"avant "<<_interface(k,1)<<" "<<_interface(k,3)<<endl;
+                    _interface(k,0)=dx-_interface(k,0);
+                    _interface(k,2)=dz-_interface(k,2);
+                    //cout <<"après "<<_interface(k,1)<<" "<<_interface(k,3)<<endl;
                 }
 
                 //cout<<"_interface(k) "<<_interface(k,0)<<" "<<_interface(k,1)<<" "<<_interface(k,2)<<" "<<_interface(k,3)<<endl;
