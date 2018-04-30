@@ -69,6 +69,7 @@ void plic::interf()
     //cout <<"lon "<<lon<<endl;
     int _kmax=_recul->Get_nbinterface();
 
+
     pttri.resize(30*lon,3);
     ptpenta.resize(30*lon,3);
     trivalcase.resize(30*lon);
