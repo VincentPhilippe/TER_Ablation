@@ -45,21 +45,21 @@ int main(int argc, char** argv)
   cout << "Nombre de noeuds = " << maillage.GetNx()*maillage.GetNz() << endl;
 
   // ----------------------------- Initialisation ----------------------------------/
-  diffusion* plateau = new diffusion(*data_file, maillage);
   cout << "diffusion" << endl;
+  diffusion* plateau = new diffusion(*data_file, maillage);
 
-  recul* precul = new recul(*data_file);
   cout << "recul" << endl;
-  precul->cpositive();
+  recul* precul = new recul(*data_file);
   cout << "cpositive" << endl;
+  precul->cpositive();
 
-  plic* pplic = new plic(*data_file);
   cout << "plic" << endl;
+  plic* pplic = new plic(*data_file);
   //construction de la première interface
-  pplic->update(precul);
   cout << "update" << endl;
-  pplic->interf();
+  pplic->update(precul);
   cout << "interf" << endl;
+  pplic->interf();
 
   // Boucle en temps
   for (int i = 1; i < nb_iterations; i++)
