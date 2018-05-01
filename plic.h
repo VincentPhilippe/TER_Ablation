@@ -26,7 +26,7 @@ class plic {
   recul *_recul;
   read_data& _read_data;
   Eigen::MatrixXd _phi;
-  double p,nx,nxx,ny;
+  double p,nx,nxx,ny,nmax,nmin;
   int _pointsupl,lon,lar,k;
   //int num, l; // not used
   int nbtri,nbquad,nbpenta;
