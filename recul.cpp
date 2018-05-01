@@ -91,6 +91,10 @@ void recul::recul_surface()
         zc = za - vrdt*cos(alpha);
         xd = xb + vrdt*sin(alpha);
         zd = zb - vrdt*cos(alpha);
+        /*cout << "a " << xa << " " << za << endl;
+        cout << "b " << xb << " " << zb << endl;
+        cout << "c " << xc << " " << zc << endl;
+        cout << "d " << xd << " " << zd << endl;*/
 
         /*MatrixXd coord;
         coord.resize(4,2);
