@@ -70,12 +70,12 @@ void plic::interf()
     int _kmax=_recul->Get_nbinterface();
 
 
-    pttri.resize(30*lon,3);
-    ptpenta.resize(30*lon,3);
-    trivalcase.resize(30*lon);
-    quadvalcase.resize(30*lon);
-    pentvalcase.resize(30*lon);
-    ptquad.resize(100*lon,3);
+    pttri.resize(300*lon,3);
+    ptpenta.resize(300*lon,3);
+    trivalcase.resize(300*lon);
+    quadvalcase.resize(300*lon);
+    pentvalcase.resize(300*lon);
+    ptquad.resize(1000*lon,3);
     _interface.resize(_kmax,4);
     _normal.resize(_kmax,2);
     //tri.resize(10*lon,3); //arbitraire pour le moment, assez grand pour contenir tous les triangles
@@ -115,7 +115,7 @@ void plic::interf()
             if ((p>0.) && (p<1.))   //si on est sur l'interface
             {
                 k++;
-
+                //cout << "ici"<<endl;
                 //Calcul du gradient
                 //if (_phi(j-1,i)>0.)
                 //{
@@ -141,7 +141,7 @@ void plic::interf()
                 nmin=min(nxx,ny);
                 if (p<=nmin/(2*nmax))//nxx/(2*ny))//ny/(2*nxx))
                 {
-                    cout<<"triangle "<<k<<endl;
+                    //cout<<"triangle "<<k<<endl;
                     //typinterf(i,j)=3;  //triangle vers la droite
                     //num+=2;
                     _interface(k,0)=dx*sqrt(2*p*ny/nxx);
@@ -301,7 +301,7 @@ void plic::interf()
                     if (nxx<ny)
                     {
 
-                        cout <<"quadhaut "<<k<<endl;
+                        //cout <<"quadhaut "<<endl;
 
                         //typinterf(i,j)=4; //quadrillatère vers le haut
 
@@ -369,7 +369,7 @@ void plic::interf()
                     else
                     {
                         //typinterf(i,j)=-4; //quadrillatère vers la droite
-                        //cout <<"quaddroite "<<k<<endl;
+                        //cout <<"quaddroite "<<endl;
                         _interface(k,0)=dx*(p+ny/(2*nxx));
                         _interface(k,1)=0;
                         _interface(k,2)=dx*(p-ny/(2*nxx));
