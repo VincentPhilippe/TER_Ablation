@@ -9,7 +9,7 @@ recul::recul(read_data &_data)
   //_read_data=&_data;
   //_diff=0;
   _C_solide=_read_data.Get_C_Solide();
-  cout << _C_solide << endl;
+  //cout << _C_solide << endl;
   _dtmax=_read_data.Get_dt();
   _dt=_dtmax;
   _dx=_read_data.Get_dx();
@@ -30,9 +30,9 @@ void recul::recul_surface()
   _interface=_plic->Get_interface();
   _vitesse=_diff->GetVitesse();
   int affichage;
-  affichage=1;
+  affichage=0;
 
-  cout << "_C_solide" << endl << _C_solide << endl;
+  //cout << "_C_solide" << endl << _C_solide << endl;
   if (affichage==1) {
     cout << "_ninterf" << endl << _ninterf << endl;
     cout << "_interface" << endl << _interface << endl;
@@ -57,22 +57,22 @@ void recul::recul_surface()
 
       k = _ninterf(i,j);
 
-      if (k>0) {
+      if (k>=0) {
         //cout << "k " << k << endl;
         //calcul de l'angle alpha
         double xa, za, xb, zb, t_alpha, alpha;
 
         //repere local
-        if (_interface(k-1,0)<_interface(k-1,2)) {
-          xa = _interface(k-1,0);
-          za = _interface(k-1,1);
-          xb = _interface(k-1,2);
-          zb = _interface(k-1,3);
+        if (_interface(k,0)<_interface(k,2)) {
+          xa = _interface(k,0);
+          za = _interface(k,1);
+          xb = _interface(k,2);
+          zb = _interface(k,3);
         } else {
-          xb = _interface(k-1,0);
-          zb = _interface(k-1,1);
-          xa = _interface(k-1,2);
-          za = _interface(k-1,3);
+          xb = _interface(k,0);
+          zb = _interface(k,1);
+          xa = _interface(k,2);
+          za = _interface(k,3);
         }
 
         /*xa = -j*_dx + _interface(0,k-1);
@@ -91,6 +91,10 @@ void recul::recul_surface()
         zc = za - vrdt*cos(alpha);
         xd = xb + vrdt*sin(alpha);
         zd = zb - vrdt*cos(alpha);
+        /*cout << "a " << xa << " " << za << endl;
+        cout << "b " << xb << " " << zb << endl;
+        cout << "c " << xc << " " << zc << endl;
+        cout << "d " << xd << " " << zd << endl;*/
 
         /*MatrixXd coord;
         coord.resize(4,2);
@@ -1101,12 +1105,12 @@ void recul::cpositive()
     for (int j = 0; j <_nx; j++) {
       if (_C_solide(i,j)<=0.00000000001) {
         _C_solide(i,j)=0;
-        _ninterf(i,j)=0;
+        _ninterf(i,j)=-2;
       } else if (_C_solide(i,j)>=1) {
         _ninterf(i,j)=-1;
       } else {
-        _nbinterface=_nbinterface+1;
         _ninterf(i,j)=_nbinterface;
+        _nbinterface=_nbinterface+1;
       }
     }
   }
