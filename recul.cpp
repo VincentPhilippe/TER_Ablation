@@ -34,6 +34,7 @@ void recul::recul_surface()
 
   //cout << "_C_solide" << endl << _C_solide << endl;
   if (affichage==1) {
+    cout << "_C_solide" << endl << _C_solide << endl;
     cout << "_ninterf" << endl << _ninterf << endl;
     cout << "_interface" << endl << _interface << endl;
     cout << "_vitesse" << endl << _vitesse << endl;
@@ -52,13 +53,17 @@ void recul::recul_surface()
   {
     for(int j=0; j<_nx; j++)
     {
-      //cout << "i " << i << " j " << j << endl;
+      if (affichage==1) {
+        cout << "i " << i << " j " << j << endl;
+      }
       double k;
 
       k = _ninterf(i,j);
 
       if (k>=0) {
-        //cout << "k " << k << endl;
+        if (affichage==1) {
+          cout << "k " << k << endl;
+        }
         //calcul de l'angle alpha
         double xa, za, xb, zb, t_alpha, alpha;
 
@@ -85,7 +90,7 @@ void recul::recul_surface()
         //calcul des coordonnées des points C et D
         double xc, zc, xd, zd, vr, vrdt;
 
-        vr = _vitesse(k-1);
+        vr = _vitesse(k);
         vrdt = vr*_dt;
         xc = xa + vrdt*sin(alpha);
         zc = za - vrdt*cos(alpha);
