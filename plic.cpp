@@ -68,8 +68,10 @@ void plic::interf()
     int lon=_phi.rows()-1;
     //cout <<"lon "<<lon<<endl;
     int _kmax=_recul->Get_nbinterface();
-
-
+    cout<<"_ninterf"<<endl;
+    cout<<_ninterf<<endl;
+    cout<<"_phi"<<endl;
+    cout<<_phi<<endl;
     pttri.resize(300*lon,3);
     ptpenta.resize(300*lon,3);
     trivalcase.resize(300*lon);
@@ -102,16 +104,17 @@ void plic::interf()
     //ifinterf.resize(_squares.size());  //ifinterf(i)=1 si _squares(i) interface, 0 sinon
     _interface.resize(k,4) ;
     */
+    cout<<"yooooo"<<endl;
     k=-1;
     //_pointsupl=0;
     for (int j=0;j<lon+1;j++)
      {
         for (int i=0;i<lar+1;i++)
         {
-            //cout <<i<<" "<<j<<endl;
+            cout <<i<<" "<<j<<endl;
             p=_phi(j,i);
-            //cout <<"p "<<p<<endl;
-            //cout <<"je suis ici"<<p<<endl;
+            cout <<"p "<<p<<endl;
+            cout <<"je suis ici"<<p<<endl;
             if ((p>0.) && (p<1.))   //si on est sur l'interface
             {
                 k++;
@@ -131,7 +134,9 @@ void plic::interf()
                 nxx=abs(nx);
                 _normal(k,0)=nx;
                 _normal(k,1)=ny;
-                //cout <<"nx "<<nx<<" ny "<<ny<<endl;
+                //cout <<i<<" "<<j<<endl;
+                //cout <<"p "<<p<<endl;
+                cout <<"nx "<<nx<<" ny "<<ny<<endl;
                 //cout <<"grad_x "<<grad_x(i,j,lar)<<" grad_y "<< grad_y(i,j,lon)<<endl;
                 //cout <<"_phi(j+1,i) "<<_phi(j+1,i)<<" _phi(j-1,i) "<<_phi(j-1,i)<<endl;
                 //cout <<"je suis ici"<<p<<endl;
@@ -141,7 +146,7 @@ void plic::interf()
                 nmin=min(nxx,ny);
                 if (p<=nmin/(2*nmax))//nxx/(2*ny))//ny/(2*nxx))
                 {
-                    //cout<<"triangle "<<k<<endl;
+                    cout<<"triangle "<<k<<endl;
                     //typinterf(i,j)=3;  //triangle vers la droite
                     //num+=2;
                     _interface(k,0)=dx*sqrt(2*p*ny/nxx);
@@ -225,7 +230,7 @@ void plic::interf()
 
                 else if (p>=1-nmin/(2*nmax))//nxx/(2*ny))//ny/(2*nxx))
                 {
-                    //cout<<"pentagone "<<k<<endl;
+                    cout<<"pentagone "<<k<<endl;
                     //typinterf(i,j)=5;  //pentagone vers la droite
 
                     _interface(k,0)=dx*1;
@@ -301,7 +306,7 @@ void plic::interf()
                     if (nxx<ny)
                     {
 
-                        //cout <<"quadhaut "<<endl;
+                        cout <<"quadhaut "<<k<<endl;
 
                         //typinterf(i,j)=4; //quadrillatère vers le haut
 
@@ -369,7 +374,7 @@ void plic::interf()
                     else
                     {
                         //typinterf(i,j)=-4; //quadrillatère vers la droite
-                        //cout <<"quaddroite "<<endl;
+                        cout <<"quaddroite "<<endl;
                         _interface(k,0)=dx*(p+ny/(2*nxx));
                         _interface(k,1)=0;
                         _interface(k,2)=dx*(p-ny/(2*nxx));
@@ -513,7 +518,7 @@ void plic::interf()
             }
           }
         }
-        //cout << _interface<<endl;
+        cout << _interface<<endl;
         //cout<<"pttri"<<endl;
         //cout<<pttribis<<endl;
         //cout<<"ptpent"<<endl;
