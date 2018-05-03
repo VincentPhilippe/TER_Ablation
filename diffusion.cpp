@@ -23,7 +23,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
   double cfl, dt , e = 10, flux, a;
   int n=0, i, num_cell;
   MatrixXd C1, erreur;
-  VectorXd aire = VectorXd::Zero(interf.maxCoeff());;
+  VectorXd aire = VectorXd::Zero(interf.maxCoeff()+1);;
 
   C1 = _concentration;
 
@@ -40,7 +40,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
   dt = cfl*aire.minCoeff();
 
 
-  _vitesse = VectorXd::Zero(interf.maxCoeff());
+  _vitesse = VectorXd::Zero(interf.maxCoeff()+1);
 
 
   while(e>10e-5 && n<10000)
@@ -50,19 +50,19 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
       i = 0;
       flux = 0;
 
-      while((_plic->Get_ninterface())(i,j) == 0){
+      while((_plic->Get_ninterface())(i,j) == -2){
 
         flux += fluxGauche(i,j);
         flux += fluxBas(i,j);
         flux += fluxDroite(i,j);
         flux += fluxHaut(i,j);
-        C1(i,j) = _concentration(i,j) + (dt/dx*dz)*flux;
+        C1(i,j) = _concentration(i,j) + (dt/(dx*dz))*flux;
 
         i++;
       }
 
       // Condition limite interface : calcul des 4 flux + flux interface~ -Da * C
-      while(_plic->Get_ninterface()(i,j) != -1 && i <= _maillage.GetNz() && i<_maillage.GetNz()-1 )
+      while(_plic->Get_ninterface()(i,j) >= 0 && i <= _maillage.GetNz() && i<_maillage.GetNz()-1 )
       {
 
         num_cell = (int)(_plic->Get_ninterface()(i,j));
@@ -76,7 +76,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
         C1(i,j) = _concentration(i,j) + (dt/a)*flux;
 
 
-        _vitesse(num_cell-1) = C1(i,j);
+        _vitesse(num_cell) = C1(i,j);
 
         i++;
       }
@@ -110,11 +110,11 @@ double diffusion::fluxGauche(int i, int j)
       flux *= longueurArete(i,j,LEFT);
       return(-flux);
   }
-  if(_plic->Get_ninterface()(i,j-1) > 0 && _plic->Get_ninterface()(i,j) == 0)
+  /*if(_plic->Get_ninterface()(i,j-1) > 0 && _plic->Get_ninterface()(i,j) == 0)
   {
     flux = -_damkohler(j-1)*_concentration(i,j);
     flux *= dz - longueurArete(i,j,LEFT);
-  }
+  }*/
 
   flux += (_concentration(i,j)-_concentration(i,j-1))/dx;
   flux *= longueurArete(i,j,LEFT);
@@ -145,11 +145,11 @@ double diffusion::fluxDroite(int i, int j)
       flux *= longueurArete(i,j,RIGHT);
       return(flux);
   }
-  if(_plic->Get_ninterface()(i,j+1) > 0 && _plic->Get_ninterface()(i,j) == 0)
+  /*if(_plic->Get_ninterface()(i,j+1) > 0 && _plic->Get_ninterface()(i,j) == 0)
   {
     flux = -_damkohler(j+1)*_concentration(i,j);
     flux *= dz - longueurArete(i,j,RIGHT);
-  }
+  }*/
 
   flux += (_concentration(i,j+1)-_concentration(i,j))/dx;
   flux *= longueurArete(i,j,RIGHT);
@@ -181,10 +181,10 @@ double diffusion::fluxInterf(int i, int j)
 
 
 
-  x1 = (_plic->Get_interface())(num_cell-1, 0);
-  z1 = (_plic->Get_interface())(num_cell-1, 1);
-  x2 = (_plic->Get_interface())(num_cell-1, 2);
-  z2 = (_plic->Get_interface())(num_cell-1, 3);
+  x1 = (_plic->Get_interface())(num_cell, 0);
+  z1 = (_plic->Get_interface())(num_cell, 1);
+  x2 = (_plic->Get_interface())(num_cell, 2);
+  z2 = (_plic->Get_interface())(num_cell, 3);
   l = sqrt( (x1 - x2)*(x1 - x2) + (z1 - z2)*(z1 - z2) );
 
   Da = _damkohler(j);
@@ -197,12 +197,12 @@ double diffusion::aireInterf(int i, int j)
   double Mx, Mz, Nx, Nz, aire;
   int num_cell = (int)(_plic->Get_ninterface()(i,j));
 
-  if((_plic->Get_normal())(num_cell-1, 0) >= 0)
+  if((_plic->Get_normal())(num_cell, 0) >= 0)
   {
-    Mx = (_plic->Get_interface())(num_cell-1, 0);
-    Mz = (_plic->Get_interface())(num_cell-1, 1);
-    Nx = (_plic->Get_interface())(num_cell-1, 2);
-    Nz = (_plic->Get_interface())(num_cell-1, 3);
+    Mx = (_plic->Get_interface())(num_cell, 0);
+    Mz = (_plic->Get_interface())(num_cell, 1);
+    Nx = (_plic->Get_interface())(num_cell, 2);
+    Nz = (_plic->Get_interface())(num_cell, 3);
 
 
     aire = abs(Mz*Nx) + abs((Mx-Nx)*Mz) + abs((Nz-Mz)*Nx) + 0.5*abs((Mx-Nx)*(Nz-Mz));
@@ -211,10 +211,10 @@ double diffusion::aireInterf(int i, int j)
   else
   {
 
-    Mx = (_plic->Get_interface())(num_cell-1, 0);
-    Mz = (_plic->Get_interface())(num_cell-1, 1);
-    Nx = (_plic->Get_interface())(num_cell-1, 2);
-    Nz = (_plic->Get_interface())(num_cell-1, 3);
+    Mx = (_plic->Get_interface())(num_cell, 0);
+    Mz = (_plic->Get_interface())(num_cell, 1);
+    Nx = (_plic->Get_interface())(num_cell, 2);
+    Nz = (_plic->Get_interface())(num_cell, 3);
 
     aire = 0.5*abs((Mz-Nz)*(Mx-Nx)) + abs(Nz*Mx) + abs(Nz*(dx-Mx)) + abs((Mz-Nz)*(dx-Mx));
     return(dx*dz - aire);
@@ -242,10 +242,10 @@ double diffusion::longueurArete(int i, int j, enum Direction direction)
 
     default:
 
-      x1 = (_plic->Get_interface())(num_cell-1, 0);
-      z1 = (_plic->Get_interface())(num_cell-1, 1);
-      x2 = (_plic->Get_interface())(num_cell-1, 2);
-      z2 = (_plic->Get_interface())(num_cell-1, 3);
+      x1 = (_plic->Get_interface())(num_cell, 0);
+      z1 = (_plic->Get_interface())(num_cell, 1);
+      x2 = (_plic->Get_interface())(num_cell, 2);
+      z2 = (_plic->Get_interface())(num_cell, 3);
 
 
       if(direction == LEFT)
@@ -297,21 +297,21 @@ enum State_Interf diffusion::watchInterf(int i, int j, enum Direction direction)
 
   point1.resize(2);
   point2.resize(2);
-  if(num_cell == 0)
+  if(num_cell == -2)
   {
     return(A);
   }
-  if(num_cell < 0)
+  if(num_cell == -1)
   {
     return(S);
   }
   else
   {
-    point1(0) = (_plic->Get_interface())(num_cell-1, 0);
-    point1(1) = (_plic->Get_interface())(num_cell-1, 1);
+    point1(0) = (_plic->Get_interface())(num_cell, 0);
+    point1(1) = (_plic->Get_interface())(num_cell, 1);
 
-    point2(0) = (_plic->Get_interface())(num_cell-1, 2);
-    point2(1) = (_plic->Get_interface())(num_cell-1, 3);
+    point2(0) = (_plic->Get_interface())(num_cell, 2);
+    point2(1) = (_plic->Get_interface())(num_cell, 3);
 
     switch(direction)
     {
