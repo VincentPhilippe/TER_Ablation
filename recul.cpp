@@ -34,6 +34,7 @@ void recul::recul_surface()
 
   //cout << "_C_solide" << endl << _C_solide << endl;
   if (affichage==1) {
+    cout << "_C_solide" << endl << _C_solide << endl;
     cout << "_ninterf" << endl << _ninterf << endl;
     cout << "_interface" << endl << _interface << endl;
     cout << "_vitesse" << endl << _vitesse << endl;
@@ -52,27 +53,31 @@ void recul::recul_surface()
   {
     for(int j=0; j<_nx; j++)
     {
-      //cout << "i " << i << " j " << j << endl;
+      if (affichage==1) {
+        cout << "i " << i << " j " << j << endl;
+      }
       double k;
 
       k = _ninterf(i,j);
 
-      if (k>0) {
-        //cout << "k " << k << endl;
+      if (k>=0) {
+        if (affichage==1) {
+          cout << "k " << k << endl;
+        }
         //calcul de l'angle alpha
         double xa, za, xb, zb, t_alpha, alpha;
 
         //repere local
-        if (_interface(k-1,0)<_interface(k-1,2)) {
-          xa = _interface(k-1,0);
-          za = _interface(k-1,1);
-          xb = _interface(k-1,2);
-          zb = _interface(k-1,3);
+        if (_interface(k,0)<_interface(k,2)) {
+          xa = _interface(k,0);
+          za = _interface(k,1);
+          xb = _interface(k,2);
+          zb = _interface(k,3);
         } else {
-          xb = _interface(k-1,0);
-          zb = _interface(k-1,1);
-          xa = _interface(k-1,2);
-          za = _interface(k-1,3);
+          xb = _interface(k,0);
+          zb = _interface(k,1);
+          xa = _interface(k,2);
+          za = _interface(k,3);
         }
 
         /*xa = -j*_dx + _interface(0,k-1);
@@ -85,7 +90,7 @@ void recul::recul_surface()
         //calcul des coordonnées des points C et D
         double xc, zc, xd, zd, vr, vrdt;
 
-        vr = _vitesse(k-1);
+        vr = _vitesse(k);
         vrdt = vr*_dt;
         xc = xa + vrdt*sin(alpha);
         zc = za - vrdt*cos(alpha);
@@ -1105,12 +1110,12 @@ void recul::cpositive()
     for (int j = 0; j <_nx; j++) {
       if (_C_solide(i,j)<=0.00000000001) {
         _C_solide(i,j)=0;
-        _ninterf(i,j)=0;
+        _ninterf(i,j)=-2;
       } else if (_C_solide(i,j)>=1) {
         _ninterf(i,j)=-1;
       } else {
-        _nbinterface=_nbinterface+1;
         _ninterf(i,j)=_nbinterface;
+        _nbinterface=_nbinterface+1;
       }
     }
   }
