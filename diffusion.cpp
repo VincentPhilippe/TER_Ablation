@@ -50,19 +50,20 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
       flux = 0;
 
       while((_plic->Get_ninterface())(i,j) == -2){
-        flux += fluxGauche(i,j);
-        flux += fluxBas(i,j);
-        flux += fluxDroite(i,j);
-        flux += fluxHaut(i,j);
-        C1(i,j) = _concentration(i,j) + (dt/(dx*dz))*flux;
+
+        cout<<"   I="<<i<<"  J="<<j<<endl;
+        flux += fluxGauche(i,j);cout<<"FLUX GAUCHE="<<fluxGauche(i,j)<<endl;
+        flux += fluxBas(i,j);cout<<"FLUX BAS="<<fluxBas(i,j)<<endl;
+        flux += fluxDroite(i,j);cout<<"FLUX DROITE="<<fluxDroite(i,j)<<endl;
+        flux += fluxHaut(i,j);cout<<"FLUX HAUT="<<fluxHaut(i,j)<<endl;
+        C1(i,j) = _concentration(i,j) + (dt/(dx*dz))*flux;cout<<"NOUVELLE CONCENTRATION"<<endl;
 
         i++;
       }
 
       // Condition limite interface : calcul des 4 flux + flux interface~ -Da * C
-      while(_plic->Get_ninterface()(i,j) >= 0 && i <= _maillage.GetNz() )
+      while(i < _maillage.GetNz() && _plic->Get_ninterface()(i,j) >= 0)
       {
-
         num_cell = (int)(_plic->Get_ninterface()(i,j));
         flux = 0;
         flux += fluxGauche(i,j);
@@ -73,7 +74,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
         a = aireInterf(i,j);
         C1(i,j) = _concentration(i,j) + (dt/a)*flux;
 
-
+        cout<<"VITESSE"<<endl;
         _vitesse(num_cell) = C1(i,j);
 
         i++;
@@ -82,13 +83,17 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
     erreur = (C1-_concentration).cwiseAbs();
     e = erreur.maxCoeff();
 
-    cout<<"~~~~~~ERREUR= "<<e<<"~~~~~~~~~~"<<endl;
+    //cout<<"~~~~~~ERREUR= "<<e<<"~~~~~~~~~~"<<endl;
+    cout<<"CONCENTRATION "<<endl<<C1<<endl;
 
     _concentration = C1;
     if(e>100){
       cout<<"ERREUR TROP GRANDE"<<endl;
       exit(0);
     }
+    n++;
+
+
 
   }
   if(n >= 10000)
@@ -207,7 +212,6 @@ double diffusion::aireInterf(int i, int j)
   }
   else
   {
-
     Mx = (_plic->Get_interface())(num_cell, 0);
     Mz = (_plic->Get_interface())(num_cell, 1);
     Nx = (_plic->Get_interface())(num_cell, 2);
