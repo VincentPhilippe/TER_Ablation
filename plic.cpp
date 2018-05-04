@@ -120,16 +120,17 @@ void plic::interf()
                 k++;
                 //cout << "ici"<<endl;
                 //Calcul du gradient
-                //if (_phi(j-1,i)>0.)
-                //{
+                if (_phi(j-1,i)>0.)
+                {
+                  cout<<"ERREUR CAUSEE PAR LA METHODE PLIC"<<endl;
                 //  nx=grad_x(i,j-1,lar)/sqrt(grad_x(i,j-1,lar)*grad_x(i,j-1,lar)+grad_y(i,j-1,lon)*grad_y(i,j-1,lon));
                 //  ny=grad_y(i,j-1,lon)/sqrt(grad_x(i,j-1,lar)*grad_x(i,j-1,lar)+grad_y(i,j-1,lon)*grad_y(i,j-1,lon));
-                //}
-                //else
-                //{
+                }
+                else
+                {
                   nx=grad_x(i,j,lar)/sqrt(grad_x(i,j,lar)*grad_x(i,j,lar)+grad_y(i,j,lon)*grad_y(i,j,lon));
                   ny=grad_y(i,j,lon)/sqrt(grad_x(i,j,lar)*grad_x(i,j,lar)+grad_y(i,j,lon)*grad_y(i,j,lon));
-              //  }
+                }
 
                 nxx=abs(nx);
                 _normal(k,0)=nx;
