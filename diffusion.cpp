@@ -38,11 +38,8 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
 
   dt = cfl*aire.minCoeff();
   _vitesse = VectorXd::Zero(interf.maxCoeff()+1);
-<<<<<<< HEAD
-=======
 
   cout<<"CONCENTRATION AVANT"<<endl<<_concentration<<endl;
->>>>>>> 33eff103b23b23ebe27e144c8a09562ecf549d8b
 
 
   while(e>10e-5 && n<10000)
@@ -53,13 +50,6 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
       flux = 0;
 
       while((_plic->Get_ninterface())(i,j) == -2){
-<<<<<<< HEAD
-        flux += fluxGauche(i,j);
-        flux += fluxBas(i,j);
-        flux += fluxDroite(i,j);
-        flux += fluxHaut(i,j);
-        C1(i,j) = _concentration(i,j) + (dt/(dx*dz))*flux;
-=======
 
         cout<<"   I="<<i<<"  J="<<j<<endl;
         flux += fluxGauche(i,j);cout<<"FLUX GAUCHE="<<fluxGauche(i,j)<<endl;
@@ -67,17 +57,12 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
         flux += fluxDroite(i,j);cout<<"FLUX DROITE="<<fluxDroite(i,j)<<endl;
         flux += fluxHaut(i,j);cout<<"FLUX HAUT="<<fluxHaut(i,j)<<endl;
         C1(i,j) = _concentration(i,j) + (dt/(dx*dz))*flux;cout<<"NOUVELLE CONCENTRATION"<<endl;
->>>>>>> 33eff103b23b23ebe27e144c8a09562ecf549d8b
 
         i++;
       }
 
       // Condition limite interface : calcul des 4 flux + flux interface~ -Da * C
-<<<<<<< HEAD
-      while(_plic->Get_ninterface()(i,j) >= 0 && i <= _maillage.GetNz() )
-=======
       while(i < _maillage.GetNz() && _plic->Get_ninterface()(i,j) >= 0)
->>>>>>> 33eff103b23b23ebe27e144c8a09562ecf549d8b
       {
         num_cell = (int)(_plic->Get_ninterface()(i,j));
         flux = 0;
@@ -89,11 +74,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
         a = aireInterf(i,j);
         C1(i,j) = _concentration(i,j) + (dt/a)*flux;
 
-<<<<<<< HEAD
-
-=======
         cout<<"VITESSE"<<endl;
->>>>>>> 33eff103b23b23ebe27e144c8a09562ecf549d8b
         _vitesse(num_cell) = C1(i,j);
 
         i++;
@@ -118,12 +99,8 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
   if(n >= 10000)
     cout<<"SORTIE CAR TROP D'ITERATION"<<endl;
 
-    cout<<"VITESSE A L'INTERFACE"<<endl<<_vitesse<<endl;
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 33eff103b23b23ebe27e144c8a09562ecf549d8b
   saveCFluid();
 }
 
@@ -235,10 +212,6 @@ double diffusion::aireInterf(int i, int j)
   }
   else
   {
-<<<<<<< HEAD
-
-=======
->>>>>>> 33eff103b23b23ebe27e144c8a09562ecf549d8b
     Mx = (_plic->Get_interface())(num_cell, 0);
     Mz = (_plic->Get_interface())(num_cell, 1);
     Nx = (_plic->Get_interface())(num_cell, 2);
