@@ -39,6 +39,8 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
   dt = cfl*aire.minCoeff();
   _vitesse = VectorXd::Zero(interf.maxCoeff()+1);
 
+  cout<<"CONCENTRATION AVANT"<<endl<<_concentration<<endl;
+
 
   while(e>10e-5 && n<10000)
   {
@@ -80,7 +82,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
     erreur = (C1-_concentration).cwiseAbs();
     e = erreur.maxCoeff();
 
-    //cout<<"~~~~~~ERREUR= "<<e<<"~~~~~~~~~~"<<endl;
+    cout<<"~~~~~~ERREUR= "<<e<<"~~~~~~~~~~"<<endl;
 
     _concentration = C1;
     if(e>100){
@@ -92,7 +94,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
   if(n >= 10000)
     cout<<"SORTIE CAR TROP D'ITERATION"<<endl;
 
-    cout<<"VITESSE A L'INTERFACE"<<endl<<_vitesse<<endl;
+
 
   saveCFluid();
 }
