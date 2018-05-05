@@ -64,9 +64,9 @@ void plic::interf()
     _ninterf=_recul->Get_ninterf();
     _phi=_recul->Get_C_solide();
     int lar=_phi.cols()-1;
-    //cout <<"lar "<<lar<<endl;
+    cout <<"lar "<<lar<<endl;
     int lon=_phi.rows()-1;
-    //cout <<"lon "<<lon<<endl;
+    cout <<"lon "<<lon<<endl;
     int _kmax=_recul->Get_nbinterface();
     cout<<"_ninterf"<<endl;
     cout<<_ninterf<<endl;
@@ -77,7 +77,7 @@ void plic::interf()
     trivalcase.resize(300*lon);
     quadvalcase.resize(300*lon);
     pentvalcase.resize(300*lon);
-    ptquad.resize(1000*lon,3);
+    ptquad.resize(lar*lon/(dx*dz),3);
     _interface.resize(_kmax,4);
     _normal.resize(_kmax,2);
     //tri.resize(10*lon,3); //arbitraire pour le moment, assez grand pour contenir tous les triangles
@@ -104,7 +104,7 @@ void plic::interf()
     //ifinterf.resize(_squares.size());  //ifinterf(i)=1 si _squares(i) interface, 0 sinon
     _interface.resize(k,4) ;
     */
-    cout<<"yooooo"<<endl;
+    //cout<<"yooooo"<<endl;
     k=-1;
     //_pointsupl=0;
     for (int j=0;j<lon+1;j++)
@@ -113,24 +113,24 @@ void plic::interf()
         {
             cout <<i<<" "<<j<<endl;
             p=_phi(j,i);
-            cout <<"p "<<p<<endl;
-            cout <<"je suis ici"<<p<<endl;
+            //cout <<"p "<<p<<endl;
+            //cout <<"je suis ici"<<p<<endl;
             if ((p>0.) && (p<1.))   //si on est sur l'interface
             {
                 k++;
                 //cout << "ici"<<endl;
                 //Calcul du gradient
-                if (_phi(j-1,i)>0.)
-                {
-                  cout<<"ERREUR CAUSEE PAR LA METHODE PLIC"<<endl;
+                //if (_phi(j-1,i)>0.)
+                //{
+                  //cout<<"ERREUR CAUSEE PAR LA METHODE PLIC"<<  <<endl;
                 //  nx=grad_x(i,j-1,lar)/sqrt(grad_x(i,j-1,lar)*grad_x(i,j-1,lar)+grad_y(i,j-1,lon)*grad_y(i,j-1,lon));
                 //  ny=grad_y(i,j-1,lon)/sqrt(grad_x(i,j-1,lar)*grad_x(i,j-1,lar)+grad_y(i,j-1,lon)*grad_y(i,j-1,lon));
-                }
-                else
-                {
+                //}
+                //else
+                //{
                   nx=grad_x(i,j,lar)/sqrt(grad_x(i,j,lar)*grad_x(i,j,lar)+grad_y(i,j,lon)*grad_y(i,j,lon));
                   ny=grad_y(i,j,lon)/sqrt(grad_x(i,j,lar)*grad_x(i,j,lar)+grad_y(i,j,lon)*grad_y(i,j,lon));
-                }
+                //}
 
                 nxx=abs(nx);
                 _normal(k,0)=nx;
@@ -454,6 +454,10 @@ void plic::interf()
                 }
 
                 //cout<<"_interface(k) "<<_interface(k,0)<<" "<<_interface(k,1)<<" "<<_interface(k,2)<<" "<<_interface(k,3)<<endl;
+                if (_phi(j-1,i)>0.)
+                {
+                  cout<<"ERREUR CAUSEE PAR LA METHODE PLIC "<< _interface(k,0)/dx<<" "<< _interface(k,2)/dx<<endl;
+                }
             }
 
 
@@ -519,7 +523,7 @@ void plic::interf()
             }
           }
         }
-        cout << _interface<<endl;
+        //cout << _interface<<endl;
         //cout<<"pttri"<<endl;
         //cout<<pttribis<<endl;
         //cout<<"ptpent"<<endl;
