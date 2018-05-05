@@ -1107,7 +1107,7 @@ void recul::recul18(int i, int j, double alpha, double vrdt, MatrixXd coord)
 void recul::cpositive()
 {
   _nbinterface=0;
-  /*for (int i=0; i<_nz; i++) {
+  for (int i=0; i<_nz; i++) {
     for (int j = 0; j <_nx; j++) {
       if (_C_solide(i,j)<=0.00000000001) {
         _C_solide(i,j)=0;
@@ -1119,8 +1119,8 @@ void recul::cpositive()
         _nbinterface=_nbinterface+1;
       }
     }
-  }*/
-  for (int j = 0; j <_nx; j++) {
+  }
+  /*for (int j = 0; j <_nx; j++) {
     int i=0;
     while (_C_solide(i,j)<=0.00000000001 && i<_nz) {
       _C_solide(i,j)=0;
@@ -1137,5 +1137,5 @@ void recul::cpositive()
       _C_solide(i,j)=1;
       i++;
     }
-  }
+  }*/
 }
