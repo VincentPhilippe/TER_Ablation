@@ -23,7 +23,11 @@ Dim
 #2D, 3D
 
 Da
+<<<<<<< HEAD
 step 0.005 50.0
+=======
+step 10.0 5.0
+>>>>>>> c9c8e03aa9709772f065656b228552d4afc08e90
 #uniforme 0.5
 #step 10.0 5.0
 #retrieve retrieve_file
