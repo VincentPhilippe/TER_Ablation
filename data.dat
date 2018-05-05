@@ -1,13 +1,9 @@
 dx
-<<<<<<< HEAD
-0.03
-dz
-0.03
-=======
 0.1
 dz
 0.1
->>>>>>> 6564b3514dd78c02c984b772e55aa33e474690bc
+dz
+0.1
 Lx
 1.
 Lz
@@ -28,7 +24,7 @@ Dim
 #2D, 3D
 
 Da
-uniforme 0.5
+step 10.0 5.0
 #uniforme 0.5
 #step 10.0 5.0
 #retrieve retrieve_file
