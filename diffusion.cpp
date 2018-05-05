@@ -51,12 +51,12 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
 
       while((_plic->Get_ninterface())(i,j) == -2){
 
-        cout<<"   I="<<i<<"  J="<<j<<endl;
-        flux += fluxGauche(i,j);cout<<"FLUX GAUCHE="<<fluxGauche(i,j)<<endl;
-        flux += fluxBas(i,j);cout<<"FLUX BAS="<<fluxBas(i,j)<<endl;
-        flux += fluxDroite(i,j);cout<<"FLUX DROITE="<<fluxDroite(i,j)<<endl;
-        flux += fluxHaut(i,j);cout<<"FLUX HAUT="<<fluxHaut(i,j)<<endl;
-        C1(i,j) = _concentration(i,j) + (dt/(dx*dz))*flux;cout<<"NOUVELLE CONCENTRATION"<<endl;
+        //cout<<"   I="<<i<<"  J="<<j<<endl;
+        flux += fluxGauche(i,j);//cout<<"FLUX GAUCHE="<<fluxGauche(i,j)<<endl;
+        flux += fluxBas(i,j);//cout<<"FLUX BAS="<<fluxBas(i,j)<<endl;
+        flux += fluxDroite(i,j);//cout<<"FLUX DROITE="<<fluxDroite(i,j)<<endl;
+        flux += fluxHaut(i,j);//cout<<"FLUX HAUT="<<fluxHaut(i,j)<<endl;
+        C1(i,j) = _concentration(i,j) + (dt/(dx*dz))*flux;//cout<<"NOUVELLE CONCENTRATION"<<endl;
 
         i++;
       }
@@ -74,7 +74,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
         a = aireInterf(i,j);
         C1(i,j) = _concentration(i,j) + (dt/a)*flux;
 
-        cout<<"VITESSE"<<endl;
+        //cout<<"VITESSE"<<endl;
         _vitesse(num_cell) = C1(i,j);
 
         i++;
@@ -84,7 +84,7 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
     e = erreur.maxCoeff();
 
     //cout<<"~~~~~~ERREUR= "<<e<<"~~~~~~~~~~"<<endl;
-    cout<<"CONCENTRATION "<<endl<<C1<<endl;
+    //cout<<"CONCENTRATION "<<endl<<C1<<endl;
 
     _concentration = C1;
     if(e>100){
