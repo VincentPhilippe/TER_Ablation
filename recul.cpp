@@ -33,7 +33,7 @@ void recul::recul_surface()
   affichage=0;
 
   //cout << "_C_solide" << endl << _C_solide << endl;
-  if (affichage==1) {
+  if (affichage>=1) {
     cout << "_C_solide" << endl << _C_solide << endl;
     cout << "_ninterf" << endl << _ninterf << endl;
     cout << "_interface" << endl << _interface << endl;
@@ -534,9 +534,10 @@ void recul::recul_surface()
       }
     }
   }
+  //cout <<endl<<endl<< "_C_solide après" << endl << _C_solide <<endl<< endl;
 
   cpositive();
-
+  //cout << "_ninterf après" << endl << _ninterf << endl;
   //écriture dans un fichier
   ofstream mon_flux;
   string name_file("C_solide.dat");
@@ -1106,7 +1107,7 @@ void recul::recul18(int i, int j, double alpha, double vrdt, MatrixXd coord)
 void recul::cpositive()
 {
   _nbinterface=0;
-  for (int i=0; i<_nz; i++) {
+  /*for (int i=0; i<_nz; i++) {
     for (int j = 0; j <_nx; j++) {
       if (_C_solide(i,j)<=0.00000000001) {
         _C_solide(i,j)=0;
@@ -1117,6 +1118,24 @@ void recul::cpositive()
         _ninterf(i,j)=_nbinterface;
         _nbinterface=_nbinterface+1;
       }
+    }
+  }*/
+  for (int j = 0; j <_nx; j++) {
+    int i=0;
+    while (_C_solide(i,j)<=0.00000000001 && i<_nz) {
+      _C_solide(i,j)=0;
+      _ninterf(i,j)=-2;
+      i++;
+    }
+    if (i<_nz) {
+      _ninterf(i,j)=_nbinterface;
+      _nbinterface=_nbinterface+1;
+      i++;
+    }
+    while (i<_nz) {
+      _ninterf(i,j)=-1;
+      _C_solide(i,j)=1;
+      i++;
     }
   }
 }
