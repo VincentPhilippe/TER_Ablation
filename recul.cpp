@@ -1109,10 +1109,10 @@ void recul::cpositive()
   _nbinterface=0;
   for (int i=0; i<_nz; i++) {
     for (int j = 0; j <_nx; j++) {
-      if (_C_solide(i,j)<=0.00000000001) {
+      if (_C_solide(i,j)<=0.001) {
         _C_solide(i,j)=0;
         _ninterf(i,j)=-2;
-      } else if (_C_solide(i,j)>=1) {
+      } else if (_C_solide(i,j)>=0.999) {
         _ninterf(i,j)=-1;
       } else {
         _ninterf(i,j)=_nbinterface;

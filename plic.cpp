@@ -80,6 +80,40 @@ void plic::interf()
     ptquad.resize(lar*lon/(dx*dz),3);
     _interface.resize(_kmax,4);
     _normal.resize(_kmax,2);
+
+
+    //Initialisation, a priori pas obligatoire
+    for (int i=0;i<_kmax;i++)
+    {
+      for (int j=0;j<4;j++)
+      {
+        _interface(i,j)=0;
+        if (j<2)
+        {
+          _normal(i,j)=0;
+        }
+      }
+    }
+    for (int i=0;i<max(300*lon,int(lar*lon/(dx*dz)));i++)
+    {
+      for (int j=0;j<3;j++)
+      {
+        if (i<300*lon)
+        {
+          pttri(i,j)=0;
+          ptpenta(i,j)=0;
+          trivalcase(i)=0;
+          quadvalcase(i)=0;
+          pentvalcase(i)=0;
+        }
+        if (i<lar*lon/(dx*dz))
+          ptquad(i,j)=0;
+      }
+    }
+
+
+    //cout <<"_interface"<<endl;
+    //cout <<_interface<<endl;
     //tri.resize(10*lon,3); //arbitraire pour le moment, assez grand pour contenir tous les triangles
     //quad.resize(30*lon,4);
     //penta.resize(10*lon,5);
@@ -111,7 +145,7 @@ void plic::interf()
      {
         for (int i=0;i<lar+1;i++)
         {
-            cout <<i<<" "<<j<<endl;
+            //cout <<i<<" "<<j<<endl;
             p=_phi(j,i);
             //cout <<"p "<<p<<endl;
             //cout <<"je suis ici"<<p<<endl;
@@ -436,6 +470,12 @@ void plic::interf()
                     quadvalcase(nbquad)=0;
                     nbquad++;
                 }
+                if ((_phi(j-1,i)>0.) && ((_interface(k,0)<dx*0.95) || (_interface(k,3)<dz*0.95)))  //si la case du dessus est une interface et que la presente case n'est pas un pentagone
+                {
+                  cout<<"ERREUR CAUSEE PAR LA METHODE PLIC "<<i<<" "<<j<<endl; //_interface(k,0)/dx<<" "<< _interface(k,2)/dx<<endl;
+                  //break;
+                }
+
                 if (nx<0) //si orienté vers la gauche
                 {
                     //if (typinterf(i,j)==-4)
@@ -454,10 +494,7 @@ void plic::interf()
                 }
 
                 //cout<<"_interface(k) "<<_interface(k,0)<<" "<<_interface(k,1)<<" "<<_interface(k,2)<<" "<<_interface(k,3)<<endl;
-                if (_phi(j-1,i)>0.)
-                {
-                  cout<<"ERREUR CAUSEE PAR LA METHODE PLIC "<< _interface(k,0)/dx<<" "<< _interface(k,2)/dx<<endl;
-                }
+
             }
 
 
