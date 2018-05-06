@@ -28,7 +28,6 @@ Dim
 #2D, 3D
 
 Da
-step 10.0 5.0
 #uniforme 0.5
 #step 10.0 5.0
 #retrieve retrieve_file
