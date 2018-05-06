@@ -149,7 +149,7 @@ void plic::interf()
             p=_phi(j,i);
             //cout <<"p "<<p<<endl;
             //cout <<"je suis ici"<<p<<endl;
-            if ((p>0.) && (p<1.))   //si on est sur l'interface
+            if ((p>0.001) && (p<0.999))   //si on est sur l'interface
             {
                 k++;
                 //cout << "ici"<<endl;
@@ -165,8 +165,10 @@ void plic::interf()
                   nx=grad_x(i,j,lar)/sqrt(grad_x(i,j,lar)*grad_x(i,j,lar)+grad_y(i,j,lon)*grad_y(i,j,lon));
                   ny=grad_y(i,j,lon)/sqrt(grad_x(i,j,lar)*grad_x(i,j,lar)+grad_y(i,j,lon)*grad_y(i,j,lon));
                 //}
-
+                cout << "là"<<endl;
                 nxx=abs(nx);
+
+                cout << k<<" "<<_kmax<<endl;
                 _normal(k,0)=nx;
                 _normal(k,1)=ny;
                 //cout <<i<<" "<<j<<endl;
@@ -349,7 +351,6 @@ void plic::interf()
                         _interface(k,1)=dz*(p-nxx/(2*ny));
                         _interface(k,2)=0;
                         _interface(k,3)=dz*(p+nxx/(2*ny));
-
                         //on rentre les coordonnées des sommets
                         if (nx>0)
                         {
@@ -492,7 +493,6 @@ void plic::interf()
                     _interface(k,2)=dz-_interface(k,2);
                     //cout <<"après "<<_interface(k,1)<<" "<<_interface(k,3)<<endl;
                 }
-
                 //cout<<"_interface(k) "<<_interface(k,0)<<" "<<_interface(k,1)<<" "<<_interface(k,2)<<" "<<_interface(k,3)<<endl;
 
             }
