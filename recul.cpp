@@ -30,7 +30,7 @@ void recul::recul_surface()
   _interface=_plic->Get_interface();
   _vitesse=_diff->GetVitesse();
   int affichage;
-  affichage=0;
+  affichage=2;
 
   //cout << "_C_solide" << endl << _C_solide << endl;
   if (affichage>=1) {
@@ -1120,22 +1120,26 @@ void recul::cpositive()
       }
     }
   }
-  /*for (int j = 0; j <_nx; j++) {
+  for (int j = 0; j <_nx; j++) {
     int i=0;
-    while (_C_solide(i,j)<=0.00000000001 && i<_nz) {
-      _C_solide(i,j)=0;
-      _ninterf(i,j)=-2;
+    while (_ninterf(i,j)==-2 && i<_nz) {
       i++;
     }
-    if (i<_nz) {
+    if (_ninterf(i,j)==-1 && i<_nz) {
       _ninterf(i,j)=_nbinterface;
+      _C_solide(i,j)=0.998;
+      cout << "surface ajouté en " << i << " " << j << endl;
       _nbinterface=_nbinterface+1;
       i++;
     }
-    while (i<_nz) {
-      _ninterf(i,j)=-1;
-      _C_solide(i,j)=1;
-      i++;
+  }
+  /*int k=0;
+  for (int i=0; i<_nz; i++) {
+    for (int j = 0; j <_nx; j++) {
+      if (_ninterf(i,j)>=0) {
+        _ninterf(i,j)=k;
+        k++;
+      }
     }
   }*/
 }
