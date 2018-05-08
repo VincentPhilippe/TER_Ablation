@@ -17,6 +17,13 @@ recul::recul(read_data &_data)
   _nx = _C_solide.cols();
   _nz = _C_solide.rows();
   _ninterf.resize(_nz,_nx);
+  _propsolref=0;
+  for (int i=0; i<_nz; i++) {
+    for (int j = 0; j <_nx; j++) {
+      _propsolref+=_C_solide(i,j);
+    }
+  }
+  _propsolref=_propsolref/(_nx*_nz);
 }
 
 
@@ -30,7 +37,7 @@ void recul::recul_surface()
   _interface=_plic->Get_interface();
   _vitesse=_diff->GetVitesse();
   int affichage;
-  affichage=2;
+  affichage=0;
 
   //cout << "_C_solide" << endl << _C_solide << endl;
   if (affichage>=1) {
@@ -1106,6 +1113,41 @@ void recul::recul18(int i, int j, double alpha, double vrdt, MatrixXd coord)
 
 void recul::cpositive()
 {
+  double propsol=0;
+  for (int i=0; i<_nz; i++) {
+    for (int j = 0; j <_nx; j++) {
+      propsol+=_C_solide(i,j);
+    }
+  }
+  propsol=propsol/(_nx*_nz);
+  if (_propsolref-propsol>1/_nx) {
+    for (int i=0; i<_nz-1; i++) {
+      for (int j = 0; j <_nx; j++) {
+        _C_solide(i,j)=_C_solide(i+1,j);
+      }
+    }
+    for (int j = 0; j <_nx; j++) {
+      _C_solide(_nz-1,j)=1;
+    }
+  }
+
+
+  //solution 2
+  /*double zajout;
+  zajout=_dz*_nz*(_propsolref-propsol);
+  for (int j = 0; j < _nx; j++) {
+    int i=0;
+    while (_C_solide(i+1,j)<0.999) {
+      if ((_C_solide(i+1,j)>0.001) && (zajout>_dz*(1-_C_solide(i+1,j)))) {
+        _C_solide(i,j)+=zajout/_dz+_C_solide(i+1,j)-1;
+        _C_solide(i+1,j)-=zajout/_dz+_C_solide(i+1,j)-1;
+      }
+      i++;
+    }
+    _C_solide(i,j)+=zajout/_dz;
+  }*/
+
+
   _nbinterface=0;
   for (int i=0; i<_nz; i++) {
     for (int j = 0; j <_nx; j++) {
