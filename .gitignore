@@ -9,3 +9,5 @@ Results
 run
 Results/solution_1.vtk
 run
+data.dat
+CFluid.dat
