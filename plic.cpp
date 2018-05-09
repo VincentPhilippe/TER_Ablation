@@ -135,7 +135,7 @@ void plic::interf()
                 //cout << "là"<<endl;
                 nxx=abs(nx);
 
-                cout << k<<" "<<_kmax<<endl;
+                //cout << k<<" "<<_kmax<<endl;
                 _normal(k,0)=nx;
                 _normal(k,1)=ny;
                 //cout <<i<<" "<<j<<endl;
@@ -479,9 +479,12 @@ void plic::interf()
             }
           }
         }
+<<<<<<< HEAD
+=======
 
     cout << _normal << endl;
 
+>>>>>>> 397a39f09586e15c1f598b9eb652d8f34d79738b
 }
 
 
