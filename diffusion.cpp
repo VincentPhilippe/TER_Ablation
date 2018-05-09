@@ -12,6 +12,7 @@ diffusion::diffusion(read_data& data, Cartesien2D& maillage)
 
   _concentration = _data.Get_C0();
   _damkohler = _data.Get_Da();
+  cout << "damkohler" << endl << _damkohler << endl;
 
 
 }
