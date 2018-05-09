@@ -65,14 +65,14 @@ void plic::interf()
     _ninterf=_recul->Get_ninterf();
     _phi=_recul->Get_C_solide();
     int lar=_phi.cols()-1;
-    cout <<"lar "<<lar<<endl;
+    //cout <<"lar "<<lar<<endl;
     int lon=_phi.rows()-1;
-    cout <<"lon "<<lon<<endl;
+    //cout <<"lon "<<lon<<endl;
     int _kmax=_recul->Get_nbinterface();
-    cout<<"_ninterf"<<endl;
-    cout<<_ninterf<<endl;
-    cout<<"_phi"<<endl;
-    cout<<_phi<<endl;
+    //cout<<"_ninterf"<<endl;
+    //cout<<_ninterf<<endl;
+    //cout<<"_phi"<<endl;
+    //cout<<_phi<<endl;
     pttri.resize(300*lon,3);
     ptpenta.resize(300*lon,3);
     trivalcase.resize(300*lon);
@@ -148,7 +148,7 @@ void plic::interf()
                 nmin=min(nxx,ny);
                 if (p<=nmin/(2*nmax))
                 {
-                    cout<<"triangle "<<k<<endl;
+                    //cout<<"triangle "<<k<<endl;
                     //triangle vers la droite
                     _interface(k,0)=dx*sqrt(2*p*ny/nxx);
                     _interface(k,1)=0;
@@ -217,7 +217,7 @@ void plic::interf()
 
                 else if (p>=1-nmin/(2*nmax))
                 {
-                    cout<<"pentagone "<<k<<endl;
+                    //cout<<"pentagone "<<k<<endl;
                     //pentagone vers la droite
                     _interface(k,0)=dx*1;
                     _interface(k,1)=dz*(1-sqrt(2*(1-p)*nxx/ny));
@@ -284,7 +284,7 @@ void plic::interf()
                 {
                     if (nxx<ny)
                     {
-                        cout <<"quadhaut "<<k<<endl;
+                        //cout <<"quadhaut "<<k<<endl;
                         //quadrillatère vers le haut
                         _interface(k,0)=dx*1;
                         _interface(k,1)=dz*(p-nxx/(2*ny));
@@ -347,7 +347,7 @@ void plic::interf()
                     else
                     {
                         //quadrillatère vers la droite
-                        cout <<"quaddroite "<<endl;
+                        //cout <<"quaddroite "<<endl;
                         _interface(k,0)=dx*(p+ny/(2*nxx));
                         _interface(k,1)=0;
                         _interface(k,2)=dx*(p-ny/(2*nxx));
@@ -411,7 +411,7 @@ void plic::interf()
                 }
                 if ((_phi(j-1,i)>0.) && ((_interface(k,0)<dx*0.95) || (_interface(k,3)<dz*0.95)))  //si la case du dessus est une interface et que la presente case n'est pas un pentagone
                 {
-                  cout<<"ERREUR CAUSEE PAR LA METHODE PLIC "<<i<<" "<<j<<endl; //_interface(k,0)/dx<<" "<< _interface(k,2)/dx<<endl;
+                  //cout<<"ERREUR CAUSEE PAR LA METHODE PLIC "<<i<<" "<<j<<endl; //_interface(k,0)/dx<<" "<< _interface(k,2)/dx<<endl;
                   //break;
                 }
 
@@ -479,6 +479,12 @@ void plic::interf()
             }
           }
         }
+<<<<<<< HEAD
+=======
+
+    cout << _normal << endl;
+
+>>>>>>> 397a39f09586e15c1f598b9eb652d8f34d79738b
 }
 
 
