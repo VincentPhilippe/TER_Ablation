@@ -81,15 +81,15 @@ _if_dim(false), _if_Da(false), _if_C0(false), _if_C_Solide(false)
             double Da_step1, Da_step2;
             data_file >> Da_step1 >> Da_step2;
             _Da.resize(_Nx-1);
-            for (int i=0; i<=floor(_Nx/3); i++)
+            for (int i=0; i<floor(_Nx/3); i++)
             {
               _Da(i) = Da_step1;
             }
-            for (int i=floor(_Nx/3)+1; i<=2*floor(_Nx/3); i++)
+            for (int i=floor(_Nx/3); i<_Nx-1-floor(_Nx/3); i++)
             {
               _Da(i) = Da_step2;
             }
-            for (int i=2*floor(_Nx/3)+1; i<_Nx-1; i++)
+            for (int i=_Nx-1-floor(_Nx/3); i<_Nx-1; i++)
             {
               _Da(i) = Da_step1;
             }

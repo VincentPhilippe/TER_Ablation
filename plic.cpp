@@ -479,7 +479,10 @@ void plic::interf()
             }
           }
         }
+<<<<<<< HEAD
     cout << _normal << endl;
+=======
+>>>>>>> 8e078f364a97fcde95f6a35d23fe4b064d4dbc97
 }
 
 
