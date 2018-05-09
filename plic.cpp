@@ -132,10 +132,10 @@ void plic::interf()
                 //Calcul du gradient
                 nx=grad_x(i,j,lar)/sqrt(grad_x(i,j,lar)*grad_x(i,j,lar)+grad_y(i,j,lon)*grad_y(i,j,lon));
                 ny=grad_y(i,j,lon)/sqrt(grad_x(i,j,lar)*grad_x(i,j,lar)+grad_y(i,j,lon)*grad_y(i,j,lon));
-                cout << "là"<<endl;
+                //cout << "là"<<endl;
                 nxx=abs(nx);
 
-                cout << k<<" "<<_kmax<<endl;
+                //cout << k<<" "<<_kmax<<endl;
                 _normal(k,0)=nx;
                 _normal(k,1)=ny;
                 //cout <<i<<" "<<j<<endl;
@@ -479,10 +479,6 @@ void plic::interf()
             }
           }
         }
-<<<<<<< HEAD
-    cout << _normal << endl;
-=======
->>>>>>> 8e078f364a97fcde95f6a35d23fe4b064d4dbc97
 }
 
 
