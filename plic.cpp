@@ -140,7 +140,7 @@ void plic::interf()
                 _normal(k,1)=ny;
                 //cout <<i<<" "<<j<<endl;
                 //cout <<"p "<<p<<endl;
-                cout <<"nx "<<nx<<" ny "<<ny<<endl;
+                //cout <<"nx "<<nx<<" ny "<<ny<<endl;
 
 
                 //interface
