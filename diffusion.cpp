@@ -12,6 +12,7 @@ diffusion::diffusion(read_data& data, Cartesien2D& maillage)
 
   _concentration = _data.Get_C0();
   _damkohler = _data.Get_Da();
+  cout << "damkohler" << endl << _damkohler << endl;
 
 
 }
@@ -26,6 +27,8 @@ void diffusion::resolution() //Résolution de dC/dt = d2C/dx2
   VectorXd aire = VectorXd::Zero(interf.maxCoeff()+1);;
 
   C1 = MatrixXd::Zero(_maillage.GetNz(), _maillage.GetNx());
+
+  //cout<<endl<<"CONCENTRATION AVANT"<<endl<<_concentration<<endl<<endl;
 
   for(int i=0; i< _maillage.GetNz(); i++){
     for(int j=0; j< _maillage.GetNx(); j++){
@@ -285,20 +288,12 @@ double diffusion::longueurArete(int i, int j, enum Direction direction)
 
       if(direction == UP)
       {
-        if(z1 == dz)
-        {
-          return(dx - x1);
-        }
-        return(dx - x2);
+        return(abs(x1-x2));
       }
 
       if(direction ==DOWN)
       {
-        if(z1 == 0)
-        {
-          return(dx - x1);
-        }
-        return(dx - x2);
+        return(dx - abs(x1-x2));
       }
       break;
 
