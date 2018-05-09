@@ -10,7 +10,7 @@ Lz
 dt
 0.01
 tfinal
-50.0
+5.0
 Diff
 0.01
 
@@ -23,12 +23,8 @@ Dim
 #2D, 3D
 
 Da
-<<<<<<< HEAD
-uniforme 0.5
-#step 1.0 10.0
-=======
+
 step 1.0 20.0
->>>>>>> dc145d76b733c4afc98f91fda0b6c283250fb521
 #step 0.005 50.0
 #uniforme 0.5
 #step 10.0 5.0
