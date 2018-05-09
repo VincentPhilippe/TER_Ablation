@@ -10,7 +10,11 @@ Lz
 dt
 0.01
 tfinal
+<<<<<<< HEAD
 5.0
+=======
+7.0
+>>>>>>> af9c731392ea8910dee3983d4aab1cfffb37ba71
 Diff
 0.01
 
