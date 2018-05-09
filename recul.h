@@ -53,6 +53,7 @@ private:
   double _dtmax;
   double _dx;
   double _dz;
+  double _propsolref;
   int _nbinterface;
   int _nx;
   int _nz;
