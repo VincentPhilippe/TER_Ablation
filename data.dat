@@ -1,7 +1,7 @@
 dx
-0.02
+0.05
 dz
-0.02
+0.05
 Lx
 1.
 Lz
@@ -9,11 +9,7 @@ Lz
 dt
 0.01
 tfinal
-<<<<<<< HEAD
-5.0
-=======
 3.0
->>>>>>> dbc42287e7689f1c72b8c4ff4fcbfc9b156d787f
 Diff
 0.01
 
@@ -26,29 +22,18 @@ Dim
 #2D, 3D
 
 Da
-<<<<<<< HEAD
-step 1.0 20.0
-=======
-step 1.0 10.0
->>>>>>> dbc42287e7689f1c72b8c4ff4fcbfc9b156d787f
+step 20.0 1.0
 #step 0.005 50.0
 #uniforme 0.5
 #step 10.0 5.0
 #retrieve retrieve_file
 
 C0
-retrieve CFluid.dat
-#uniforme 1.0
+uniforme 1.0
 #retrieve CFluid.dat
 
 C_Solide
-<<<<<<< HEAD
-retrieve C_solide.dat
-#uniforme 0.6
+uniforme 0.6
 #uniforme 0.2
-=======
-uniforme 0.5
-#uniforme 0.6
->>>>>>> dbc42287e7689f1c72b8c4ff4fcbfc9b156d787f
 #retrieve C_solide.dat
 #step 0.8 0.6
