@@ -270,30 +270,38 @@ double diffusion::longueurArete(int i, int j, enum Direction direction)
 
       if(direction == LEFT)
       {
-        if(x1 == 0)
+        if((_plic->Get_normal())(num_cell, 0)<=0)
         {
-          return(dz - z1);
+          return(dz - min(z1,z2));
         }
-        return(dz - z2);
+        return(dz - max(z1,z2));
       }
 
       if(direction == RIGHT)
       {
-        if(x1 == dx)
+        if((_plic->Get_normal())(num_cell, 0)<=0)
         {
-          return(dz - z1);
+          return(dz - max(z1,z2));
         }
-        return(dz - z2);
+        return(dz - min(z1,z2));
       }
 
       if(direction == UP)
       {
-        return(abs(x1-x2));
+        if((_plic->Get_normal())(num_cell, 0)<=0)
+        {
+          return(max(x1,x2));
+        }
+        return(dx - min(x1,x2));
       }
 
       if(direction ==DOWN)
       {
-        return(dx - abs(x1-x2));
+        if((_plic->Get_normal())(num_cell, 0)<=0)
+        {
+          return(min(x1,x2));
+        }
+        return(dx - max(x1,x2));
       }
       break;
 
