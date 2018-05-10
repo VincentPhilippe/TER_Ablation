@@ -1175,6 +1175,23 @@ void recul::cpositive()
       i++;
     }
   }
+  for (int i=0; i<_nz; i++) {
+    for (int j = 0; j <_nx; j++) {
+      if (_ninterf(i,j)==-1) {
+        if (_ninterf(i,(j-1+_nx)%_nx)==-2) {
+          _ninterf(i,j)=_nbinterface;
+          _C_solide(i,j)=0.998;
+          cout << "surface ajouté en " << i << " " << j << endl;
+          _nbinterface=_nbinterface+1;
+        } else if (_ninterf(i,(j+1)%_nx)==-2) {
+          _ninterf(i,j)=_nbinterface;
+          _C_solide(i,j)=0.998;
+          cout << "surface ajouté en " << i << " " << j << endl;
+          _nbinterface=_nbinterface+1;
+        }
+      }
+    }
+  }
   /*int k=0;
   for (int i=0; i<_nz; i++) {
     for (int j = 0; j <_nx; j++) {

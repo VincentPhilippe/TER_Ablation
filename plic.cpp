@@ -480,7 +480,7 @@ void plic::interf()
           }
         }
 
-    cout << _normal << endl;
+    //cout << _normal << endl;
 
 }
 
