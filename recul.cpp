@@ -1192,6 +1192,15 @@ void recul::cpositive()
       }
     }
   }
+  int k=0;
+  for (int i=0; i<_nz; i++) {
+    for (int j = 0; j <_nx; j++) {
+      if (_ninterf(i,j)>-1) {
+        _ninterf(i,j)=k;
+        k++;
+      }
+    }
+  }
   /*int k=0;
   for (int i=0; i<_nz; i++) {
     for (int j = 0; j <_nx; j++) {
