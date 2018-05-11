@@ -543,6 +543,9 @@ void recul::recul_surface()
   }
   //cout <<endl<<endl<< "_C_solide après" << endl << _C_solide <<endl<< endl;
 
+  //cout <<endl<<endl<< "_C_solide avant" << endl << _C_solide <<endl<< endl;
+  lissage();
+  //cout <<endl<<endl<< "_C_solide après" << endl << _C_solide <<endl<< endl;
   cpositive();
   //cout << "_ninterf après" << endl << _ninterf << endl;
   //écriture dans un fichier
@@ -1131,23 +1134,6 @@ void recul::cpositive()
     }
   }
 
-
-  //solution 2
-  /*double zajout;
-  zajout=_dz*_nz*(_propsolref-propsol);
-  for (int j = 0; j < _nx; j++) {
-    int i=0;
-    while (_C_solide(i+1,j)<0.999) {
-      if ((_C_solide(i+1,j)>0.001) && (zajout>_dz*(1-_C_solide(i+1,j)))) {
-        _C_solide(i,j)+=zajout/_dz+_C_solide(i+1,j)-1;
-        _C_solide(i+1,j)-=zajout/_dz+_C_solide(i+1,j)-1;
-      }
-      i++;
-    }
-    _C_solide(i,j)+=zajout/_dz;
-  }*/
-
-
   _nbinterface=0;
   for (int i=0; i<_nz; i++) {
     for (int j = 0; j <_nx; j++) {
@@ -1201,13 +1187,29 @@ void recul::cpositive()
       }
     }
   }
-  /*int k=0;
+}
+
+void recul::lissage()
+{
+  MatrixXd Clisse;
+  Clisse.resize(_nz,floor(_nx/2));
   for (int i=0; i<_nz; i++) {
-    for (int j = 0; j <_nx; j++) {
-      if (_ninterf(i,j)>=0) {
-        _ninterf(i,j)=k;
-        k++;
+    for (int j = 1; j <floor(_nx/2)-1; j++) {
+      if ((_C_solide(i,j)>_C_solide(i,j-1)+_dx*_dz/5) && (_C_solide(i,j)>_C_solide(i,j+1)+_dx*_dz/5)) {
+        cout << "lissage haut en "<< i << " " << j <<endl;
+        Clisse(i,j)=(4*_C_solide(i,j)+_C_solide(i,j-1)+_C_solide(i,j+1))/6;
+      } else if ((_C_solide(i,j)+_dx*_dz/5<_C_solide(i,j-1)) && (_C_solide(i,j)+_dx*_dz/5<_C_solide(i,j+1))) {
+        cout << "lissage bas en "<< i << " " << j << endl;
+        Clisse(i,j)=(4*_C_solide(i,j)+_C_solide(i,j-1)+_C_solide(i,j+1))/6;
+      } else {
+        Clisse(i,j)=_C_solide(i,j);
       }
     }
-  }*/
+  }
+  for (int i=0; i<_nz; i++) {
+    for (int j = 1; j <floor(_nx/2)-1; j++) {
+      _C_solide(i,j)=Clisse(i,j);
+      _C_solide(i,_nx-1-j)=Clisse(i,j);
+    }
+  }
 }
